@@ -1,42 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&family=Poppins:wght@100..900&family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+@import "tailwindcss";
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  --font-inter: "Inter", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-playfair: "Playfair Display", serif;
+  --primary-red: #fa0400;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-playfair);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  overscroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.text_primary {
+  color: var(--primary-red);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.text_manrope {
+  font-family: var(--font-manrope);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.text_inter {
+  font-family: var(--font-inter);
+}
+
+.text_poppins {
+  font-family: var(--font-poppins);
+}
+
+.text_playfair {
+  font-family: var(--font-playfair);
+}
+
+.bg_primary {
+  background-color: var(--primary-red);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.swiper-custom .swiper-slide {
+  transition: transform 0.35s ease;
+  opacity: 0.6;
+}
+
+.swiper-custom .swiper-slide-active {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.swiper-pagination-bullet {
+  width: 30px;
+  height: 3px;
+  border-radius: 0px;
+  background: #c8c8c8;
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background: #000;
+}
+
+.swiper-pagination-bullet {
+  width: 28px !important;
+  height: 3px !important;
+  border-radius: 0 !important;
+  background: #d3d3d3 !important;
+  opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #000 !important;
+}
+.swiper-pagination {
+  bottom: 0 !important;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
 }

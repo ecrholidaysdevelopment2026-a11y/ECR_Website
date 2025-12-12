@@ -1,27 +1,52 @@
 "use client";
-import React from "react";
+import React, { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { IoIosArrowRoundForward, IoIosArrowRoundBack } from "react-icons/io";
+import { IoIosArrowRoundForward, IoIosArrowRoundBack, IoIosPlay, IoIosPause } from "react-icons/io";
 
 export default function EveryStayStory() {
+    const [playingVideo, setPlayingVideo] = useState(null);
+    const videoRefs = useRef({});
+
     const cards = [
-        { id: 1, img: "/villa1.png", tag: "Raj Kamal" },
-        { id: 2, img: "/villa2.png", tag: "Raj Kamal" },
-        { id: 3, img: "/villa3.png", tag: "Raj Kamal" },
-        { id: 4, img: "/villa4.png", tag: "Raj Kamal" },
-        { id: 5, img: "/villa5.png", tag: "Raj Kamal" },
+        { id: 1, img: "https://www.w3schools.com/html/mov_bbb.mp4", tag: "Sample 1" },
+        { id: 2, img: "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_5mb.mp4", tag: "Sample 2" },
+        { id: 3, img: "https://filesamples.com/samples/video/mp4/sample_640x360.mp4", tag: "Sample 3" },
+        { id: 4, img: "https://sample-videos.com/video321/mp4/480/sample_1mb.mp4", tag: "Sample 4" },
+        { id: 5, img: "https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4", tag: "Sample 5" },
     ];
+
+    const handleVideoPlay = (id) => {
+        if (playingVideo && playingVideo !== id) {
+            videoRefs.current[playingVideo]?.pause();
+        }
+
+        const video = videoRefs.current[id];
+        if (video) {
+            if (video.paused) {
+                video.play();
+                setPlayingVideo(id);
+            } else {
+                video.pause();
+                setPlayingVideo(null);
+            }
+        }
+    };
+
+    const handleVideoEnd = (id) => {
+        setPlayingVideo(null);
+    };
 
     return (
         <div className="w-full px-4 py-10 flex flex-col items-center">
             <h2 className="text-3xl font-semibold mb-6 flex items-center gap-4">
-                <IoIosArrowRoundBack className="text-black cursor-pointer" size={30} />
+                <IoIosArrowRoundBack className="text-black cursor-pointer hover:text-gray-600 transition-colors" size={30} />
                 Every Stay Story
-                <IoIosArrowRoundForward className="text-black cursor-pointer" size={30} />
+                <IoIosArrowRoundForward className="text-black cursor-pointer hover:text-gray-600 transition-colors" size={30} />
             </h2>
+
             <Swiper
                 modules={[Pagination]}
                 slidesPerView={1.1}
@@ -37,18 +62,33 @@ export default function EveryStayStory() {
             >
                 {cards?.map((card) => (
                     <SwiperSlide key={card.id}>
-                        <div className="relative rounded-2xl overflow-hidden shadow-md cursor-pointer mb-5">
-                            <img
-                                src={card.img}
-                                alt="story"
-                                className="w-full h-72 object-cover"
-                            />
-                            <div className="absolute top-3 left-3 bg-[#3C2A21] text-white px-3 py-1 text-sm rounded-full">
-                                {card.tag}
-                            </div>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center">
-                                    ▶
+                        <div
+                            className="story-card relative  overflow-hidden shadow-md cursor-pointer mb-5 transition-all duration-300 ease-out hover:shadow-xl hover:scale-[1.02] group"
+                            onClick={() => handleVideoPlay(card.id)}
+                        >
+                            <div className="relative w-full h-72">
+                                <video
+                                    ref={el => videoRefs.current[card.id] = el}
+                                    src={card.img}
+                                    className="w-full h-full object-cover"
+                                    muted
+                                    loop
+                                    playsInline
+                                    onEnded={() => handleVideoEnd(card.id)}
+                                    poster="/fallback-image.png"
+                                ></video>
+                                <div className="absolute top-3 left-3 bg-[#3C2A21] text-white px-3 py-1 text-sm rounded-full z-10">
+                                    {card.tag}
+                                </div>
+                                <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${playingVideo === card.id ? 'opacity-0' : 'opacity-100'
+                                    } group-hover:opacity-100`}>
+                                    <div className="w-16 h-16 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all hover:scale-110">
+                                        {playingVideo === card.id ? (
+                                            <IoIosPause className="text-black" size={30} />
+                                        ) : (
+                                            <IoIosPlay className="text-black ml-1" size={30} />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>

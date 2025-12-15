@@ -12,10 +12,10 @@ const RentPropertySection = () => {
                     className="object-cover"
                 />
                 <div className="
-                    absolute top-8 left-8 
+                    absolute top-8 md:left-8 
                     bg-white p-6 md:p-8 
                     rounded-2xl shadow-lg 
-                    max-w-xs md:max-w-sm
+                    max-w-[270px] md:max-w-sm
                 ">
                     <h2 className="text-xl md:text-2xl font-semibold text-gray-900">
                         Rent your property confidently with us

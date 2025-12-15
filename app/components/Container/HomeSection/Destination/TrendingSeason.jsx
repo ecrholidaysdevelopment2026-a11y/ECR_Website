@@ -5,6 +5,7 @@ import Villa11 from "@/app/assets/villaImg11.png";
 import Villa12 from "@/app/assets/villaImg12.png";
 import VillaCard from '@/app/common/VillaCard';
 import { MdKeyboardArrowRight } from "react-icons/md";
+
 const TrendingSeason = () => {
     const villas = [
         {
@@ -44,24 +45,31 @@ const TrendingSeason = () => {
     ];
 
     return (
-        <div className='py-5 md:py-10'>
+        <div className="py-5 md:py-10">
             <div className="flex items-center">
                 <h3 className="text-lg md:text-3xl font-semibold px-2">
                     Trending this season
                 </h3>
                 <MdKeyboardArrowRight size={24} className="ml-1" />
             </div>
-            <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 w-full'>
+
+            <div
+                className="
+          flex gap-4 overflow-x-auto  scrollbar-hide
+          lg:grid lg:grid-cols-4 lg:overflow-visible
+        "
+            >
                 {villas?.map((villa) => (
-                    <VillaCard
-                        key={villa.id}
-                        title={villa.title}
-                        images={villa.images}
-                        price={villa.price}
-                        nights={villa.nights}
-                        rating={villa.rating}
-                        saleTag={villa.saleTag}
-                    />
+                    <div key={villa.id} className="min-w-[260px] lg:min-w-0">
+                        <VillaCard
+                            title={villa.title}
+                            images={villa.images}
+                            price={villa.price}
+                            nights={villa.nights}
+                            rating={villa.rating}
+                            saleTag={villa.saleTag}
+                        />
+                    </div>
                 ))}
             </div>
         </div>

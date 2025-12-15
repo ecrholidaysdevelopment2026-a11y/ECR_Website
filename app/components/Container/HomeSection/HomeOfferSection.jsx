@@ -56,7 +56,7 @@ export default function HomeOfferSection() {
             </div>
             <div
                 ref={scrollRef}
-                className="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth"
+                className="flex gap-5 overflow-x-auto  scrollbar-hide"
             >
                 {offers?.map((offer) => (
                     <div

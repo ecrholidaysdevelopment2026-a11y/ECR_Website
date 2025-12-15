@@ -17,6 +17,8 @@ body {
   scroll-behavior: smooth;
   overscroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .text_primary {

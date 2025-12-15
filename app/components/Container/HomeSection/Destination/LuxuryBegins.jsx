@@ -30,7 +30,7 @@ const LuxuryBegins = () => {
 
     return (
         <>
-            <div className="flex flex-col items-center bg-white px-2 justify-center relative">
+            <div className="flex flex-col items-center bg-white  justify-center relative">
                 <div className="relative w-full h-[450px] z-40">
                     <Image
                         src={Luxury}
@@ -52,7 +52,7 @@ const LuxuryBegins = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-[#F3E9DC] p-6 rounded-xl shadow-lg 
                 w-full  mx-auto 
                 relative -mt-12 ">
-                    {features.map((feature, index) => (
+                    {features?.map((feature, index) => (
                         <div key={index} className="flex flex-col items-start gap-2">
                             <div className="bg-white p-3 rounded-lg shadow mt-10">{feature.icon}</div>
                             <h3 className="font-semibold">{feature.title}</h3>
@@ -60,7 +60,7 @@ const LuxuryBegins = () => {
                         </div>
                     ))}
                 </div>
-                <div className="w-full  bg-[#A67C52] py-2 md:py-4  flex flex-col md:flex-row justify-between items-center gap-2 text-center  rounded-full my-6 px-4">
+                <div className="w-full  bg-[#A67C52] py-2 md:py-4  flex flex-col md:flex-row justify-between items-center gap-2 text-center  rounded-2xl my-6 px-4">
                     <div className="flex flex-col md:flex-row items-center gap-3">
                         <Image
                             className="mx-auto md:mx-0 mt-[-22px] md:mt-0"

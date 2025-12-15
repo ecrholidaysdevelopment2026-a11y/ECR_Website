@@ -48,7 +48,7 @@ const DestinationsChennai = () => {
     return (
         <div className="py-10">
             <div className="flex items-center">
-                <h3 className="text-lg md:text-3xl font-semibold px-2">
+                <h3 className="text-lg md:text-3xl font-semibold ">
                     Popular Destinations in Chennai
                 </h3>
                 <MdKeyboardArrowRight size={24} className="ml-1" />

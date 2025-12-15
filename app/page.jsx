@@ -11,6 +11,26 @@ import RentPropertySection from './components/Container/HomeSection/RentProperty
 import StatsSection from './components/Container/HomeSection/StatsSection';
 import InspirationSection from './components/Container/HomeSection/InspirationSection';
 
+export const metadata = {
+  title: "Luxury Villas & Holiday Homes | Premium Stays",
+  description:
+    "Book luxury villas, holiday homes, and unforgettable stays with premium comfort, best locations, and exclusive offers.",
+  keywords: [
+    "luxury villas",
+    "holiday homes",
+    "villa rentals",
+    "premium stays",
+    "vacation rentals",
+  ],
+  openGraph: {
+    title: "Luxury Villas & Premium Holiday Homes",
+    description:
+      "Discover luxury villas and premium holiday homes for unforgettable stays.",
+    images: ["/banner-bg-img.png"],
+    type: "website",
+  },
+};
+
 function page() {
   return (
     <>

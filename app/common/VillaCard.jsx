@@ -22,7 +22,7 @@ export default function VillaCard({
     };
 
     return (
-        <div className="w-full rounded-2xl p-3 cursor-pointer transition">
+        <div className="w-full rounded-2xl py-3 cursor-pointer transition">
             <div className="relative w-full h-40 rounded-xl overflow-hidden group">
                 <AnimatePresence initial={false} custom={direction}>
                     <motion.div

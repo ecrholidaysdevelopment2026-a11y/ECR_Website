@@ -75,7 +75,6 @@ export default function EveryStayStory() {
                                     loop
                                     playsInline
                                     onEnded={() => handleVideoEnd(card.id)}
-                                    poster="/fallback-image.png"
                                 ></video>
                                 <div className="absolute top-3 left-3 bg-[#3C2A21] text-white px-3 py-1 text-sm rounded-full z-10">
                                     {card.tag}

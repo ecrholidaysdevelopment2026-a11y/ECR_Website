@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import BannerSection from './components/Container/HomeSection/BannerSection';
 import Header from './components/Common/Header/Header';
-=======
-import React from 'react'
-import BannerSection from './components/Container/HomeSection/BannerSection'
-import Header from './components/Common/Header/Header'
->>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592
 import bannerimg from "@/app/assets/banner-bg-img.png";
 import MainLayout from './common/MainLayout';
 import Destination from './components/Container/HomeSection/Destination/Destination';
@@ -17,12 +11,9 @@ import StatsSection from './components/Container/HomeSection/StatsSection';
 import InspirationSection from './components/Container/HomeSection/InspirationSection';
 
 export const metadata = {
-<<<<<<< HEAD
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
   ),
-=======
->>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592
   title: "Luxury Villas & Holiday Homes | Premium Stays",
   description:
     "Book luxury villas, holiday homes, and unforgettable stays with premium comfort, best locations, and exclusive offers.",
@@ -42,11 +33,7 @@ export const metadata = {
   },
 };
 
-<<<<<<< HEAD
 export default function Page() {
-=======
-function page() {
->>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592
   return (
     <>
       <MainLayout>
@@ -61,21 +48,12 @@ function page() {
           <div className="absolute top-0 left-0 w-full z-20">
             <Header />
           </div>
-<<<<<<< HEAD
           <div className="z-10 mt-20">
             <BannerSection />
           </div>
         </div>
       </MainLayout>
 
-=======
-          <div className=" z-10 mt-20">
-            <BannerSection />
-          </div>
-
-        </div>
-      </MainLayout>
->>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592
       <MainLayout>
         <Destination />
         <EveryStayStory />
@@ -86,12 +64,5 @@ function page() {
         <InspirationSection />
       </MainLayout>
     </>
-<<<<<<< HEAD
   );
 }
-=======
-  )
-}
-
-export default page
->>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592

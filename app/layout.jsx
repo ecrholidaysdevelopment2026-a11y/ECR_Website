@@ -47,7 +47,6 @@ export default function RootLayout({ children }) {
           }}
         />
       </head>
-
       <body suppressHydrationWarning={true}>
         <ReduxProvider>
           <ConditionalHeader />

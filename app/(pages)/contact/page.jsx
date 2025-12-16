@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react'
 
 function page() {
@@ -6,4 +7,14 @@ function page() {
   )
 }
 
+=======
+import React from 'react'
+
+function page() {
+  return (
+    <div>page</div>
+  )
+}
+
+>>>>>>> 3117bdd47e565d954c51a6a685d0a22fad1fb592
 export default page

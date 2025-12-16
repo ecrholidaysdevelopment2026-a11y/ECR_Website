@@ -14,7 +14,7 @@ export default function VillaCard({
 }) {
     const normalizedImages = Array.isArray(images) ? images : images ? [images] : [];
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [direction, setDirection] = useState(0); 
+    const [direction, setDirection] = useState(0);
     if (normalizedImages?.length === 0) return null;
     const handleDotClick = (index) => {
         setDirection(index > currentIndex ? 1 : -1);
@@ -34,13 +34,15 @@ export default function VillaCard({
                         transition={{ duration: 0.4 }}
                         className="absolute inset-0 w-full h-full"
                     >
-                        <Image
-                            src={normalizedImages[currentIndex]}
-                            alt={title}
-                            width={1000}
-                            height={1000}
-                            className="object-cover w-full h-full"
-                        />
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={normalizedImages[currentIndex]}
+                                alt={title}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover"
+                            />
+                        </div>
                     </motion.div>
                 </AnimatePresence>
                 {saleTag && (

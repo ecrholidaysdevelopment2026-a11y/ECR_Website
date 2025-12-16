@@ -5,6 +5,7 @@ import Villa3 from "@/app/assets/villaImg3.png";
 import Villa4 from "@/app/assets/villaImg4.png";
 import VillaCard from '@/app/common/VillaCard';
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const DestinationsChennai = () => {
     const villas = [
@@ -47,11 +48,17 @@ const DestinationsChennai = () => {
 
     return (
         <div className="py-10">
-            <div className="flex items-center">
-                <h3 className="text-lg md:text-3xl font-semibold ">
-                    Popular Destinations in Chennai
-                </h3>
-                <MdKeyboardArrowRight size={24} className="ml-1" />
+            <div className='flex justify-between items-center'>
+                <div className="flex items-center">
+                    <h3 className="text-lg md:text-3xl font-semibold ">
+                        Popular Destinations in Chennai
+                    </h3>
+                    <MdKeyboardArrowRight size={24} className="ml-1" />
+                </div>
+                <div className='flex gap-1'>
+                    <FaChevronLeft />
+                    <FaChevronRight />
+                </div>
             </div>
 
             <div

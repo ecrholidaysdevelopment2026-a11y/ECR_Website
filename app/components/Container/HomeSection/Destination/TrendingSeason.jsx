@@ -5,6 +5,7 @@ import Villa11 from "@/app/assets/villaImg11.png";
 import Villa12 from "@/app/assets/villaImg12.png";
 import VillaCard from '@/app/common/VillaCard';
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const TrendingSeason = () => {
     const villas = [
@@ -46,11 +47,17 @@ const TrendingSeason = () => {
 
     return (
         <div className="py-5 md:py-10">
-            <div className="flex items-center">
-                <h3 className="text-lg md:text-3xl font-semibold px-2">
-                    Trending this season
-                </h3>
-                <MdKeyboardArrowRight size={24} className="ml-1" />
+            <div className='flex justify-between items-center'>
+                <div className="flex items-center">
+                    <h3 className="text-lg md:text-3xl font-semibold ">
+                        Trending this season
+                    </h3>
+                    <MdKeyboardArrowRight size={24} className="ml-1" />
+                </div>
+                <div className='flex gap-1'>
+                    <FaChevronLeft />
+                    <FaChevronRight />
+                </div>
             </div>
 
             <div

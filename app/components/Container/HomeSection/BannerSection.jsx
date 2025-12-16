@@ -21,11 +21,11 @@ export default function BannerSection() {
                 </div>
             </div>
             <div
-                className="bg-white/95 shadow-xl rounded-3xl p-4 flex-col md:flex-row items-center justify-between gap-4 md:gap-3 w-full md:w-auto backdrop-blur-md hidden md:flex"
+                className="bg-white/95 shadow-xl rounded-full p-3 flex-col md:flex-row items-center justify-between gap-4 md:gap-3 w-full md:w-auto backdrop-blur-md hidden md:flex"
             >
                 <div className="flex items-center gap-3 w-full md:w-auto md:border-r md:pr-5">
                     <div className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center text-white text-lg">
-                        <FiMapPin />
+                        <FiMapPin className="text-black" />
                     </div>
                     <div className="flex flex-col text-left w-full">
                         <p className="text-xs text-gray-500">Where</p>
@@ -38,7 +38,7 @@ export default function BannerSection() {
                 </div>
                 <div className="flex items-center gap-3 w-full md:w-auto md:border-r md:px-5">
                     <div className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center text-white text-lg">
-                        <FiCalendar />
+                        <FiCalendar className="text-black" />
                     </div>
                     <div className="text-left">
                         <p className="text-xs text-gray-500">When</p>
@@ -47,14 +47,14 @@ export default function BannerSection() {
                 </div>
                 <div className="flex items-center gap-3 w-full md:w-auto md:px-5">
                     <div className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center text-white text-lg">
-                        <FiUser />
+                        <FiUser className="text-black" />
                     </div>
                     <div className="text-left">
                         <p className="text-xs text-gray-500">Who</p>
                         <p className="text-sm text-gray-800">Add Guests</p>
                     </div>
                 </div>
-                <button className="w-full md:w-20 h-12 bg-[#2c2c2c] rounded-full flex items-center justify-center text-white text-xl">
+                <button className="w-full md:w-20 h-10 bg-[#2c2c2c] rounded-full flex items-center justify-center text-white text-xl">
                     <FiSearch />
                 </button>
             </div>

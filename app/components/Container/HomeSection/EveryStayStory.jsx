@@ -12,9 +12,9 @@ export default function EveryStayStory() {
 
     const cards = [
         { id: 1, img: "https://www.w3schools.com/html/mov_bbb.mp4", tag: "Sample 1" },
-        { id: 2, img: "https://sample-videos.com/video123/mp4/480/big_buck_bunny_480p_5mb.mp4", tag: "Sample 2" },
+        { id: 2, img: "https://www.w3schools.com/html/mov_bbb.mp4", tag: "Sample 2" },
         { id: 3, img: "https://filesamples.com/samples/video/mp4/sample_640x360.mp4", tag: "Sample 3" },
-        { id: 4, img: "https://sample-videos.com/video321/mp4/480/sample_1mb.mp4", tag: "Sample 4" },
+        { id: 4, img: "https://www.w3schools.com/html/mov_bbb.mp4", tag: "Sample 4" },
         { id: 5, img: "https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4", tag: "Sample 5" },
     ];
 

@@ -24,19 +24,19 @@ export default function Header() {
                         quality={100}
                     />
                 </div>
-                <div className="hidden md:flex items-center gap-8">
-                    <div className="flex items-center gap-2 text-[15px] text-gray-800 font-medium">
-                        <FiPhoneCall className="text-black" />
-                        Call to Book +91 94986 56273
-                    </div>
-                    <Link href="#" className="hover:text-[#AE7F42] transition">
-                        Partner with Us
-                    </Link>
-                    <Link href="#" className="hover:text-[#AE7F42] transition">
-                        Become a Member
-                    </Link>
-                </div>
                 <div className="flex items-center gap-4">
+                    <div className="hidden md:flex items-center gap-8 text_inter ">
+                        <div className="flex items-center gap-2 text-[14px] text-gray-800 font-semibold">
+                            <FiPhoneCall className="text-black" />
+                            Call to Book +91 94986 56273
+                        </div>
+                        <Link href="#" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
+                            Partner with Us
+                        </Link>
+                        <Link href="#" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
+                            Become a Member
+                        </Link>
+                    </div>
                     <FaUserCircle className="text-[#B78E54] w-8 h-8" />
                     <button className="md:hidden" onClick={toggleMenu}>
                         <HiMenu className="text-3xl text-[#B78E54]" />

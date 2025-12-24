@@ -1,8 +1,8 @@
 "use client";
-import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import CustomImage from "./Image";
 
 export default function VillaCard({
     title,
@@ -35,7 +35,7 @@ export default function VillaCard({
                         className="absolute inset-0 w-full h-full"
                     >
                         <div className="relative w-full h-full">
-                            <Image
+                            <CustomImage
                                 src={normalizedImages[currentIndex]}
                                 alt={title}
                                 fill
@@ -68,7 +68,7 @@ export default function VillaCard({
                 </p>
                 <div className="flex items-center text-gray-700 text-sm">
                     <FaStar className="text-yellow-500 mr-1" size={12} />
-                    {rating}
+                    {rating || 4.9}
                 </div>
             </div>
         </div>

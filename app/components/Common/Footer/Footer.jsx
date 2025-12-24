@@ -88,7 +88,7 @@ const Footer = () => {
                             © {new Date().getFullYear()} ECR Holidays. All rights reserved.
                         </p>
                         <p>
-                            Deeptify WEBROAD P.O.110
+                            ECR Holidays
                         </p>
                     </div>
                 </div>

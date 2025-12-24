@@ -1,82 +1,82 @@
-import React from 'react';
-import Villa9 from "@/app/assets/villaImg9.png";
-import Villa10 from "@/app/assets/villaImg10.png";
-import Villa11 from "@/app/assets/villaImg11.png";
-import Villa12 from "@/app/assets/villaImg12.png";
-import VillaCard from '@/app/common/VillaCard';
+"use client";
+import React, { useEffect, useState } from "react";
+import VillaCard from "@/app/common/VillaCard";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { fetchFeaturedVillas } from "@/app/store/slice/villaSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+const ITEMS_PER_PAGE = 4;
 
 const TrendingSeason = () => {
-    const villas = [
-        {
-            id: 1,
-            title: "Luxury Villa One",
-            images: [Villa9, Villa10, Villa11],
-            price: 12000,
-            nights: 2,
-            rating: 4.5,
-            saleTag: "20% Off"
-        },
-        {
-            id: 2,
-            title: "Luxury Villa Two",
-            images: [Villa10, Villa11, Villa12],
-            price: 15000,
-            nights: 3,
-            rating: 4.8
-        },
-        {
-            id: 3,
-            title: "Luxury Villa Three",
-            images: [Villa11, Villa9, Villa12],
-            price: 10000,
-            nights: 1,
-            rating: 4.2,
-            saleTag: "10% Off"
-        },
-        {
-            id: 4,
-            title: "Luxury Villa Four",
-            images: [Villa12, Villa10, Villa11],
-            price: 18000,
-            nights: 4,
-            rating: 5.0
-        },
-    ];
+    const dispatch = useDispatch();
+    const { featured = [] } = useSelector((state) => state.villas);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        dispatch(fetchFeaturedVillas());
+    }, [dispatch]);
+
+    const handleNext = () => {
+        if (currentIndex + ITEMS_PER_PAGE < featured.length) {
+            setCurrentIndex((prev) => prev + ITEMS_PER_PAGE);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex((prev) => prev - ITEMS_PER_PAGE);
+        }
+    };
+
+    const visibleVillas = featured.slice(
+        currentIndex,
+        currentIndex + ITEMS_PER_PAGE
+    );
 
     return (
         <div className="py-5 md:py-10">
-            <div className='flex justify-between items-center'>
+            <div className="flex justify-between items-center ">
                 <div className="flex items-center">
-                    <h3 className="text-lg md:text-3xl font-semibold ">
+                    <h3 className="text-lg md:text-3xl font-semibold">
                         Trending this season
                     </h3>
                     <MdKeyboardArrowRight size={24} className="ml-1" />
                 </div>
-                <div className='flex gap-1'>
-                    <FaChevronLeft />
-                    <FaChevronRight />
+                <div className="flex gap-2">
+                    <button
+                        onClick={handlePrev}
+                        disabled={currentIndex === 0}
+                        className={`p-2 rounded-full 
+                            ${currentIndex === 0
+                                ? "bg-gray-200 cursor-not-allowed"
+                                : "bg-gray-100 hover:bg-gray-200"}`}
+                    >
+                        <FiChevronLeft size={18} />
+                    </button>
+                    <button
+                        onClick={handleNext}
+                        disabled={currentIndex + ITEMS_PER_PAGE >= featured.length}
+                        className={`p-2 rounded-full 
+                            ${currentIndex + ITEMS_PER_PAGE >= featured.length
+                                ? "bg-gray-200 cursor-not-allowed"
+                                : "bg-gray-100 hover:bg-gray-200"}`}
+                    >
+                        <FiChevronRight size={18} />
+                    </button>
                 </div>
             </div>
-
-            <div
-                className="
-          flex gap-4 overflow-x-auto  scrollbar-hide
-          lg:grid lg:grid-cols-4 lg:overflow-visible
-        "
-            >
-                {villas?.map((villa) => (
-                    <div key={villa.id} className="min-w-[260px] lg:min-w-0">
-                        <VillaCard
-                            title={villa.title}
-                            images={villa.images}
-                            price={villa.price}
-                            nights={villa.nights}
-                            rating={villa.rating}
-                            saleTag={villa.saleTag}
-                        />
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {visibleVillas?.map((villa) => (
+                    <VillaCard
+                        key={villa?._id}
+                        title={villa?.villaName}
+                        images={villa?.images?.villaGallery}
+                        price={villa?.price}
+                        nights={villa?.nights}
+                        rating={villa?.ratingAverage}
+                        saleTag={villa?.saleTag}
+                    />
                 ))}
             </div>
         </div>

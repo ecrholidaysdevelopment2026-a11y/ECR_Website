@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import productReducer from "./slice/product";
+import villaReducer from "./slice/villaSlice";
 const reducer = combineReducers({
-  product: productReducer,
+  villas: villaReducer,
 });
 export default reducer;

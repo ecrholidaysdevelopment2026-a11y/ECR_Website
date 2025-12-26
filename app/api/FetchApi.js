@@ -26,20 +26,24 @@ export const FetchApi = async ({
     clearTimeout(timeoutId);
     const contentType = response.headers.get("content-type");
     const rawText = await response.text();
-
     if (!response.ok) {
-      let json = rawText;
+      let json;
       try {
         json = JSON.parse(rawText);
-      } catch {}
+      } catch {
+        json = null;
+      }
 
       const errorMessage =
+        json?.data?.message || 
         json?.data?.errors ||
         json?.errors ||
         json?.message ||
         "Something went wrong";
+
       throw new Error(errorMessage);
     }
+
     return contentType?.includes("application/json")
       ? JSON.parse(rawText)
       : rawText;

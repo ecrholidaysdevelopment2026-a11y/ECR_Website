@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
 
   logging: {
-    // hide noisy warnings from Turbopack & baseline-browser-mapping
     warnings: false,
   },
 

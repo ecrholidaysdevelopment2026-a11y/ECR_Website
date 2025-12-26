@@ -5,16 +5,17 @@ export const searchVillas = createAsyncThunk(
   "villas/search",
   async (params, thunkAPI) => {
     try {
+      const queryString = params
+        ? "?" + new URLSearchParams(params).toString()
+        : "";
       const response = await FetchApi({
-        endpoint: "/user/villas/search",
+        endpoint: `/user/villas/search${queryString}`,
         method: "GET",
-        params,
       });
 
       if (response?.data?.success === false) {
-        return thunkAPI.rejectWithValue(response?.data?.errors);
+        return thunkAPI.rejectWithValue(response?.data?.data?.message);
       }
-
       return response?.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message || "Failed to search villas");
@@ -144,12 +145,16 @@ const villaSlice = createSlice({
     loading: false,
     error: null,
     message: null,
+    searchMsg: null,
+    searchError: null,
   },
   reducers: {
     clearVillaError(state) {
       state.error = null;
+      state.searchError = null;
     },
     clearVillaMessage(state) {
+      state.searchMsg = null;
       state.message = null;
     },
     clearWeeklyPrice(state) {
@@ -169,7 +174,7 @@ const villaSlice = createSlice({
       })
       .addCase(searchVillas.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Search failed";
+        state.searchError = action.payload || "Search failed";
       })
 
       .addCase(fetchFeaturedVillas.pending, (state) => {

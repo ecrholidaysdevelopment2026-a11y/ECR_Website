@@ -1,30 +1,31 @@
 import React from "react";
-import { FaGem, FaLeaf, FaGift, FaStar } from "react-icons/fa";
+import { FaGem, FaLeaf, FaGift, FaStar, FaSwimmingPool } from "react-icons/fa";
 import Luxury from "@/app/assets/luxury.png";
 import gold from "@/app/assets/gold.png";
 import Image from "next/image";
+import { MdPool, MdCurrencyRupee, MdGroups, MdOutlineHomeWork } from "react-icons/md";
 
 const LuxuryBegins = () => {
     const features = [
         {
             title: "Exceptional Luxury",
             description: "Luxury curated with warmth, care, and where every villa feels personal, intentional, and deeply comforting.",
-            icon: <FaGem className="text-yellow-500 w-6 h-6" />
+            icon: <MdOutlineHomeWork className="w-8 h-8" />
         },
         {
             title: "Sustainable Approach",
             description: "From glass bottles to bamboo and natural fabrics, thoughtful details for a conscious, comfortable, sustainable way to stay.",
-            icon: <FaLeaf className="text-green-500 w-6 h-6" />
+            icon: <MdPool className=" w-8 h-8" />
         },
         {
             title: "Signature Touches",
             description: "Thoughtful welcome gifts, personalised experiences, & parting surprises designed to leave a lasting impression.",
-            icon: <FaGift className="text-pink-500 w-6 h-6" />
+            icon: <MdCurrencyRupee className=" w-8 h-8" />
         },
         {
             title: "Exclusive Perks",
             description: "Enjoy handpicked offers, local experiences, and thoughtful perks designed to elevate every part of your stay.",
-            icon: <FaStar className="text-yellow-400 w-6 h-6" />
+            icon: <MdGroups className=" w-8 h-8" />
         },
     ];
 
@@ -49,14 +50,14 @@ const LuxuryBegins = () => {
                         </button>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-[#F3E9DC] p-6 rounded-xl shadow-lg 
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-[#F3E9DC] p-6 rounded-3xl shadow-lg 
                 w-full  mx-auto 
                 relative -mt-12 ">
                     {features?.map((feature, index) => (
                         <div key={index} className="flex flex-col items-start gap-2">
-                            <div className="bg-white p-3 rounded-lg shadow mt-10">{feature.icon}</div>
+                            <div className="mt-10">{feature.icon}</div>
                             <h3 className="font-semibold">{feature.title}</h3>
-                            <p className="text-gray-600 text-sm">{feature.description}</p>
+                            <p className=" text-sm">{feature.description}</p>
                         </div>
                     ))}
                 </div>

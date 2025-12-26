@@ -51,19 +51,20 @@ export default function EveryStayStory() {
                 modules={[Pagination]}
                 slidesPerView={1.1}
                 spaceBetween={20}
+
                 pagination={{ clickable: true }}
                 breakpoints={{
                     640: { slidesPerView: 1.6 },
                     1024: { slidesPerView: 3 },
                     1280: { slidesPerView: 4 },
-                    1536: { slidesPerView: 4.5 },
+                    1536: { slidesPerView: 4.2 },
                 }}
                 className="w-full swiper-custom"
             >
                 {cards?.map((card) => (
                     <SwiperSlide key={card.id}>
                         <div
-                            className="story-card relative  overflow-hidden shadow-md cursor-pointer mb-5 transition-all duration-300 ease-out hover:shadow-xl hover:scale-[1.02] group"
+                            className="story-card relative  overflow-hidden shadow-md cursor-pointer mb-13 transition-all duration-300 ease-out hover:shadow-xl hover:scale-[1.02] group"
                             onClick={() => handleVideoPlay(card.id)}
                         >
                             <div className="relative w-full h-72">

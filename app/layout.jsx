@@ -1,8 +1,10 @@
 import "./globals.css";
 import ReduxProvider from "./provider/ReduxProvider";
-import Footer from "./components/Common/Footer/Footer";
 import ConditionalHeader from "./common/ConditionalHeader";
 import Script from "next/script";
+import SmoothScrollProvider from "./common/SmoothScrollProvider";
+import ConditionalFooter from "./common/ConditionalFooter";
+import ToastProvider from "./common/ToastProvider";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
@@ -34,6 +36,7 @@ const schemaData = {
   ],
 };
 
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -49,9 +52,12 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning={true}>
         <ReduxProvider>
-          <ConditionalHeader />
-          <main>{children}</main>
-          <Footer />
+          <SmoothScrollProvider>
+            <ConditionalHeader />
+            <main>{children}</main>
+            <ConditionalFooter />
+            <ToastProvider />
+          </SmoothScrollProvider>
         </ReduxProvider>
       </body>
     </html>

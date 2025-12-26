@@ -27,16 +27,17 @@ export default function BannerSection() {
     const totalGuests = adults + children;
 
     const handleSearch = () => {
-        if (!destination.trim()) return;
-
-        router.push(
-            `/search?destination=${encodeURIComponent(destination)}
-      &start=${dateRange[0].startDate.toISOString()}
-      &end=${dateRange[0].endDate.toISOString()}
-      &guests=${totalGuests}
-      &adults=${adults}
-      &children=${children}`
-        );
+        const searchData = {
+            destination,
+            checkIn: dateRange[0].startDate.toISOString(),
+            checkOut: dateRange[0].endDate.toISOString(),
+            guests: totalGuests,
+            adults,
+            children,
+        };
+        localStorage.setItem('searchParams', JSON.stringify(searchData));
+        const params = new URLSearchParams(searchData);
+        router.push(`/search?${params.toString()}`);
     };
 
     useClickOutside(guestRef, () => setShowGuestDropdown(false));
@@ -61,7 +62,10 @@ export default function BannerSection() {
 
                 {mobilePopup && (
                     <div className="fixed inset-0 mt-20 z-50 flex justify-center p-4">
-                        <div className="bg-white w-full max-w-md rounded-xl p-6 relative h-[90vh] overflow-auto">
+                        <div
+                            className="bg-white w-full max-w-md rounded-xl p-6 relative h-[90vh] overflow-auto"
+                            data-lenis-prevent
+                        >
                             <button
                                 className="absolute top-4 right-4 text-xl"
                                 onClick={() => setMobilePopup(false)}

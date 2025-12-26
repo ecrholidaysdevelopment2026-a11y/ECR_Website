@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import Header from "../components/Common/Header/Header";
 export default function ConditionalHeader() {
     const pathname = usePathname();
-    if (pathname === "/") {
+    if (pathname === "/" || pathname === "/login" || pathname === "/register") {
         return null;
     }
     return <Header />;

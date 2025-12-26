@@ -18,5 +18,5 @@ if (typeof window !== "undefined") {
 export const persistConfig = {
   key: "root",
   storage: storage || noopStorage,
-  whitelist: ["auth", "register"],
+  whitelist: ["auth"],
 };

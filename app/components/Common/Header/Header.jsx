@@ -7,6 +7,7 @@ import { FiPhoneCall } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaUserCircle } from "react-icons/fa";
 import EcrLogo from "@/app/assets/ecr-logo.svg";
+import { useSelector } from "react-redux";
 
 export default function Header() {
     const [open, setOpen] = useState(false);

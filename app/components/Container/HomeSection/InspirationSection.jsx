@@ -32,7 +32,7 @@ export default function InspirationSection() {
     };
 
     return (
-        <section className="w-full mt-12 mb-20 px-4 md:px-20">
+        <section className="w-full mt-12 mb-20 px-3 md:px-30">
             <h2 className="text-2xl font-semibold text-center mb-8">
                 Get inspiration for your next trip
             </h2>

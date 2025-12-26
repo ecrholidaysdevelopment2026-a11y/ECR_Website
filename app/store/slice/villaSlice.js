@@ -133,6 +133,30 @@ export const fetchVillasByPuducherry = createAsyncThunk(
   }
 );
 
+export const fetchVillaVideos = createAsyncThunk(
+  "villas/fetchVillaVideos",
+  async (_, thunkAPI) => {
+    try {
+      const response = await FetchApi({
+        endpoint: "/user/villas/villaVideos",
+        method: "GET",
+      });
+
+      if (response?.data?.success === false) {
+        return thunkAPI.rejectWithValue(
+          response?.data?.errors || "Failed to fetch villa videos"
+        );
+      }
+
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.message || "Failed to fetch villa videos"
+      );
+    }
+  }
+);
+
 const villaSlice = createSlice({
   name: "villas",
   initialState: {
@@ -142,6 +166,7 @@ const villaSlice = createSlice({
     weeklyPrice: null,
     villasByChennai: [],
     villasByPuducherry: [],
+    villaVideos: [],
     loading: false,
     error: null,
     message: null,
@@ -233,6 +258,18 @@ const villaSlice = createSlice({
         state.villasByPuducherry = action.payload?.villas || action.payload;
       })
       .addCase(fetchVillasByPuducherry.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(fetchVillaVideos.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchVillaVideos.fulfilled, (state, action) => {
+        state.loading = false;
+        state.villaVideos = action.payload || action.payload || [];
+      })
+      .addCase(fetchVillaVideos.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

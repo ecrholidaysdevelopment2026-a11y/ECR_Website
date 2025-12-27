@@ -10,7 +10,6 @@ import useClickOutside from "@/app/utils/useClickOutside";
 
 export default function BannerSection() {
     const router = useRouter();
-
     const [destination, setDestination] = useState("");
     const [showCalendar, setShowCalendar] = useState(false);
     const [mobilePopup, setMobilePopup] = useState(false);

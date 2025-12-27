@@ -59,7 +59,7 @@ const RegisterSection = () => {
                     className="absolute inset-0 z-0 bg-cover bg-center"
                     style={{ backgroundImage: `url(${loginBg.src})` }}
                 >
-                    <div className="absolute inset-0 backdrop-blur-sm" />
+                    <div className="absolute inset-0 " />
                 </div>
                 <div className="relative z-10 w-full max-w-4xl flex flex-col md:flex-row bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden  shadow-2xl m-4 lg:h-[450px]">
                     <div className="hidden md:block md:w-1/2 relative">

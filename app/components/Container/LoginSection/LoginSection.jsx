@@ -52,13 +52,13 @@ const LoginSection = () => {
                 className="absolute inset-0 z-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${loginBg.src})` }}
             >
-                <div className="absolute inset-0 backdrop-blur-sm" />
+                <div className="absolute inset-0 " />
             </div>
 
             <div className="relative z-10 w-full max-w-4xl flex flex-col md:flex-row bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl m-4 lg:h-[450px]">
                 <div className="hidden md:block md:w-1/2 relative">
                     <Image src={sideImg} alt="Login Preview" fill priority className="object-cover" />
-                    <div className="absolute inset-0 bg-linear-to-r from-transparent to-black/40" />
+                    <div className="absolute inset-0 bg-linear-to-r from-transparent" />
                 </div>
 
                 <div className="w-full md:w-1/2 p-8 md:px-12 flex flex-col justify-center text-white">

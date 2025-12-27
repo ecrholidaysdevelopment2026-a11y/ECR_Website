@@ -108,3 +108,10 @@ body {
   transform: scale(0.95);
   opacity: 0.85;
 }
+
+
+.pe_signin_button button {
+  background-color: #000 !important;
+  color: white !important;
+  border-radius: 8px !important;
+}

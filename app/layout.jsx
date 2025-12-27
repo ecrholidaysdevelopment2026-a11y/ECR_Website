@@ -5,6 +5,7 @@ import Script from "next/script";
 import SmoothScrollProvider from "./common/SmoothScrollProvider";
 import ConditionalFooter from "./common/ConditionalFooter";
 import ToastProvider from "./common/ToastProvider";
+import PopupManager from "./common/PopupManager";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
@@ -54,6 +55,7 @@ export default function RootLayout({ children }) {
         <ReduxProvider>
           <SmoothScrollProvider>
             <ConditionalHeader />
+            <PopupManager />
             <main>{children}</main>
             <ConditionalFooter />
             <ToastProvider />

@@ -15,7 +15,30 @@ import { openPopup } from "@/app/store/slice/popupSlice";
 const LoginSection = () => {
     const dispatch = useDispatch();
     const router = useRouter();
-    const { message, error, loading } = useSelector((state) => state.auth);
+    const { message, error } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        const container = document.querySelector(".pe_signin_button");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        const script = document.createElement("script");
+        script.src = "https://www.phone.email/sign_in_button_v1.js";
+        script.async = true;
+
+        container.appendChild(script);
+
+        window.phoneEmailListener = function (userObj) {
+            if (userObj?.user_json_url) {
+                dispatch(loginUser({ user_json_url: userObj.user_json_url }));
+            }
+        };
+
+        return () => {
+            window.phoneEmailListener = null;
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         if (message) {
@@ -37,29 +60,47 @@ const LoginSection = () => {
             <div className="relative z-10 h-full flex items-center justify-center">
                 <div
                     className="
-            w-[90%] max-w-md p-8 rounded-2xl
-            bg-white/10 backdrop-blur-xl
-            border border-white/10
-            shadow-2xl text-white
-          "
+                        w-[90%] max-w-md p-8 rounded-2xl
+                        bg-white/10 backdrop-blur-xl
+                        border border-white/10
+                        shadow-2xl text-white
+                    "
                 >
-                    <h2 className="text-3xl font-semibold mb-2">Welcome Back</h2>
+                    <h2 className="text-3xl font-semibold mb-2">
+                        Welcome Back
+                    </h2>
                     <p className="text-white/80 mb-6">
                         Login to continue your booking
                     </p>
 
+                    {/* ✅ CUSTOM BUTTON */}
                     <button
-                        disabled={loading}
-                        onClick={() => dispatch(loginUser())}
+                        type="button"
+                        onClick={() => {
+                            const btn = document.querySelector(
+                                ".pe_signin_button button"
+                            );
+                            if (btn) btn.click();
+                        }}
                         className="
-              w-full py-3 rounded-lg font-semibold
-              bg-black/70 hover:bg-black
-              transition duration-200
-              disabled:opacity-50
-            "
+                            w-full py-3 rounded-lg font-semibold
+                            bg-black/70 hover:bg-black
+                            transition duration-200
+                            text-white
+                        "
                     >
-                        {loading ? "Logging in..." : "Login"}
+                        Login
                     </button>
+
+                    {/* ✅ HIDDEN PHONE.EMAIL BUTTON (REQUIRED) */}
+                    <div
+                        className="pe_signin_button hidden"
+                        data-client-id="18764793523090256493"
+                        data-button-text="Login"
+                        data-button-size="large"
+                        data-button-theme="dark"
+                        data-button-radius="8"
+                    />
 
                     <button
                         type="button"

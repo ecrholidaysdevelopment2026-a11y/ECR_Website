@@ -195,7 +195,7 @@ const villaSlice = createSlice({
       })
       .addCase(searchVillas.fulfilled, (state, action) => {
         state.loading = false;
-        state.searchResults = action.payload?.villas || [];
+        state.searchResults = action.payload || [];
       })
       .addCase(searchVillas.rejected, (state, action) => {
         state.loading = false;

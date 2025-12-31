@@ -1,14 +1,14 @@
 'use client';
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiMapPin, FiCalendar, FiUser, FiSearch, FiX } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { DateRange } from "react-date-range";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import useClickOutside from "@/app/utils/useClickOutside";
 
-export default function BannerSection() {
+export default function BannerSection({ initialData = null }) {
     const router = useRouter();
     const [destination, setDestination] = useState("");
     const [showCalendar, setShowCalendar] = useState(false);
@@ -16,6 +16,7 @@ export default function BannerSection() {
     const [showGuestDropdown, setShowGuestDropdown] = useState(false);
     const guestRef = useRef(null);
     const calendarRef = useRef(null);
+    const pathname = usePathname();
 
     const [dateRange, setDateRange] = useState([
         { startDate: new Date(), endDate: new Date(), key: "selection" }
@@ -24,6 +25,23 @@ export default function BannerSection() {
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
+
+    useEffect(() => {
+        if (!initialData) return;
+        setDestination(initialData.destination || "");
+        if (initialData.checkIn && initialData.checkOut) {
+            setDateRange([
+                {
+                    startDate: new Date(initialData.checkIn),
+                    endDate: new Date(initialData.checkOut),
+                    key: "selection",
+                },
+            ]);
+        }
+        setAdults(Number(initialData.adults || 1));
+        setChildren(Number(initialData.children || 0));
+    }, [initialData]);
+
 
     const handleSearch = () => {
         const searchData = {
@@ -34,20 +52,27 @@ export default function BannerSection() {
             adults,
             children,
         };
-        localStorage.setItem('searchParams', JSON.stringify(searchData));
-        const params = new URLSearchParams(searchData);
-        router.push(`/search?${params.toString()}`);
+        localStorage.setItem("searchParams", JSON.stringify(searchData));
+        const queryString = "?" + new URLSearchParams(searchData).toString();
+        if (pathname === "/search") {
+            router.replace(`/search${queryString}`);
+        } else {
+            router.push(`/search${queryString}`);
+        }
     };
+
 
     useClickOutside(guestRef, () => setShowGuestDropdown(false));
     useClickOutside(calendarRef, () => setShowCalendar(false));
 
-
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
-            <h1 className="text-3xl md:text-4xl font-semibold text-black mb-3 mt-10">
-                Entire place, just for you
-            </h1>
+            {
+                pathname === "/" &&
+                <h1 className="text-3xl md:text-4xl font-semibold text-black mb-3 mt-10">
+                    Entire place, just for you
+                </h1>
+            }
             <div className="md:hidden w-full max-w-md mx-auto">
                 <div
                     className="flex items-center gap-3 border rounded-full p-3 bg-white shadow-md cursor-pointer"
@@ -58,7 +83,6 @@ export default function BannerSection() {
                         {destination || "Where are you going?"}
                     </p>
                 </div>
-
                 {mobilePopup && (
                     <div className="fixed inset-0 mt-20 z-50 flex justify-center p-4">
                         <div
@@ -71,7 +95,6 @@ export default function BannerSection() {
                             >
                                 <FiX />
                             </button>
-
                             <h2 className="text-lg font-semibold mb-4">Where to?</h2>
                             <input
                                 type="text"
@@ -204,7 +227,6 @@ export default function BannerSection() {
                         <p className="text-xs text-gray-500">Who</p>
                         <p className="text-sm">{totalGuests} Guests</p>
                     </div>
-
                     {showGuestDropdown && (
                         <div
                             ref={guestRef}
@@ -251,7 +273,6 @@ export default function BannerSection() {
                                     </button>
                                 </div>
                             </div>
-
                             <button
                                 onClick={() => setShowGuestDropdown(false)}
                                 className="mt-4 w-full bg-[#2c2c2c] text-white py-2 rounded-lg"

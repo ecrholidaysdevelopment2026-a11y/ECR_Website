@@ -157,12 +157,30 @@ export const fetchVillaVideos = createAsyncThunk(
   }
 );
 
+export const getVillaBySlug = createAsyncThunk(
+  "villa/getBySlug",
+  async (slug, thunkAPI) => {
+    const token = thunkAPI.getState()?.auth?.accessToken;
+    try {
+      const response = await FetchApi({
+        endpoint: `/user/villas/${slug}`,
+        method: "GET",
+        token,
+      });
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || "Failed to fetch villa");
+    }
+  }
+);
+
 const villaSlice = createSlice({
   name: "villas",
   initialState: {
     searchResults: [],
     featured: [],
     popular: [],
+    selectedVilla: {},
     weeklyPrice: null,
     villasByChennai: [],
     villasByPuducherry: [],
@@ -270,6 +288,18 @@ const villaSlice = createSlice({
         state.villaVideos = action.payload || action.payload || [];
       })
       .addCase(fetchVillaVideos.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getVillaBySlug.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getVillaBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedVilla = action.payload;
+      })
+      .addCase(getVillaBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

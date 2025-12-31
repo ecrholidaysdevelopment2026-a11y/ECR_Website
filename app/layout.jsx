@@ -6,6 +6,7 @@ import SmoothScrollProvider from "./common/SmoothScrollProvider";
 import ConditionalFooter from "./common/ConditionalFooter";
 import ToastProvider from "./common/ToastProvider";
 import PopupManager from "./common/PopupManager";
+import "leaflet/dist/leaflet.css";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),

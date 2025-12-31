@@ -6,7 +6,6 @@ import {
     FaMapMarkerAlt,
     FaWifi,
     FaSwimmingPool,
-    FaParking,
 } from "react-icons/fa";
 import { GiCampfire } from "react-icons/gi";
 import { FaUserTie } from "react-icons/fa";
@@ -15,6 +14,7 @@ import MapPicker from "@/app/common/MapPicker";
 import { useDispatch, useSelector } from "react-redux";
 import { getVillaBySlug } from "@/app/store/slice/villaSlice";
 import CustomImage from "@/app/common/Image";
+import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 
 const services = [
     {
@@ -87,6 +87,11 @@ const VillaDetailsSection = ({ slug }) => {
 
     const displayPrice = isOffer && offerPrice ? offerPrice : price;
     const originalPrice = isOffer ? price : null;
+
+    const mapPosition = getLatLngFromMapLink(
+        selectedVilla?.locationId?.mapLink
+    );
+
 
     return (
         <MainLayout className="px-4 py-6 md:px-8 lg:px-30">
@@ -264,7 +269,7 @@ const VillaDetailsSection = ({ slug }) => {
                     <div className="mt-10 md:hidden">
                         <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                             <MapPicker
-                                initialPosition={villaLocation}
+                                initialPosition={mapPosition}
                                 isInput={false}
                             />
                         </div>
@@ -344,7 +349,7 @@ const VillaDetailsSection = ({ slug }) => {
                         <div className="rounded-xl overflow-hidden border border-gray-300">
                             <div className="h-[300px]">
                                 <MapPicker
-                                    initialPosition={villaLocation}
+                                    initialPosition={mapPosition}
                                     isInput={false}
                                 />
                             </div>

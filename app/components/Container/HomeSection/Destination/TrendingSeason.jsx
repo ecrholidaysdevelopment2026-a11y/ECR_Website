@@ -76,6 +76,7 @@ const TrendingSeason = () => {
                         nights={villa?.nights}
                         rating={villa?.ratingAverage}
                         saleTag={villa?.saleTag}
+                        slug={villa?.slug}
                     />
                 ))}
             </div>

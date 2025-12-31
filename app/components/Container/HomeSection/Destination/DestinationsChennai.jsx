@@ -43,7 +43,6 @@ const DestinationsChennai = () => {
                     </h3>
                     <MdKeyboardArrowRight size={24} className="ml-1" />
                 </div>
-
                 <div className="flex gap-2">
                     <button
                         onClick={handlePrev}
@@ -78,6 +77,7 @@ const DestinationsChennai = () => {
                         nights={villa?.nights}
                         rating={villa?.ratingAverage}
                         saleTag={villa?.saleTag}
+                        slug={villa?.slug}
                     />
                 ))}
             </div>

@@ -18,7 +18,7 @@ export default function Header() {
     return (
         <header className="w-full sticky top-0 z-50 bg-transparent">
             <div className=" mx-auto px-3 md:px-30 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <Link href={"/"} className="flex items-center gap-3">
                     <Image
                         src={EcrLogo}
                         alt="ECR Holidays"
@@ -27,7 +27,7 @@ export default function Header() {
                         quality={100}
                         className="w-24 h-auto"
                     />
-                </div>
+                </Link>
                 <div className="flex items-center gap-4">
                     <div className="hidden lg:flex items-center gap-8 text_inter ">
                         <div className="flex items-center gap-2 text-[14px] text-gray-800 font-semibold">

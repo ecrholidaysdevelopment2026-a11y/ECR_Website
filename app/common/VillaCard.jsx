@@ -1,6 +1,6 @@
 "use client";
 import { FaStar } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomImage from "./Image";
 import { useRouter } from "next/navigation";
@@ -17,12 +17,31 @@ export default function VillaCard({
     const normalizedImages = Array.isArray(images) ? images : images ? [images] : [];
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
-    if (normalizedImages?.length === 0) return null;
+    const intervalRef = useRef(null);
+    const router = useRouter();
+
+    if (normalizedImages.length === 0) return null;
+
     const handleDotClick = (index) => {
         setDirection(index > currentIndex ? 1 : -1);
         setCurrentIndex(index);
     };
-    const router = useRouter()
+
+    const startAutoScroll = () => {
+        if (intervalRef.current || normalizedImages.length <= 1) return;
+
+        intervalRef.current = setInterval(() => {
+            setDirection(1);
+            setCurrentIndex((prev) =>
+                prev === normalizedImages.length - 1 ? 0 : prev + 1
+            );
+        }, 2000);
+    };
+
+    const stopAutoScroll = () => {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+    };
 
     const handleNavigate = () => {
         router.push(`/villa/${slug}`);
@@ -30,7 +49,10 @@ export default function VillaCard({
 
     return (
         <div className="w-full rounded-2xl py-3 cursor-pointer transition">
-            <div className="relative w-full h-40 rounded-xl overflow-hidden group"
+            <div
+                className="relative w-full h-40 rounded-xl overflow-hidden group"
+                onMouseEnter={startAutoScroll}
+                onMouseLeave={stopAutoScroll}
                 onClick={handleNavigate}
             >
                 <AnimatePresence initial={false} custom={direction}>
@@ -43,15 +65,12 @@ export default function VillaCard({
                         transition={{ duration: 0.4 }}
                         className="absolute inset-0 w-full h-full"
                     >
-                        <div className="relative w-full h-full">
-                            <CustomImage
-                                src={normalizedImages[currentIndex]}
-                                alt={title}
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-cover"
-                            />
-                        </div>
+                        <CustomImage
+                            src={normalizedImages[currentIndex]}
+                            alt={title}
+                            fill
+                            className="object-cover"
+                        />
                     </motion.div>
                 </AnimatePresence>
                 {saleTag && (
@@ -61,16 +80,19 @@ export default function VillaCard({
                 )}
             </div>
             <div className="flex justify-center gap-1 mt-3">
-                {normalizedImages?.map((_, index) => (
+                {normalizedImages.map((_, index) => (
                     <span
                         key={index}
                         onClick={() => handleDotClick(index)}
-                        className={`w-2 h-2 rounded-full cursor-pointer ${currentIndex === index ? "bg-black" : "bg-gray-300"
-                            }`}
-                    ></span>
+                        className={`w-2 h-2 rounded-full cursor-pointer ${
+                            currentIndex === index ? "bg-black" : "bg-gray-300"
+                        }`}
+                    />
                 ))}
             </div>
-            <h3 className="mt-2 text-[15px] font-semibold text-gray-800 truncate">{title}</h3>
+            <h3 className="mt-2 text-[15px] font-semibold text-gray-800 truncate">
+                {title}
+            </h3>
             <div className="flex justify-between items-center mt-1">
                 <p className="text-gray-600 text-sm">
                     ₹{price.toLocaleString()} for {nights} night

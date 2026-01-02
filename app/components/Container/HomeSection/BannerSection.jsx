@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useRef, useState } from "react";
 import { FiMapPin, FiCalendar, FiUser, FiSearch, FiX } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
@@ -14,17 +13,18 @@ export default function BannerSection({ initialData = null }) {
     const [showCalendar, setShowCalendar] = useState(false);
     const [mobilePopup, setMobilePopup] = useState(false);
     const [showGuestDropdown, setShowGuestDropdown] = useState(false);
+    const [showDestination, setShowDestination] = useState(false);
     const guestRef = useRef(null);
     const calendarRef = useRef(null);
     const pathname = usePathname();
-
     const [dateRange, setDateRange] = useState([
         { startDate: new Date(), endDate: new Date(), key: "selection" }
     ]);
-
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
+    const destinationRef = useRef(null);
+
 
     useEffect(() => {
         if (!initialData) return;
@@ -90,20 +90,34 @@ export default function BannerSection({ initialData = null }) {
                             data-lenis-prevent
                         >
                             <button
-                                className="absolute top-4 right-4 text-xl"
+                                className="absolute top-4 right-4 text-xl text-gray-600 hover:text-black"
                                 onClick={() => setMobilePopup(false)}
                             >
                                 <FiX />
                             </button>
                             <h2 className="text-lg font-semibold mb-4">Where to?</h2>
-                            <input
-                                type="text"
-                                value={destination}
-                                onChange={(e) => setDestination(e.target.value)}
-                                placeholder="Search destination"
-                                className="w-full p-3 mb-4 border rounded-md"
-                            />
-
+                            <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
+                                {[
+                                    { label: "Chennai", value: "chennai" },
+                                    { label: "Pondicherry", value: "puducherry" },
+                                ].map((item) => (
+                                    <button
+                                        key={item.value}
+                                        onClick={() => {
+                                            setDestination(item.value);
+                                            setMobilePopup(false);
+                                        }}
+                                        className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
+                                    >
+                                        <div className="w-10 h-10 rounded-full border flex items-center justify-center text-gray-600">
+                                            <FiMapPin size={18} />
+                                        </div>
+                                        <span className="text-base font-medium text-gray-900">
+                                            {item.label}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
                             <h2 className="text-lg font-semibold mb-4">When</h2>
                             <DateRange
                                 editableDateInputs
@@ -169,21 +183,50 @@ export default function BannerSection({ initialData = null }) {
                 )}
             </div>
             <div className="bg-white shadow-xl rounded-full p-3 hidden md:flex items-center gap-3">
-                <div className="flex items-center gap-3 border-r pr-5">
+                <div className="flex items-center gap-3 border-r pr-5 relative" ref={destinationRef}>
                     <div className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center">
                         <FiMapPin />
                     </div>
-                    <div className="text-left">
+                    <div
+                        className="text-left cursor-pointer"
+                        onClick={() => setShowDestination(!showDestination)}
+                    >
                         <p className="text-xs text-gray-500">Where</p>
-                        <input
-                            type="text"
-                            value={destination}
-                            onChange={(e) => setDestination(e.target.value)}
-                            placeholder="Search destination"
-                            className="outline-none bg-transparent text-sm"
-                        />
+                        <p className={`text-sm ${destination ? "text-black font-medium" : "text-gray-400"}`}>
+                            {destination
+                                ? destination === "chennai"
+                                    ? "Chennai"
+                                    : "Pondicherry"
+                                : "Select destination"}
+                        </p>
                     </div>
+
+                    {showDestination && (
+                        <div className="absolute top-14 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-hidden">
+                            {[
+                                { label: "Chennai", value: "chennai" },
+                                { label: "Pondicherry", value: "puducherry" },
+                            ].map((item) => (
+                                <button
+                                    key={item.value}
+                                    onClick={() => {
+                                        setDestination(item.value);
+                                        setShowDestination(false);
+                                    }}
+                                    className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
+                                >
+                                    <div className="w-10 h-10 rounded-full border flex items-center justify-center text-gray-600">
+                                        <FiMapPin size={18} />
+                                    </div>
+                                    <span className="text-base font-medium text-gray-900">
+                                        {item.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
+
                 <div className="flex items-center gap-3 border-r px-5 relative">
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"

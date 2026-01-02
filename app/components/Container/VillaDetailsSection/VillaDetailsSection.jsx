@@ -4,8 +4,6 @@ import React, { useEffect } from "react";
 import {
     FaStar,
     FaMapMarkerAlt,
-    FaWifi,
-    FaSwimmingPool,
 } from "react-icons/fa";
 import { GiCampfire } from "react-icons/gi";
 import { FaUserTie } from "react-icons/fa";
@@ -15,6 +13,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getVillaBySlug } from "@/app/store/slice/villaSlice";
 import CustomImage from "@/app/common/Image";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
+import { getAmenityIcon } from "@/app/utils/amenityIcons";
+import { FiCalendar, FiChevronDown } from "react-icons/fi";
+import Link from "next/link";
 
 const services = [
     {
@@ -34,6 +35,14 @@ const services = [
     },
 ];
 
+
+const inputDummyData = {
+    totalPrice: 6074,
+    nights: 2,
+    checkIn: "3/01/2026",
+    checkOut: "3/01/2026",
+    guests: "1 Adult, 2 Children",
+}
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch()
@@ -58,11 +67,7 @@ const VillaDetailsSection = ({ slug }) => {
         images,
         locationId,
         overview,
-        highlights,
-        attributes,
-        surrounding,
         amenities,
-        faq,
         ratingAverage,
         price,
         isOffer,
@@ -72,11 +77,6 @@ const VillaDetailsSection = ({ slug }) => {
         checkOutTime,
         map
     } = selectedVilla;
-
-    const villaLocation = {
-        lat: map?.latitude || 12.4244,
-        lng: map?.longitude || 75.7382,
-    };
 
     const displayRating = ratingAverage > 0 ? ratingAverage.toFixed(1) : "New";
 
@@ -96,9 +96,24 @@ const VillaDetailsSection = ({ slug }) => {
     return (
         <MainLayout className="px-4 py-6 md:px-8 lg:px-30">
             <p className="text-sm text-gray-500 mb-4 md:mb-6">
-                Home / Villas / {locationId?.locationName || "Location"} / {villaName}
+                <Link
+                    href="/"
+                    className="hover:text-black transition"
+                >
+                    Home
+                </Link>
+                {" / "}
+                <Link
+                    href="/search"
+                    className="hover:text-black transition"
+                >
+                    Villas
+                </Link>
+                {" / "}
+                {locationId?.locationName || "Location"}
+                {" / "}
+                {villaName}
             </p>
-
             <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
                 {allImages.length > 0 ? (
                     <>
@@ -169,41 +184,29 @@ const VillaDetailsSection = ({ slug }) => {
                             <FaMapMarkerAlt /> {locationId?.locationName || "Location"}
                         </span>
                     </div>
-
+                    <div className="w-full bg-white border-b border-t border-gray-300  py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src="https://i.pravatar.cc/100?img=12"
+                                    alt="Host"
+                                    className="w-10 h-10 rounded-full object-cover"
+                                />
+                                <p className="text-sm font-medium text-gray-800">
+                                    Sural Gaon, Mukteshwar
+                                </p>
+                            </div>
+                            <button className="px-4 py-2 text-sm font-medium rounded-full bg-gray-100 text-gray-900 hover:bg-gray-200 transition">
+                                Contact Host
+                            </button>
+                        </div>
+                    </div>
                     <h2 className="text-lg font-semibold mb-2">
                         About this property
                     </h2>
                     <p className="text-gray-600 leading-relaxed pb-5 border-b border-gray-300 mb-10">
                         {overview || "No description available."}
                     </p>
-                    {highlights && highlights.length > 0 && (
-                        <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Highlights</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {highlights?.map((highlight, index) => (
-                                    <span
-                                        key={index}
-                                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                                    >
-                                        {highlight}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {attributes && attributes?.length > 0 && (
-                        <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Property Details</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {attributes?.map((attr, index) => (
-                                    <div key={index} className="border p-3 rounded-lg">
-                                        <p className="text-sm text-gray-500">{attr.label}</p>
-                                        <p className="font-semibold">{attr.value}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                     <div className="mb-10 md:mb-12">
                         <h2 className="text-lg font-semibold mb-4 md:mb-6">Services</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -222,50 +225,25 @@ const VillaDetailsSection = ({ slug }) => {
                             ))}
                         </div>
                     </div>
-                    {surrounding && surrounding?.length > 0 && (
-                        <div className="mb-6">
-                            <h3 className="font-semibold mb-3">Surrounding Area</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {surrounding?.map((place, index) => (
-                                    <span
-                                        key={index}
-                                        className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm"
-                                    >
-                                        {place}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                     <div className="border-t border-gray-300 pt-8 md:pt-10">
                         <h2 className="text-lg font-semibold mb-4 md:mb-6">
                             Popular amenities
                         </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             {amenities?.map((item, i) => (
                                 <div
                                     key={i}
                                     className="flex items-center gap-3 text-sm"
                                 >
-                                    <span className="text-lg">{item.icon === "water" ? <FaWifi /> : item.icon === "pool" ? <FaSwimmingPool /> : null}</span>
+                                    <span className="text-lg">    {(() => {
+                                        const Icon = getAmenityIcon(item.icon);
+                                        return <Icon size={20} />;
+                                    })()}</span>
                                     <span>{item.name}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    {faq && faq.length > 0 && (
-                        <div className="mt-8 border-t border-gray-300 pt-8">
-                            <h2 className="text-lg font-semibold mb-4">Frequently Asked Questions</h2>
-                            <div className="space-y-4">
-                                {faq?.map((item, index) => (
-                                    <div key={index} className="border-b pb-4">
-                                        <h3 className="font-medium mb-2">{item.question}</h3>
-                                        <p className="text-gray-600 text-sm">{item.answer}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                     <div className="mt-10 md:hidden">
                         <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                             <MapPicker
@@ -309,42 +287,54 @@ const VillaDetailsSection = ({ slug }) => {
                 </div>
                 <div className="hidden lg:block">
                     <div className="sticky top-24 space-y-6">
-                        <div className="rounded-xl p-5 shadow-lg border border-gray-300">
-                            {originalPrice && (
-                                <p className="text-sm text-gray-500 line-through mb-1">
-                                    ₹{originalPrice} / night
-                                </p>
-                            )}
-                            <p className="text-xl font-semibold mb-3">
-                                ₹{displayPrice} <span className="text-sm font-normal text-gray-600">/ night</span>
-                            </p>
-                            {isOffer && (
-                                <p className="text-sm text-green-600 mb-3 font-medium">
-                                    Special offer available!
-                                </p>
-                            )}
-                            <div className="border border-gray-300 rounded-lg overflow-hidden mb-4">
-                                <div className="grid grid-cols-2">
-                                    <div className="p-3 border-r border-gray-300 text-sm">
-                                        <p className="font-medium">Check-in</p>
-                                        <p>{checkInTime || "12:00 PM"}</p>
+                        <div className="w-full max-w-md rounded-2xl border border-gray-300 shadow-lg p-4 bg-white">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-4 border-b">
+                                {["₹6,074", "₹5,074", "₹5,574", "₹6,074", "₹5,574"].map((price, i) => (
+                                    <div
+                                        key={i}
+                                        className={`min-w-[90px] text-center rounded-lg px-3 py-2 text-sm border 
+              ${i === 3 ? "border-blue-500 ring-2 ring-blue-500" : "border-gray-300"}
+            `}
+                                    >
+                                        <p className="text-xs text-gray-500">Tue,30</p>
+                                        <p className="font-semibold">{price}</p>
                                     </div>
-                                    <div className="p-3 text-sm">
-                                        <p className="font-medium">Check-out</p>
-                                        <p>{checkOutTime || "11:00 AM"}</p>
+                                ))}
+                            </div>
+                            <p className="text-2xl font-semibold mb-4">
+                                ₹{inputDummyData?.totalPrice.toLocaleString()}{" "}
+                                <span className="text-sm font-normal text-gray-600">
+                                    for {inputDummyData?.nights} nights
+                                </span>
+                            </p>
+                            <div className="border border-gray-300 rounded-xl overflow-hidden mb-4">
+                                <div className="grid grid-cols-2">
+                                    <div className="p-3 border-r border-gray-300">
+                                        <p className="text-xs text-gray-500 mb-1">Check In</p>
+                                        <div className="flex items-center justify-between text-sm font-medium">
+                                            <span>{checkInTime}</span>
+                                            <FiCalendar />
+                                        </div>
+                                    </div>
+                                    <div className="p-3">
+                                        <p className="text-xs text-gray-500 mb-1">Check Out</p>
+                                        <div className="flex items-center justify-between text-sm font-medium">
+                                            <span>{checkOutTime}</span>
+                                            <FiCalendar />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="p-3 border-t border-gray-300 text-sm">
-                                    <p className="font-medium">Max Guests</p>
-                                    <p>{maxGuests || 6} guests</p>
+                                <div className="p-3 border-t border-gray-300">
+                                    <p className="text-xs text-gray-500 mb-1">Guest</p>
+                                    <div className="flex items-center justify-between text-sm font-medium cursor-pointer">
+                                        <span>{maxGuests}</span>
+                                        <FiChevronDown />
+                                    </div>
                                 </div>
                             </div>
-                            <button className="w-full bg-[#4b2e2b] text-white py-3 rounded-lg font-medium hover:bg-[#3a241f] transition-colors">
+                            <button className="w-full bg-[#2b1a08] text-white py-3 rounded-full text-sm font-semibold hover:bg-[#1f1206] transition">
                                 Reserve
                             </button>
-                            <p className="text-center text-sm text-gray-500 mt-3">
-                                You won’t be charged yet
-                            </p>
                         </div>
                         <div className="rounded-xl overflow-hidden border border-gray-300">
                             <div className="h-[300px]">

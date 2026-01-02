@@ -9,14 +9,18 @@ import { FaUserCircle } from "react-icons/fa";
 import EcrLogo from "@/app/assets/ecr-logo.svg";
 import { useDispatch } from "react-redux";
 import { openPopup } from "@/app/store/slice/popupSlice";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+    const pathname = usePathname()
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const toggleMenu = () => setOpen(!open);
+    const path = pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/search"
 
     return (
-        <header className="w-full sticky top-0 z-50 bg-transparent">
+        <header className={`w-full sticky top-0 z-50 ${path ? "bg-transparent" : " bg-white shadow-sm"
+            } `}>
             <div className=" mx-auto px-3 md:px-30 py-4 flex items-center justify-between">
                 <Link href={"/"} className="flex items-center gap-3">
                     <Image

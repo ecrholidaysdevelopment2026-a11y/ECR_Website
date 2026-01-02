@@ -58,7 +58,6 @@ export const refreshToken = createAsyncThunk(
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
     const refreshToken = state?.auth?.refreshToken;
-
     try {
       const res = await FetchApi({
         endpoint: "/user/refresh",

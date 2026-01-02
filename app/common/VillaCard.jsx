@@ -80,13 +80,12 @@ export default function VillaCard({
                 )}
             </div>
             <div className="flex justify-center gap-1 mt-3">
-                {normalizedImages.map((_, index) => (
+                {normalizedImages.slice(0,3).map((_, index) => (
                     <span
                         key={index}
                         onClick={() => handleDotClick(index)}
-                        className={`w-2 h-2 rounded-full cursor-pointer ${
-                            currentIndex === index ? "bg-black" : "bg-gray-300"
-                        }`}
+                        className={`w-2 h-2 rounded-full cursor-pointer ${currentIndex === index ? "bg-black" : "bg-gray-300"
+                            }`}
                     />
                 ))}
             </div>

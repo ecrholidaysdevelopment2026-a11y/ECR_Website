@@ -4,11 +4,12 @@ import { FetchApi } from "../../api/FetchApi";
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
   async (_, thunkAPI) => {
+    const token = thunkAPI.getState()?.auth?.accessToken;
     try {
       const response = await FetchApi({
         endpoint: "/user/me",
         method: "GET",
-        token: true,
+        token,
       });
 
       if (response?.data?.success === false) {
@@ -27,12 +28,13 @@ export const fetchUserProfile = createAsyncThunk(
 export const updateUserProfile = createAsyncThunk(
   "user/updateProfile",
   async (payload, thunkAPI) => {
+    const token = thunkAPI.getState()?.auth?.accessToken;
     try {
       const response = await FetchApi({
         endpoint: "/user/update",
         method: "PATCH",
         body: payload,
-        token: true,
+        token,
       });
 
       if (response?.data?.success === false) {

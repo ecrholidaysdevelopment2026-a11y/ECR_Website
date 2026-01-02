@@ -5,6 +5,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchVillasByPuducherry } from "@/app/store/slice/villaSlice";
+import Link from "next/link";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -40,9 +41,11 @@ const DestinationsPudhucherry = () => {
         <div className="md:py-10">
             <div className="flex justify-between items-center ">
                 <div className="flex items-center">
-                    <h3 className="text-lg md:text-3xl font-semibold">
-                        Popular Destinations in Pudhucherry
-                    </h3>
+                    <Link href={"/search"}>
+                        <h3 className="text-lg md:text-3xl font-semibold">
+                            Popular Destinations in Pudhucherry
+                        </h3>
+                    </Link>
                     <MdKeyboardArrowRight size={24} className="ml-1" />
                 </div>
                 <div className="flex gap-2">

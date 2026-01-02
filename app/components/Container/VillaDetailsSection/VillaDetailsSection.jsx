@@ -139,6 +139,126 @@ const VillaDetailsSection = ({ slug }) => {
         ? Math.ceil((bookingData.checkOutDate - bookingData.checkInDate) / (1000 * 60 * 60 * 24))
         : 0;
 
+    const BookingCard = () => (
+        <div className="rounded-2xl border border-gray-300 shadow-lg p-5 bg-white">
+            {weeklyPrice?.length > 0 && (
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-6 border-b border-gray-200">
+                    {weeklyPrice.map(({ date, price }, i) => (
+                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-2 text-sm border border-gray-300">
+                            <p className="text-xs text-gray-500">
+                                {new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
+                            </p>
+                            <p className="font-medium">₹{price}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+            <div className="mb-6">
+                <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold">₹{displayPrice}</span>
+                    <span className="text-lg text-gray-600">/ night</span>
+                </div>
+                {isOffer && originalPrice && originalPrice > displayPrice && (
+                    <div className="mt-2 flex items-center gap-3">
+                        <span className="text-lg text-gray-500 line-through">₹{originalPrice}</span>
+                        <span className="bg-green-50 text-gray-400 text-xs font-semibold px-3 py-1 rounded-full">
+                            Original Price
+                        </span>
+                    </div>
+                )}
+            </div>
+            <div className="mb-5">
+                <DatePicker
+                    selected={bookingData.checkInDate}
+                    onChange={handleDateChange}
+                    startDate={bookingData.checkInDate}
+                    endDate={bookingData.checkOutDate}
+                    selectsRange
+                    inline
+                    minDate={new Date()}
+                />
+            </div>
+            <div className="border border-gray-300 rounded-xl overflow-hidden mb-5">
+                <div className="p-4 border-b border-gray-300 relative">
+                    <p className="text-xs text-gray-500 mb-1">Guests</p>
+                    <div
+                        className="flex items-center justify-between text-sm font-medium cursor-pointer"
+                        onClick={() => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: !prev.isGuestDropdownOpen }))}
+                    >
+                        <span>
+                            {bookingData.guestDetails.adults + bookingData.guestDetails.children} guest{(bookingData.guestDetails.adults + bookingData.guestDetails.children) > 1 ? 's' : ''}
+                        </span>
+                        <FiChevronDown />
+                    </div>
+                    {bookingData.isGuestDropdownOpen && (
+                        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-2 p-4">
+                            <div className="space-y-5">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <p className="font-medium">Adults</p>
+                                        <p className="text-sm text-gray-500">Ages 13 or above</p>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <button onClick={() => handleGuestChange('adults', 'decrement')} disabled={bookingData.guestDetails.adults <= 1} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
+                                        <span className="w-8 text-center">{bookingData.guestDetails.adults}</span>
+                                        <button onClick={() => handleGuestChange('adults', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
+                                    </div>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <p className="font-medium">Children</p>
+                                        <p className="text-sm text-gray-500">Ages 2-12</p>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <button onClick={() => handleGuestChange('children', 'decrement')} disabled={bookingData.guestDetails.children <= 0} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
+                                        <span className="w-8 text-center">{bookingData.guestDetails.children}</span>
+                                        <button onClick={() => handleGuestChange('children', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-4">Maximum {maxGuests} guests</p>
+                        </div>
+                    )}
+                </div>
+                <div className="grid grid-cols-2">
+                    <div className="p-4 border-r border-gray-300">
+                        <p className="text-xs text-gray-500 mb-1">Check In</p>
+                        <p className="text-sm font-medium">
+                            {bookingData.checkInDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{checkInTime}</p>
+                    </div>
+                    <div className="p-4">
+                        <p className="text-xs text-gray-500 mb-1">Check Out</p>
+                        <p className="text-sm font-medium">
+                            {bookingData.checkOutDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{checkOutTime}</p>
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-4 mb-6">
+                <div className="flex justify-between text-base">
+                    <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
+                    <span className="font-medium">₹{displayPrice * nights}</span>
+                </div>
+                <div className="border-t pt-4">
+                    <div className="flex justify-between text-lg font-semibold">
+                        <span>Total</span>
+                        <span>₹{calculateTotalPrice()}</span>
+                    </div>
+                </div>
+            </div>
+            <button
+                onClick={handleBooking}
+                disabled={loading || nights === 0}
+                className="w-full bg-[#2b1a08] text-white py-4 rounded-full font-semibold hover:bg-[#1f1206] transition disabled:opacity-50"
+            >
+                {loading ? 'Processing...' : 'Reserve'}
+            </button>
+        </div>
+    );
+
     return (
         <MainLayout className="px-4 py-6 md:px-8 lg:px-30 pb-24 lg:pb-6">
             <p className="text-sm text-gray-500 mb-4 md:mb-6">
@@ -191,16 +311,19 @@ const VillaDetailsSection = ({ slug }) => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                 <div className="lg:col-span-2">
                     <h1 className="text-xl md:text-2xl font-semibold mb-2">{villaName}</h1>
-                    <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm text-gray-600 mb-6">
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm ">
                         <span className="flex items-center gap-1">
-                            <FaStar className="text-yellow-500" /> {displayRating}
+                            {selectedVilla?.maxGuests} guests
                         </span>
-                        <span className="hidden md:inline">•</span>
-                        <span>{selectedVilla.reviews?.length || 0} reviews</span>
-                        <span className="hidden md:inline">•</span>
+                        <span>{selectedVilla?.bedrooms} bedroom</span>
+                        <span>{selectedVilla?.beds} bed</span>
                         <span className="flex items-center gap-1">
                             <FaMapMarkerAlt /> {locationId?.locationName || "Location"}
                         </span>
+                    </div>
+                    <div className=" mb-7">
+
+                        <span>* {selectedVilla.reviews?.length || 5} reviews</span>
                     </div>
                     <div className="w-full bg-white border-y border-gray-300 py-4 mb-10">
                         <div className="flex items-center justify-between">
@@ -276,232 +399,13 @@ const VillaDetailsSection = ({ slug }) => {
                             </div>
                         )}
                     </div>
-
                     <div className="lg:hidden mt-10">
-                        <div className="rounded-2xl border border-gray-300 shadow-lg p-5 bg-white">
-                            {weeklyPrice?.length > 0 && (
-                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-5 border-b border-gray-200">
-                                    {weeklyPrice.map(({ date, price }, i) => (
-                                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-2 text-sm border border-gray-300">
-                                            <p className="text-xs text-gray-500">
-                                                {new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
-                                            </p>
-                                            <p className="font-medium">₹{price}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                            <div className="mb-5">
-                                <DatePicker
-                                    selected={bookingData.checkInDate}
-                                    onChange={handleDateChange}
-                                    startDate={bookingData.checkInDate}
-                                    endDate={bookingData.checkOutDate}
-                                    selectsRange
-                                    inline
-                                    minDate={new Date()}
-                                />
-                            </div>
-                            <div className="border border-gray-300 rounded-xl overflow-hidden mb-5">
-                                <div className="p-4 border-b border-gray-300 relative">
-                                    <p className="text-xs text-gray-500 mb-1">Guests</p>
-                                    <div
-                                        className="flex items-center justify-between text-sm font-medium cursor-pointer"
-                                        onClick={() => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: !prev.isGuestDropdownOpen }))}
-                                    >
-                                        <span>
-                                            {bookingData.guestDetails.adults + bookingData.guestDetails.children} guest{(bookingData.guestDetails.adults + bookingData.guestDetails.children) > 1 ? 's' : ''}
-                                        </span>
-                                        <FiChevronDown />
-                                    </div>
-                                    {bookingData.isGuestDropdownOpen && (
-                                        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-2 p-4">
-                                            <div className="space-y-5">
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <p className="font-medium">Adults</p>
-                                                        <p className="text-sm text-gray-500">Ages 13 or above</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <button onClick={() => handleGuestChange('adults', 'decrement')} disabled={bookingData.guestDetails.adults <= 1} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
-                                                        <span className="w-8 text-center">{bookingData.guestDetails.adults}</span>
-                                                        <button onClick={() => handleGuestChange('adults', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <p className="font-medium">Children</p>
-                                                        <p className="text-sm text-gray-500">Ages 2-12</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <button onClick={() => handleGuestChange('children', 'decrement')} disabled={bookingData.guestDetails.children <= 0} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
-                                                        <span className="w-8 text-center">{bookingData.guestDetails.children}</span>
-                                                        <button onClick={() => handleGuestChange('children', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-4">Maximum {maxGuests} guests</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="p-4 border-r border-gray-300">
-                                        <p className="text-xs text-gray-500 mb-1">Check In</p>
-                                        <p className="text-sm font-medium">
-                                            {bookingData.checkInDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">{checkInTime}</p>
-                                    </div>
-                                    <div className="p-4">
-                                        <p className="text-xs text-gray-500 mb-1">Check Out</p>
-                                        <p className="text-sm font-medium">
-                                            {bookingData.checkOutDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">{checkOutTime}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-3 mb-6">
-                                <div className="flex justify-between text-sm">
-                                    <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
-                                    <span>₹{calculateTotalPrice()}</span>
-                                </div>
-                                {originalPrice && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-green-600">Special offer discount</span>
-                                        <span className="text-green-600">-₹{(originalPrice - displayPrice) * nights}</span>
-                                    </div>
-                                )}
-                                <div className="border-t pt-3">
-                                    <div className="flex justify-between font-semibold text-lg">
-                                        <span>Total</span>
-                                        <span>₹{calculateTotalPrice()}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={handleBooking}
-                                disabled={loading || nights === 0}
-                                className="w-full bg-[#2b1a08] text-white py-4 rounded-full font-semibold hover:bg-[#1f1206] transition disabled:opacity-50"
-                            >
-                                {loading ? 'Processing...' : 'Reserve'}
-                            </button>
-                        </div>
+                        <BookingCard />
                     </div>
                 </div>
                 <div className="hidden lg:block">
                     <div className="sticky top-24 space-y-6">
-                        <div className="w-full max-w-md rounded-2xl border border-gray-300 shadow-lg p-5 bg-white">
-                            {weeklyPrice?.length > 0 && (
-                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-5 border-b border-gray-200">
-                                    {weeklyPrice.map(({ date, price }, i) => (
-                                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-2 text-sm border border-gray-300">
-                                            <p className="text-xs text-gray-500">
-                                                {new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
-                                            </p>
-                                            <p className="font-medium">₹{price}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="mb-5">
-                                <DatePicker
-                                    selected={bookingData.checkInDate}
-                                    onChange={handleDateChange}
-                                    startDate={bookingData.checkInDate}
-                                    endDate={bookingData.checkOutDate}
-                                    selectsRange
-                                    inline
-                                    minDate={new Date()}
-                                />
-                            </div>
-                            <div className="border border-gray-300 rounded-xl overflow-hidden mb-5">
-                                <div className="p-4 border-b border-gray-300 relative">
-                                    <p className="text-xs text-gray-500 mb-1">Guests</p>
-                                    <div
-                                        className="flex items-center justify-between text-sm font-medium cursor-pointer"
-                                        onClick={() => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: !prev.isGuestDropdownOpen }))}
-                                    >
-                                        <span>
-                                            {bookingData.guestDetails.adults + bookingData.guestDetails.children} guest{(bookingData.guestDetails.adults + bookingData.guestDetails.children) > 1 ? 's' : ''}
-                                        </span>
-                                        <FiChevronDown />
-                                    </div>
-                                    {bookingData.isGuestDropdownOpen && (
-                                        <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-2 p-4">
-                                            <div className="space-y-5">
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <p className="font-medium">Adults</p>
-                                                        <p className="text-sm text-gray-500">Ages 13 or above</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <button onClick={() => handleGuestChange('adults', 'decrement')} disabled={bookingData.guestDetails.adults <= 1} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
-                                                        <span className="w-8 text-center">{bookingData.guestDetails.adults}</span>
-                                                        <button onClick={() => handleGuestChange('adults', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <p className="font-medium">Children</p>
-                                                        <p className="text-sm text-gray-500">Ages 2-12</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <button onClick={() => handleGuestChange('children', 'decrement')} disabled={bookingData.guestDetails.children <= 0} className="w-9 h-9 rounded-full border flex items-center justify-center">-</button>
-                                                        <span className="w-8 text-center">{bookingData.guestDetails.children}</span>
-                                                        <button onClick={() => handleGuestChange('children', 'increment')} disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests} className="w-9 h-9 rounded-full border flex items-center justify-center">+</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-4">Maximum {maxGuests} guests</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="p-4 border-r border-gray-300">
-                                        <p className="text-xs text-gray-500 mb-1">Check In</p>
-                                        <p className="text-sm font-medium">
-                                            {bookingData.checkInDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">{checkInTime}</p>
-                                    </div>
-                                    <div className="p-4">
-                                        <p className="text-xs text-gray-500 mb-1">Check Out</p>
-                                        <p className="text-sm font-medium">
-                                            {bookingData.checkOutDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                                        </p>
-                                        <p className="text-xs text-gray-500 mt-1">{checkOutTime}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="space-y-3 mb-6">
-                                <div className="flex justify-between text-sm">
-                                    <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
-                                    <span>₹{calculateTotalPrice()}</span>
-                                </div>
-                                {originalPrice && (
-                                    <div className="flex justify-between text-sm">
-                                        <span className="text-green-600">Special offer discount</span>
-                                        <span className="text-green-600">-₹{(originalPrice - displayPrice) * nights}</span>
-                                    </div>
-                                )}
-                                <div className="border-t pt-3">
-                                    <div className="flex justify-between font-semibold text-lg">
-                                        <span>Total</span>
-                                        <span>₹{calculateTotalPrice()}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleBooking}
-                                disabled={loading || nights === 0}
-                                className="w-full bg-[#2b1a08] text-white py-4 rounded-full font-semibold hover:bg-[#1f1206] transition disabled:opacity-50"
-                            >
-                                {loading ? 'Processing...' : 'Reserve'}
-                            </button>
-                        </div>
+                        <BookingCard />
                         <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                             <MapPicker initialPosition={mapPosition} isInput={false} />
                         </div>

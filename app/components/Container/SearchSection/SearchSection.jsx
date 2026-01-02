@@ -9,6 +9,7 @@ import SearchFilters from "@/app/common/SearchFilters";
 import VillaCard from "@/app/common/VillaCard";
 import Header from "../../Common/Header/Header";
 import bannerimg from "@/app/assets/banner-bg-img.png";
+import { errorAlert } from "@/app/utils/alertService";
 
 const SearchSection = () => {
     const dispatch = useDispatch();
@@ -28,7 +29,9 @@ const SearchSection = () => {
     }, [searchParams, dispatch]);
 
     useEffect(() => {
-        if (searchError) dispatch(clearVillaError());
+        errorAlert(searchError)
+        dispatch(clearVillaError());
+
     }, [searchError, dispatch]);
 
     return (
@@ -71,6 +74,7 @@ const SearchSection = () => {
                                 nights={villa.nights}
                                 rating={villa.ratingAverage}
                                 saleTag={villa.saleTag}
+                                slug={villa?.slug}
                             />
                         ))}
                     </div>

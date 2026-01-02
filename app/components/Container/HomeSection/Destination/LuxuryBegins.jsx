@@ -61,7 +61,7 @@ const LuxuryBegins = () => {
                         </div>
                     ))}
                 </div>
-                <div className="w-full  bg-[#A67C52] py-2 md:py-4  flex flex-col md:flex-row justify-between items-center gap-2 text-center  rounded-2xl my-6 px-4">
+                {/* <div className="w-full  bg-[#A67C52] py-2 md:py-4  flex flex-col md:flex-row justify-between items-center gap-2 text-center  rounded-2xl my-6 px-4">
                     <div className="flex flex-col md:flex-row items-center gap-3">
                         <Image
                             className="mx-auto md:mx-0 mt-[-22px] md:mt-0"
@@ -77,7 +77,7 @@ const LuxuryBegins = () => {
                     <button className="bg-white text-black px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-100 transition">
                         Sign In
                     </button>
-                </div>
+                </div> */}
             </div>
         </>
     );

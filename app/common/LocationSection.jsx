@@ -32,10 +32,10 @@ export const LocationSection = ({ location }) => {
     );
 
     return (
-        <div className="py-10">
+        <div className="py-7 2xl:py-10">
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
-                    <Link href={`/search?location=${location.slug}`}>
+                    <Link href={`/destination/${location.slug}`}>
                         <h3 className="text-lg md:text-3xl font-semibold">
                             Popular Destinations in {location.locationName}
                         </h3>
@@ -67,16 +67,29 @@ export const LocationSection = ({ location }) => {
                     </div>
                 )}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            <div
+                className="
+                  flex gap-4 overflow-x-auto mt-4
+                  md:grid md:grid-cols-2 lg:grid-cols-4
+                  md:overflow-visible scrollbar-hide
+              "
+            >
                 {visibleVillas?.map((villa) => (
-                    <VillaCard
+                    <div
                         key={villa._id}
-                        title={villa.villaName}
-                        images={villa.images?.villaGallery}
-                        price={villa.offerPrice || villa.price}
-                        maxGuests={villa.maxGuests}
-                        slug={villa.slug}
-                    />
+                        className="
+                          w-[280px] shrink-0
+                          md:w-full md:shrink
+                      "
+                    >
+                        <VillaCard
+                            title={villa.villaName}
+                            images={villa.images?.villaGallery}
+                            price={villa.offerPrice || villa.price}
+                            maxGuests={villa.maxGuests}
+                            slug={villa.slug}
+                        />
+                    </div>
                 ))}
             </div>
         </div>

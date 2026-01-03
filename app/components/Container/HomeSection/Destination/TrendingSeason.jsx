@@ -37,49 +37,60 @@ const TrendingSeason = () => {
 
     return (
         <div className="pb-5 md:pb-10">
-            <div className="flex justify-between items-center ">
-                <div className="flex items-center">
-                    <Link href={"/search"}>
-                        <h3 className="text-lg md:text-3xl font-semibold">
-                            Trending this season
-                        </h3>
-                    </Link>
-                    <MdKeyboardArrowRight size={24} className="ml-1 hidden lg:block" />
-                </div>
-                <div className="flex gap-2">
-                    <button
-                        onClick={handlePrev}
-                        disabled={currentIndex === 0}
-                        className={`p-2 rounded-full 
-                            ${currentIndex === 0
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg md:text-3xl font-semibold">
+                    Trending this season
+                </h3>
+                {featured.length > ITEMS_PER_PAGE && (
+                    <div className="hidden md:flex gap-2">
+                        <button
+                            onClick={handlePrev}
+                            disabled={currentIndex === 0}
+                            className={`p-2 rounded-full ${currentIndex === 0
                                 ? "bg-gray-200 cursor-not-allowed"
-                                : "bg-gray-100 hover:bg-gray-200"}`}
-                    >
-                        <FiChevronLeft size={18} />
-                    </button>
-                    <button
-                        onClick={handleNext}
-                        disabled={currentIndex + ITEMS_PER_PAGE >= featured.length}
-                        className={`p-2 rounded-full 
-                            ${currentIndex + ITEMS_PER_PAGE >= featured.length
+                                : "bg-gray-100 hover:bg-gray-200"
+                                }`}
+                        >
+                            <FiChevronLeft size={18} />
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            disabled={currentIndex + ITEMS_PER_PAGE >= featured.length}
+                            className={`p-2 rounded-full ${currentIndex + ITEMS_PER_PAGE >= featured.length
                                 ? "bg-gray-200 cursor-not-allowed"
-                                : "bg-gray-100 hover:bg-gray-200"}`}
-                    >
-                        <FiChevronRight size={18} />
-                    </button>
-                </div>
+                                : "bg-gray-100 hover:bg-gray-200"
+                                }`}
+                        >
+                            <FiChevronRight size={18} />
+                        </button>
+                    </div>
+                )}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                {visibleVillas?.map((villa) => (
+            <div className="flex gap-4 overflow-x-auto mt-4 md:hidden scrollbar-hide">
+                {featured.map((villa) => (
+                    <div
+                        key={villa._id}
+                        className="w-[280px] shrink-0"
+                    >
+                        <VillaCard
+                            title={villa.villaName}
+                            images={villa.images?.villaGallery}
+                            price={villa.offerPrice || villa.price}
+                            maxGuests={villa.maxGuests}
+                            slug={villa.slug}
+                        />
+                    </div>
+                ))}
+            </div>
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                {visibleVillas.map((villa) => (
                     <VillaCard
-                        key={villa?._id}
-                        title={villa?.villaName}
-                        images={villa?.images?.villaGallery}
-                        price={villa?.price}
-                        nights={villa?.nights}
-                        rating={villa?.ratingAverage}
-                        saleTag={villa?.saleTag}
-                        slug={villa?.slug}
+                        key={villa._id}
+                        title={villa.villaName}
+                        images={villa.images?.villaGallery}
+                        price={villa.offerPrice || villa.price}
+                        maxGuests={villa.maxGuests}
+                        slug={villa.slug}
                     />
                 ))}
             </div>

@@ -16,7 +16,7 @@ export default function Header() {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const toggleMenu = () => setOpen(!open);
-    const path = pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/search"
+    const path = pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/search" || pathname.startsWith("/destination");
 
     return (
         <header className={`w-full sticky top-0 z-50 ${path ? "bg-transparent" : " bg-white shadow-sm"

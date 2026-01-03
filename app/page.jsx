@@ -53,7 +53,6 @@ export default function Page() {
           </div>
         </div>
       </MainLayout>
-
       <MainLayout>
         <Destination />
         <EveryStayStory />

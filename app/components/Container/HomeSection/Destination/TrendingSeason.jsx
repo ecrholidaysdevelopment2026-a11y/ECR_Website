@@ -44,7 +44,7 @@ const TrendingSeason = () => {
                             Trending this season
                         </h3>
                     </Link>
-                    <MdKeyboardArrowRight size={24} className="ml-1" />
+                    <MdKeyboardArrowRight size={24} className="ml-1 hidden lg:block" />
                 </div>
                 <div className="flex gap-2">
                     <button

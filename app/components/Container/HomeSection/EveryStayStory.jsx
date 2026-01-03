@@ -66,7 +66,7 @@ export default function EveryStayStory() {
     }
 
     return (
-        <div className="w-full px-4 py-10 flex flex-col items-center">
+        <div className="w-full px-4 pt-10 flex flex-col items-center">
             <h2 className="text-lg md:text-3xl font-semibold mb-6 flex items-center gap-4">
                 <IoIosArrowRoundBack
                     className="text-black cursor-pointer hover:text-gray-600 transition-colors"

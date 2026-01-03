@@ -44,7 +44,7 @@ const DestinationsChennai = () => {
                             Popular Destinations in Chennai
                         </h3>
                     </Link>
-                    <MdKeyboardArrowRight size={24} className="ml-1" />
+                    <MdKeyboardArrowRight size={24} className="ml-1 hidden lg:block" />
                 </div>
                 <div className="flex gap-2">
                     <button
@@ -57,7 +57,6 @@ const DestinationsChennai = () => {
                     >
                         <FiChevronLeft size={18} />
                     </button>
-
                     <button
                         onClick={handleNext}
                         disabled={currentIndex + ITEMS_PER_PAGE >= villasByChennai.length}

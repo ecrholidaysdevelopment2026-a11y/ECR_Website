@@ -6,9 +6,12 @@ import { DateRange } from "react-date-range";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import useClickOutside from "@/app/utils/useClickOutside";
+import { fetchVillaLocations } from "@/app/store/slice/locationSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function BannerSection({ initialData = null }) {
     const router = useRouter();
+    const dispatch = useDispatch()
     const [destination, setDestination] = useState("");
     const [showCalendar, setShowCalendar] = useState(false);
     const [mobilePopup, setMobilePopup] = useState(false);
@@ -24,7 +27,11 @@ export default function BannerSection({ initialData = null }) {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
+    const { locations } = useSelector((state) => state.location)
 
+    useEffect(() => {
+        dispatch(fetchVillaLocations())
+    }, [])
 
     useEffect(() => {
         if (!initialData) return;
@@ -61,7 +68,6 @@ export default function BannerSection({ initialData = null }) {
         }
     };
 
-
     useClickOutside(guestRef, () => setShowGuestDropdown(false));
     useClickOutside(calendarRef, () => setShowCalendar(false));
 
@@ -97,14 +103,14 @@ export default function BannerSection({ initialData = null }) {
                             </button>
                             <h2 className="text-lg font-semibold mb-4">Where to?</h2>
                             <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
-                                {[
-                                    { label: "Chennai", value: "chennai" },
-                                    { label: "Pondicherry", value: "puducherry" },
-                                ].map((item) => (
+                                {loading && (
+                                    <p className="px-5 py-4 text-sm text-gray-500">Loading locations...</p>
+                                )}
+                                {locations?.map((item) => (
                                     <button
-                                        key={item.value}
+                                        key={item._id}
                                         onClick={() => {
-                                            setDestination(item.value);
+                                            setDestination(item.slug); 
                                             setMobilePopup(false);
                                         }}
                                         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
@@ -112,11 +118,15 @@ export default function BannerSection({ initialData = null }) {
                                         <div className="w-10 h-10 rounded-full border flex items-center justify-center text-gray-600">
                                             <FiMapPin size={18} />
                                         </div>
+
                                         <span className="text-base font-medium text-gray-900">
-                                            {item.label}
+                                            {item.locationName}
                                         </span>
                                     </button>
                                 ))}
+                                {!loading && locations?.length === 0 && (
+                                    <p className="px-5 py-4 text-sm text-gray-500">No locations found</p>
+                                )}
                             </div>
                             <h2 className="text-lg font-semibold mb-4">When</h2>
                             <DateRange

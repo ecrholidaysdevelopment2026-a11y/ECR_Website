@@ -36,7 +36,7 @@ const TrendingSeason = () => {
     );
 
     return (
-        <div className="py-5 md:py-10">
+        <div className="pb-5 md:pb-10">
             <div className="flex justify-between items-center ">
                 <div className="flex items-center">
                     <Link href={"/search"}>
@@ -69,7 +69,7 @@ const TrendingSeason = () => {
                     </button>
                 </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
                 {visibleVillas?.map((villa) => (
                     <VillaCard
                         key={villa?._id}

@@ -45,6 +45,28 @@ export const fetchFeaturedVillas = createAsyncThunk(
   }
 );
 
+export const fetchVillas = createAsyncThunk(
+  "villas/fetchVillas",
+  async (_, thunkAPI) => {
+    try {
+      const response = await FetchApi({
+        endpoint: "/user/villas/locations-with-villas",
+        method: "GET",
+      });
+
+      if (response?.data?.success === false) {
+        return thunkAPI.rejectWithValue(response?.data?.errors);
+      }
+
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.message || "Failed to fetch popular villas"
+      );
+    }
+  }
+);
+
 export const fetchPopularVillas = createAsyncThunk(
   "villas/popular",
   async (_, thunkAPI) => {
@@ -84,50 +106,6 @@ export const fetchWeeklyPrice = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(
         err.message || "Failed to fetch weekly price"
-      );
-    }
-  }
-);
-
-export const fetchVillasByChennai = createAsyncThunk(
-  "villas/fetchVillasByChennai",
-  async (thunkAPI) => {
-    try {
-      const response = await FetchApi({
-        endpoint: `/user/villas/by-location/chennai`,
-        method: "GET",
-      });
-
-      if (response?.data?.success === false) {
-        return thunkAPI.rejectWithValue(response?.data?.errors);
-      }
-
-      return response?.data;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.message || "Failed to fetch villas by location"
-      );
-    }
-  }
-);
-
-export const fetchVillasByPuducherry = createAsyncThunk(
-  "villas/fetchByLocation",
-  async (thunkAPI) => {
-    try {
-      const response = await FetchApi({
-        endpoint: `/user/villas/by-location/puducherry`,
-        method: "GET",
-      });
-
-      if (response?.data?.success === false) {
-        return thunkAPI.rejectWithValue(response?.data?.errors);
-      }
-
-      return response?.data;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.message || "Failed to fetch villas by location"
       );
     }
   }
@@ -177,13 +155,12 @@ export const getVillaBySlug = createAsyncThunk(
 const villaSlice = createSlice({
   name: "villas",
   initialState: {
+    getAllVillas: [],
     searchResults: [],
     featured: [],
     popular: [],
     selectedVilla: {},
     weeklyPrice: null,
-    villasByChennai: [],
-    villasByPuducherry: [],
     villaVideos: [],
     loading: false,
     error: null,
@@ -244,6 +221,18 @@ const villaSlice = createSlice({
         state.error = action.payload;
       })
 
+      .addCase(fetchVillas.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchVillas.fulfilled, (state, action) => {
+        state.loading = false;
+        state.getAllVillas = action.payload?.locations || [];
+      })
+      .addCase(fetchVillas.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       .addCase(fetchWeeklyPrice.pending, (state) => {
         state.loading = true;
       })
@@ -252,30 +241,6 @@ const villaSlice = createSlice({
         state.weeklyPrice = action.payload?.prices || action.payload;
       })
       .addCase(fetchWeeklyPrice.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(fetchVillasByChennai.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchVillasByChennai.fulfilled, (state, action) => {
-        state.loading = false;
-        state.villasByChennai = action.payload?.villas || action.payload;
-      })
-      .addCase(fetchVillasByChennai.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(fetchVillasByPuducherry.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchVillasByPuducherry.fulfilled, (state, action) => {
-        state.loading = false;
-        state.villasByPuducherry = action.payload?.villas || action.payload;
-      })
-      .addCase(fetchVillasByPuducherry.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

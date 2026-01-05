@@ -109,7 +109,6 @@ body {
   opacity: 0.85;
 }
 
-
 .pe_signin_button button {
   background-color: #000 !important;
   color: white !important;
@@ -118,3 +117,7 @@ body {
   padding: 8px 10px !important;
 }
 
+.model .swiper-button-prev,
+.swiper-button-next {
+  color: white !important;
+}

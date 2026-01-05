@@ -3,7 +3,7 @@ import { FetchApi } from "../../api/FetchApi";
 
 export const createBooking = createAsyncThunk(
   "bookings/create",
-  async ({ bookingData }, thunkAPI) => {
+  async (bookingData, thunkAPI) => {
     const state = thunkAPI.getState();
     const token = state?.auth?.accessToken;
     try {
@@ -13,11 +13,9 @@ export const createBooking = createAsyncThunk(
         data: bookingData,
         token,
       });
-
       if (res?.data?.success === false) {
         return thunkAPI.rejectWithValue(res?.data?.message);
       }
-
       return res?.data?.booking;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
@@ -70,13 +68,15 @@ export const cancelBooking = createAsyncThunk(
 const bookingsSlice = createSlice({
   name: "bookings",
   initialState: {
-    list: [],
+    bookingDetails: {},
     loading: false,
-    error: null,
+    bookingerror: null,
+    bookingMsg: null,
   },
   reducers: {
     clearBookingError(state) {
-      state.error = null;
+      state.bookingerror = null;
+      state.bookingMsg = null;
     },
   },
   extraReducers: (builder) => {
@@ -97,7 +97,7 @@ const bookingsSlice = createSlice({
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
-        state.list.unshift(action.payload);
+        state.bookingDetails = action.payload;
       })
       .addCase(createBooking.rejected, (state, action) => {
         state.loading = false;

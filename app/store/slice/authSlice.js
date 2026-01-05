@@ -70,7 +70,6 @@ export const refreshToken = createAsyncThunk(
       if (data?.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("tokenExpiry", Date.now() + 50 * 60 * 1000);
-
         setupTokenRefresh(thunkAPI.dispatch);
       }
 

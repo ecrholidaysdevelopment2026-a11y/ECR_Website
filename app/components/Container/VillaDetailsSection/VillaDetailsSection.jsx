@@ -14,7 +14,7 @@ import { createBooking } from "@/app/store/slice/bookingSlice";
 import CustomImage from "@/app/common/Image";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 import { getAmenityIcon } from "@/app/utils/amenityIcons";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiGrid } from "react-icons/fi";
 import Link from "next/link";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -22,12 +22,25 @@ import "react-date-range/dist/theme/default.css";
 import { warningAlert } from "@/app/utils/alertService";
 import { services } from "@/app/utils/villaDummyData";
 import useClickOutside from "@/app/utils/useClickOutside";
+import Modal from "@/app/common/CommonModel";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Keyboard } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import Payment from "@/app/common/Payment";
+import { openPopup } from "@/app/store/slice/popupSlice";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
     const { selectedVilla, weeklyPrice, loading } = useSelector((state) => state.villas);
-
+    const { bookingDetails, bookingerror, bookingMsg } = useSelector((state) => state.booking)
+    const { accessToken } = useSelector((state) => state.auth)
+    const [showAllImages, setShowAllImages] = useState(false);
+    const paymentRef = useRef();
     const [bookingData, setBookingData] = useState({
+        promoCode: "",
         checkInDate: new Date(),
         checkOutDate: new Date(new Date().setDate(new Date().getDate() + 3)),
         guestDetails: {
@@ -38,6 +51,8 @@ const VillaDetailsSection = ({ slug }) => {
         isGuestDropdownOpen: false,
         showCalendar: false
     });
+
+
 
     const [showBuyNowButton, setShowBuyNowButton] = useState(false);
     const calendarRef = useRef(null);
@@ -107,7 +122,6 @@ const VillaDetailsSection = ({ slug }) => {
 
     const calculateTotalPrice = () => {
         if (!selectedVilla?.price) return 0;
-
         const { checkInDate, checkOutDate } = bookingData;
         if (!checkInDate || !checkOutDate) return 0;
 
@@ -115,11 +129,14 @@ const VillaDetailsSection = ({ slug }) => {
         const displayPrice = selectedVilla.isOffer && selectedVilla.offerPrice
             ? selectedVilla.offerPrice
             : selectedVilla.price;
-
         return nights * displayPrice;
     };
 
     const handleBooking = async () => {
+        if (!accessToken) {
+            dispatch(openPopup("login"));
+            return;
+        }
         const totalGuests = bookingData.guestDetails.adults + bookingData.guestDetails.children;
         if (totalGuests > selectedVilla.maxGuests) {
             warningAlert(`Maximum ${selectedVilla.maxGuests} guests allowed`);
@@ -129,7 +146,6 @@ const VillaDetailsSection = ({ slug }) => {
             warningAlert("Please select check-in and check-out dates");
             return;
         }
-
         const bookingPayload = {
             villaId: selectedVilla._id,
             checkInDate: bookingData.checkInDate.toISOString().split('T')[0],
@@ -140,7 +156,6 @@ const VillaDetailsSection = ({ slug }) => {
             },
             totalPrice: calculateTotalPrice()
         };
-
         await dispatch(createBooking(bookingPayload));
     };
 
@@ -156,6 +171,8 @@ const VillaDetailsSection = ({ slug }) => {
 
     useClickOutside(calendarRef, () => setBookingData(prev => ({ ...prev, showCalendar: false })));
     useClickOutside(guestDropdownRef, () => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false })));
+
+
 
     if (!selectedVilla) {
         return (
@@ -181,6 +198,7 @@ const VillaDetailsSection = ({ slug }) => {
         checkOutTime,
     } = selectedVilla;
 
+    const coverImg = images?.villaImage
     const allImages = [images?.villaImage, ...(images?.villaGallery || [])].filter(Boolean);
     const displayPrice = isOffer && offerPrice ? offerPrice : price;
     const originalPrice = isOffer ? price : null;
@@ -193,9 +211,9 @@ const VillaDetailsSection = ({ slug }) => {
     const BookingCard = () => (
         <div id="booking-card-mobile" className="rounded-2xl border border-gray-300 shadow-lg p-5 bg-white">
             {weeklyPrice?.length > 0 && (
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-6 border-b border-gray-200">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-2 border-b border-gray-200">
                     {weeklyPrice.map(({ date, price }, i) => (
-                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-2 text-sm border border-gray-300">
+                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-1 text-sm border border-gray-300">
                             <p className="text-xs text-gray-500">
                                 {new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
                             </p>
@@ -204,33 +222,29 @@ const VillaDetailsSection = ({ slug }) => {
                     ))}
                 </div>
             )}
-            <div className="mb-6">
+            <div className="mb-2">
                 <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold">₹{displayPrice}</span>
+                    {isOffer && originalPrice && originalPrice > displayPrice && (
+                        <span className="text-lg text-gray-500 line-through">₹{originalPrice}</span>
+                    )}
                     <span className="text-lg text-gray-600">/ night</span>
                 </div>
-                {isOffer && originalPrice && originalPrice > displayPrice && (
-                    <div className="mt-2 flex items-center gap-3">
-                        <span className="text-lg text-gray-500 line-through">₹{originalPrice}</span>
-                        <span className="bg-green-50 text-gray-400 text-xs font-semibold px-3 py-1 rounded-full">
-                            Original Price
-                        </span>
-                    </div>
-                )}
+
             </div>
             <div className="mb-5 relative">
                 <div
                     className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition"
                     onClick={() => setBookingData(prev => ({ ...prev, showCalendar: !prev.showCalendar }))}
                 >
-                    <p className="text-sm font-medium mb-1">Dates</p>
+                    <p className="text-sm font-medium">Dates</p>
                     <p className="text-gray-600 text-sm">
                         {bookingData.checkInDate.toLocaleDateString()} - {bookingData.checkOutDate.toLocaleDateString()}
                     </p>
                 </div>
 
                 {bookingData.showCalendar && (
-                    <div ref={calendarRef} className="absolute top-full left-0 z-50 mt-2 shadow-xl rounded-lg overflow-hidden">
+                    <div ref={calendarRef} className="absolute top-full left-0 z-50  shadow-xl rounded-lg overflow-hidden">
                         <DateRange
                             editableDateInputs={false}
                             onChange={handleDateChange}
@@ -246,6 +260,7 @@ const VillaDetailsSection = ({ slug }) => {
                     </div>
                 )}
             </div>
+
             <div className="mb-5">
                 <div
                     className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition relative"
@@ -255,6 +270,7 @@ const VillaDetailsSection = ({ slug }) => {
                         showCalendar: false
                     }))}
                 >
+
                     <p className="text-sm font-medium mb-1">Guests</p>
                     <div className="flex items-center justify-between">
                         <p className="text-gray-600 text-sm">
@@ -266,7 +282,7 @@ const VillaDetailsSection = ({ slug }) => {
                 </div>
 
                 {bookingData.isGuestDropdownOpen && (
-                    <div className="mt-2 bg-white rounded-xl shadow-xl border border-gray-300 p-4 z-50 relative">
+                    <div className="mt-1 bg-white rounded-xl shadow-xl border border-gray-300 p-4 z-50 relative">
                         <div className="flex justify-between items-center py-2 border-b">
                             <div>
                                 <p className="font-medium text-sm">Adults</p>
@@ -296,7 +312,7 @@ const VillaDetailsSection = ({ slug }) => {
                                 </button>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center py-3 border-b">
+                        <div className="flex justify-between items-center py-2 border-b">
                             <div>
                                 <p className="font-medium text-sm">Children</p>
                                 <p className="text-xs text-gray-500">Ages 2–12</p>
@@ -338,20 +354,20 @@ const VillaDetailsSection = ({ slug }) => {
                     </div>
                 )}
             </div>
-            <div className="grid grid-cols-2 border border-gray-300 rounded-xl overflow-hidden mb-5">
+            <div className="grid grid-cols-2 border border-gray-300 rounded-xl overflow-hidden mb-3">
                 <div className="p-4 border-r border-gray-300">
-                    <p className="text-xs text-gray-500 mb-1">Check In</p>
+                    <p className="text-xs text-gray-500 ">Check In</p>
                     <p className="text-sm font-medium">
                         {bookingData.checkInDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">{checkInTime}</p>
+                    <p className="text-xs text-gray-500 ">{checkInTime}</p>
                 </div>
                 <div className="p-4">
-                    <p className="text-xs text-gray-500 mb-1">Check Out</p>
+                    <p className="text-xs text-gray-500 ">Check Out</p>
                     <p className="text-sm font-medium">
                         {bookingData.checkOutDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">{checkOutTime}</p>
+                    <p className="text-xs text-gray-500 ">{checkOutTime}</p>
                 </div>
             </div>
 
@@ -359,6 +375,21 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="flex justify-between text-base">
                     <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
                     <span className="font-medium">₹{displayPrice * nights}</span>
+                </div>
+                <div>
+                    <p className="text-sm font-medium mb-1">Promo Code</p>
+                    <input
+                        type="text"
+                        placeholder="Enter promo code"
+                        value={bookingData.promoCode}
+                        onChange={(e) =>
+                            setBookingData(prev => ({
+                                ...prev,
+                                promoCode: e.target.value.toUpperCase()
+                            }))
+                        }
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2b1a08]"
+                    />
                 </div>
                 <div className="border-t pt-4">
                     <div className="flex justify-between text-lg font-semibold">
@@ -374,11 +405,29 @@ const VillaDetailsSection = ({ slug }) => {
             >
                 {loading ? 'Processing...' : 'Reserve'}
             </button>
-        </div>
+        </div >
     );
+
+
+    // useEffect(() => {
+    //     if (
+    //         bookingMsg &&
+    //         bookingData?.booking?.payment?.orderId &&
+    //         paymentRef.current
+    //     ) {
+    //         paymentRef.current.initiatePayment(
+    //             bookingData.booking.payment.orderId
+    //         );
+    //     }
+    // }, [bookingMsg, bookingData]);
 
     return (
         <>
+            {/* <Payment
+                ref={paymentRef}
+                totalAmount={paymentDetails?.amout || 0}
+                dispatch={dispatch}
+            /> */}
             <MainLayout className="px-4 py-6 md:px-8 lg:px-30 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
                     <Link href="/" className="hover:text-black transition">Home</Link>
@@ -393,11 +442,21 @@ const VillaDetailsSection = ({ slug }) => {
                     {allImages.length > 0 ? (
                         <>
                             <div className="md:col-span-2 md:row-span-2">
-                                <CustomImage src={allImages[0]} className="w-full h-full min-h-[300px] md:min-h-[400px] object-cover rounded-lg" alt={`${villaName} main`} />
+                                <CustomImage src={coverImg} className="w-full h-full min-h-[300px] md:min-h-[400px] object-cover rounded-lg" alt={`${villaName} main`} />
                             </div>
                             {allImages.slice(1, 5).map((image, i) => (
-                                <div key={i} className="h-[200px] md:h-auto">
+                                <div key={i} className="h-[200px] md:h-auto relative">
                                     <CustomImage src={image} className="w-full h-full object-cover rounded-lg" alt={`${villaName} ${i + 1}`} />
+                                    {i === 3 && (
+                                        <div className="absolute right-3 bottom-3 flex items-center justify-center">
+                                            <button
+                                                onClick={() => setShowAllImages(true)}
+                                                className="flex items-center gap-2 cursor-pointer bg-black/40 text-white px-4 py-2 border border-white/40 rounded-full text-xs font-medium backdrop-blur">
+                                                <FiGrid size={14} />
+                                                Show all photos
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </>
@@ -411,7 +470,7 @@ const VillaDetailsSection = ({ slug }) => {
                     {allImages.length > 0 ? (
                         <>
                             <div className="h-[250px] w-full mb-2">
-                                <CustomImage src={allImages[0]} className="w-full h-full object-cover rounded-lg" alt={`${villaName} main`} />
+                                <CustomImage src={coverImg} className="w-full h-full object-cover rounded-lg" alt={`${villaName} main`} />
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                                 {allImages.slice(1, 5).map((image, i) => (
@@ -440,8 +499,11 @@ const VillaDetailsSection = ({ slug }) => {
                                 <FaMapMarkerAlt /> {locationId?.locationName || "Location"}
                             </span>
                         </div>
-                        <div className=" mb-7">
-                            <span>* {selectedVilla.reviews?.length || 5} reviews</span>
+                        <div className="mb-7 flex items-center gap-2 text-sm text-gray-700">
+                            <FaStar className="text-yellow-400" />
+                            <span>
+                                {selectedVilla.reviews?.length || 5} reviews
+                            </span>
                         </div>
                         <div className="w-full bg-white border-y border-gray-300 py-4 mb-10">
                             <div className="flex items-center justify-between">
@@ -558,6 +620,39 @@ const VillaDetailsSection = ({ slug }) => {
                 animation: bounce-once 2s ease-in-out;
             }
         `}</style>
+            {
+                showAllImages && (
+                    <Modal isOpen={showAllImages} onClose={() => setShowAllImages(false)}>
+                        <div>
+                            <Swiper
+                                modules={[Navigation, Pagination, Keyboard]}
+                                spaceBetween={16}
+                                slidesPerView={1}
+                                navigation
+                                pagination={{ clickable: true }}
+                                keyboard={{ enabled: true }}
+                                breakpoints={{
+                                    640: { slidesPerView: 2 },
+                                    1024: { slidesPerView: 1 },
+                                }}
+                                className="max-h-[70vh]"
+                            >
+                                {allImages?.map((img, index) => (
+                                    <SwiperSlide key={index}>
+                                        <div className=" overflow-hidden">
+                                            <CustomImage
+                                                src={img}
+                                                alt={`Villa image ${index + 1}`}
+                                                className="w-full h-[325px] object-cover"
+                                            />
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        </div>
+                    </Modal>
+                )
+            }
         </>
     );
 };

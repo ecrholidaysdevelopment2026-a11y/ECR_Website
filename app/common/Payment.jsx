@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useEffect, useState } from "react";
 
-const Payment = forwardRef(({ totalAmount, disabled }, ref) => {
+const Payment = forwardRef(({ totalAmount }, ref) => {
     useEffect(() => {
         if (!window.Razorpay) {
             const script = document.createElement("script");
@@ -18,7 +18,6 @@ const Payment = forwardRef(({ totalAmount, disabled }, ref) => {
 
     const initiatePayment = async (razorpayOrderId) => {
         if (!razorpayOrderId) return errorAlert("Invalid order ID");
-
         try {
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,

@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/app/common/MainLayout";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, memo } from "react";
 import {
     FaStar,
     FaMapMarkerAlt,
@@ -40,9 +40,10 @@ const VillaDetailsSection = ({ slug }) => {
     const { bookingDetails, bookingerror, bookingMsg, message, error } = useSelector((state) => state.booking)
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
+    const [promoCode, setPromoCode] = useState("");
+
     const paymentRef = useRef();
     const [bookingData, setBookingData] = useState({
-        promoCode: "",
         checkInDate: new Date(),
         checkOutDate: new Date(new Date().setDate(new Date().getDate() + 3)),
         guestDetails: {
@@ -109,7 +110,6 @@ const VillaDetailsSection = ({ slug }) => {
 
     const handleDateChange = (ranges) => {
         const { selection } = ranges;
-
         setBookingData(prev => ({
             ...prev,
             checkInDate: selection.startDate,
@@ -398,21 +398,16 @@ const VillaDetailsSection = ({ slug }) => {
                     <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
                     <span className="font-medium">₹{displayPrice * nights}</span>
                 </div>
-                <div>
+                {/* <div>
                     <p className="text-sm font-medium mb-1">Promo Code</p>
                     <input
                         type="text"
                         placeholder="Enter promo code"
-                        value={bookingData.promoCode}
-                        onChange={(e) =>
-                            setBookingData(prev => ({
-                                ...prev,
-                                promoCode: e.target.value.toUpperCase()
-                            }))
-                        }
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2b1a08]"
                     />
-                </div>
+                </div> */}
                 <div className="border-t pt-4">
                     <div className="flex justify-between text-lg font-semibold">
                         <span>Total</span>
@@ -686,4 +681,4 @@ const VillaDetailsSection = ({ slug }) => {
     );
 };
 
-export default VillaDetailsSection;
+export default memo(VillaDetailsSection);

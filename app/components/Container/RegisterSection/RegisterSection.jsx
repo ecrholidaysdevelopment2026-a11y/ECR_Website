@@ -25,9 +25,9 @@ const RegisterSection = () => {
 
     useEffect(() => {
         if (message) {
-            successAlert(message);
+            // successAlert(message);
             dispatch(clearAuthMessage());
-            dispatch(openPopup("login")); 
+            dispatch(openPopup("firstLogin"));
         }
         if (error) {
             errorAlert(error);

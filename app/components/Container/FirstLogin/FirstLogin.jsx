@@ -4,15 +4,15 @@ import Image from "next/image";
 import bgImg from "@/app/assets/loginbg-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    loginUser,
     clearAuthError,
     clearAuthMessage,
+    Firstlogin,
 } from "@/app/store/slice/authSlice";
 import { useRouter } from "next/navigation";
 import { errorAlert, successAlert } from "@/app/utils/alertService";
 import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
 
-const LoginSection = () => {
+const FirstLogin = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const { message, error } = useSelector((state) => state.auth);
@@ -26,13 +26,14 @@ const LoginSection = () => {
         script.src = "https://www.phone.email/sign_in_button_v1.js";
         script.async = true;
         container.appendChild(script);
+
         window.phoneEmailListener = function (userObj) {
             if (
                 userObj?.user_json_url &&
                 !loginCalledRef.current
             ) {
                 loginCalledRef.current = true;
-                dispatch(loginUser({ user_json_url: userObj.user_json_url }));
+                dispatch(Firstlogin({ user_json_url: userObj.user_json_url }));
             }
         };
 
@@ -47,7 +48,6 @@ const LoginSection = () => {
             successAlert(message);
             dispatch(clearAuthMessage());
             dispatch(closePopup());
-
         }
         if (error) {
             errorAlert(error);
@@ -121,4 +121,4 @@ const LoginSection = () => {
     );
 };
 
-export default LoginSection;
+export default FirstLogin;

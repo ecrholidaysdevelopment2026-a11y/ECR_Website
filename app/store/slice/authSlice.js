@@ -26,12 +26,39 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const Firstlogin = createAsyncThunk(
+  "auth/Firstlogin",
+  async (payload, thunkAPI) => {
+    try {
+      const res = await FetchApi({
+        endpoint: "/user/phone-register",
+        method: "POST",
+        body: payload,
+      });
+      const data = res?.data;
+      if (data?.success === false) {
+        return thunkAPI.rejectWithValue(data?.message);
+      }
+      if (data?.accessToken) {
+        localStorage.setItem("accessToken", data?.accessToken);
+        localStorage.setItem("refreshToken", data?.refreshToken);
+        localStorage.setItem("tokenExpiry", Date.now() + 50 * 60 * 1000);
+        localStorage.setItem("loginTimestamp", Date.now());
+        setupTokenRefresh(thunkAPI.dispatch);
+      }
+      return data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || "Login failed");
+    }
+  }
+);
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (payload, thunkAPI) => {
     try {
       const res = await FetchApi({
-        endpoint: "/user/phone-register",
+        endpoint: "/user/login",
         method: "POST",
         body: payload,
       });
@@ -123,6 +150,23 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(Firstlogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(Firstlogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload?.user || null;
+        state.accessToken = action.payload?.accessToken;
+        state.refreshToken = action.payload?.refreshToken;
+        state.message = action.payload?.message || "Login successful";
+      })
+      .addCase(Firstlogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Login failed";
       })
 
       .addCase(loginUser.pending, (state) => {

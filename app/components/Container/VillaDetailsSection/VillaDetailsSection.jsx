@@ -10,7 +10,7 @@ import {
 import MapPicker from "@/app/common/MapPicker";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyPrice, getVillaBySlug } from "@/app/store/slice/villaSlice";
-import { createBooking } from "@/app/store/slice/bookingSlice";
+import { clearBookingError, createBooking } from "@/app/store/slice/bookingSlice";
 import CustomImage from "@/app/common/Image";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 import { getAmenityIcon } from "@/app/utils/amenityIcons";
@@ -19,7 +19,7 @@ import Link from "next/link";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { warningAlert } from "@/app/utils/alertService";
+import { errorAlert, warningAlert } from "@/app/utils/alertService";
 import { services } from "@/app/utils/villaDummyData";
 import useClickOutside from "@/app/utils/useClickOutside";
 import Modal from "@/app/common/CommonModel";
@@ -156,7 +156,7 @@ const VillaDetailsSection = ({ slug }) => {
             },
             totalPrice: calculateTotalPrice()
         };
-        await dispatch(createBooking(bookingPayload));
+        dispatch(createBooking(bookingPayload));
     };
 
     const scrollToBookingCard = () => {
@@ -171,7 +171,6 @@ const VillaDetailsSection = ({ slug }) => {
 
     useClickOutside(calendarRef, () => setBookingData(prev => ({ ...prev, showCalendar: false })));
     useClickOutside(guestDropdownRef, () => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false })));
-
 
 
     if (!selectedVilla) {
@@ -408,26 +407,33 @@ const VillaDetailsSection = ({ slug }) => {
         </div >
     );
 
+    useEffect(() => {
+        if (bookingerror) {
+            errorAlert(bookingerror)
+            dispatch(clearBookingError())
+        }
+    }, [bookingerror])
 
-    // useEffect(() => {
-    //     if (
-    //         bookingMsg &&
-    //         bookingData?.booking?.payment?.orderId &&
-    //         paymentRef.current
-    //     ) {
-    //         paymentRef.current.initiatePayment(
-    //             bookingData.booking.payment.orderId
-    //         );
-    //     }
-    // }, [bookingMsg, bookingData]);
+
+    useEffect(() => {
+        if (
+            bookingMsg &&
+            bookingDetails?.orderId &&
+            paymentRef.current
+        ) {
+            paymentRef.current.initiatePayment(
+                bookingDetails.orderId
+            );
+        }
+    }, [bookingMsg, bookingDetails]);
 
     return (
         <>
-            {/* <Payment
+            <Payment
                 ref={paymentRef}
-                totalAmount={paymentDetails?.amout || 0}
+                totalAmount={bookingDetails?.amout || 0}
                 dispatch={dispatch}
-            /> */}
+            />
             <MainLayout className="px-4 py-6 md:px-8 lg:px-30 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
                     <Link href="/" className="hover:text-black transition">Home</Link>

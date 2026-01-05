@@ -3,20 +3,20 @@ import { FetchApi } from "../../api/FetchApi";
 
 export const createBooking = createAsyncThunk(
   "bookings/create",
-  async (bookingData, thunkAPI) => {
+  async (payload, thunkAPI) => {
     const state = thunkAPI.getState();
     const token = state?.auth?.accessToken;
     try {
       const res = await FetchApi({
         endpoint: "/user/bookings/create",
         method: "POST",
-        data: bookingData,
+        body: payload,
         token,
       });
       if (res?.data?.success === false) {
         return thunkAPI.rejectWithValue(res?.data?.message);
       }
-      return res?.data?.booking;
+      return res?.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
@@ -65,9 +65,31 @@ export const cancelBooking = createAsyncThunk(
   }
 );
 
+export const verifyPayment = createAsyncThunk(
+  "booking/verifyPayment",
+  async (payload, thunkAPI) => {
+    const token = thunkAPI.getState()?.auth?.accessToken;
+    try {
+      const response = await FetchApi({
+        endpoint: `/user/booking/verify-payment`,
+        method: "POST",
+        body: payload,
+        token,
+      });
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.message || "Failed to update booking payment"
+      );
+    }
+  }
+);
+
 const bookingsSlice = createSlice({
   name: "bookings",
   initialState: {
+    message: null,
+    error: null,
     bookingDetails: {},
     loading: false,
     bookingerror: null,
@@ -77,6 +99,7 @@ const bookingsSlice = createSlice({
     clearBookingError(state) {
       state.bookingerror = null;
       state.bookingMsg = null;
+      (state.error = null), (state.message = null);
     },
   },
   extraReducers: (builder) => {
@@ -97,11 +120,12 @@ const bookingsSlice = createSlice({
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
-        state.bookingDetails = action.payload;
+        state.bookingMsg = action.payload?.message;
+        state.bookingDetails = action.payload?.booking?.payment;
       })
       .addCase(createBooking.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.bookingerror = action.payload;
       })
       .addCase(cancelBooking.fulfilled, (state, action) => {
         state.list = state.list.map((booking) =>
@@ -109,6 +133,18 @@ const bookingsSlice = createSlice({
             ? { ...booking, bookingStatus: "CANCELLED" }
             : booking
         );
+      })
+      .addCase(verifyPayment.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyPayment.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message =
+          action.payload?.message || "Booking payment updated successfully";
+      })
+      .addCase(verifyPayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

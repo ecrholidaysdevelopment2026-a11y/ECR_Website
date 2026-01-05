@@ -1,4 +1,6 @@
-import { forwardRef, useImperativeHandle, useEffect, useState } from "react";
+import { forwardRef, useImperativeHandle, useEffect } from "react";
+import { errorAlert } from "../utils/alertService";
+import { verifyPayment } from "../store/slice/bookingSlice";
 
 const Payment = forwardRef(({ totalAmount }, ref) => {
     useEffect(() => {
@@ -20,7 +22,7 @@ const Payment = forwardRef(({ totalAmount }, ref) => {
         if (!razorpayOrderId) return errorAlert("Invalid order ID");
         try {
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                key: process.env.NEXT_RAZORPAY_KEY_ID,
                 amount: totalAmount * 100,
                 currency: "INR",
                 name: "Nanmai",
@@ -47,11 +49,6 @@ const Payment = forwardRef(({ totalAmount }, ref) => {
                     } catch (err) {
                         console.error("Verification error:", err);
                     }
-                },
-                prefill: {
-                    name: userData?.firstName,
-                    email: userData?.email,
-                    contact: userData?.mobile,
                 },
             };
             const razor = new window.Razorpay(options);

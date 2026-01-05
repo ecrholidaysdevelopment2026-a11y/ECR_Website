@@ -121,3 +121,11 @@ body {
 .swiper-button-next {
   color: white !important;
 }
+
+.rdrCalendarWrapper {
+  width: 290px !important;
+}
+
+.rdrMonth {
+  width: 100% !important;
+}

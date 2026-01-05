@@ -115,13 +115,6 @@ const VillaDetailsSection = ({ slug }) => {
             checkInDate: selection.startDate,
             checkOutDate: selection.endDate,
         }));
-        if (window.innerWidth < 768) {
-            setTimeout(() => {
-                document
-                    .getElementById("booking-card-mobile")
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 200);
-        }
     };
 
 
@@ -272,7 +265,7 @@ const VillaDetailsSection = ({ slug }) => {
                 {bookingData.showCalendar && (
                     <div
                         ref={calendarRef}
-                        className="absolute md:absolute  md:top-full top-0 left-0 right-0 md:left-0 z-50 bg-white shadow-xl"
+                        className="absolute md:absolute  md:top-full top-0 left-0 right-0 md:left-0 z-50 bg-white shadow-xl "
                     >
                         <DateRange
                             editableDateInputs={false}

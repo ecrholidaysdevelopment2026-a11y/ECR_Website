@@ -565,7 +565,7 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                         <div className="border-t border-gray-300 pt-8 md:pt-10 mb-10">
                             <h2 className="text-lg font-semibold mb-4 md:mb-6">Popular amenities</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
                                 {amenities?.map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 text-sm">
                                         <span className="text-lg">

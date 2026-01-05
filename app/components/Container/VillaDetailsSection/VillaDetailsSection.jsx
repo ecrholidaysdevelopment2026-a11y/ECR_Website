@@ -19,7 +19,7 @@ import Link from "next/link";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { errorAlert, warningAlert } from "@/app/utils/alertService";
+import { errorAlert, successAlert, warningAlert } from "@/app/utils/alertService";
 import { services } from "@/app/utils/villaDummyData";
 import useClickOutside from "@/app/utils/useClickOutside";
 import Modal from "@/app/common/CommonModel";
@@ -31,11 +31,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Payment from "@/app/common/Payment";
 import { openPopup } from "@/app/store/slice/popupSlice";
+import { useRouter } from "next/navigation";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
+    const router = useRouter()
     const { selectedVilla, weeklyPrice, loading } = useSelector((state) => state.villas);
-    const { bookingDetails, bookingerror, bookingMsg } = useSelector((state) => state.booking)
+    const { bookingDetails, bookingerror, bookingMsg, message, error } = useSelector((state) => state.booking)
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
     const paymentRef = useRef();
@@ -51,9 +53,6 @@ const VillaDetailsSection = ({ slug }) => {
         isGuestDropdownOpen: false,
         showCalendar: false
     });
-
-
-
     const [showBuyNowButton, setShowBuyNowButton] = useState(false);
     const calendarRef = useRef(null);
     const guestDropdownRef = useRef(null);
@@ -69,6 +68,19 @@ const VillaDetailsSection = ({ slug }) => {
     }, [selectedVilla?._id, dispatch]);
 
     useEffect(() => {
+        if (message) {
+            successAlert(message)
+            router.push("/")
+            dispatch(clearBookingError())
+        }
+        if (error) {
+            errorAlert(error)
+            dispatch(clearBookingError())
+        }
+    }, [message, error])
+
+
+    useEffect(() => {
         const handleScroll = () => {
             if (window.innerWidth < 1024) {
                 const bookingCard = document.getElementById('booking-card-mobile');
@@ -80,10 +92,8 @@ const VillaDetailsSection = ({ slug }) => {
                 setShowBuyNowButton(false);
             }
         };
-
         window.addEventListener('scroll', handleScroll);
         handleScroll();
-
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -93,20 +103,27 @@ const VillaDetailsSection = ({ slug }) => {
                 setShowBuyNowButton(false);
             }
         };
-
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const handleDateChange = (ranges) => {
         const { selection } = ranges;
+
         setBookingData(prev => ({
             ...prev,
             checkInDate: selection.startDate,
             checkOutDate: selection.endDate,
-            showCalendar: false
         }));
+        if (window.innerWidth < 768) {
+            setTimeout(() => {
+                document
+                    .getElementById("booking-card-mobile")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 200);
+        }
     };
+
 
     const handleGuestChange = (type, operation) => {
         setBookingData(prev => ({
@@ -124,7 +141,6 @@ const VillaDetailsSection = ({ slug }) => {
         if (!selectedVilla?.price) return 0;
         const { checkInDate, checkOutDate } = bookingData;
         if (!checkInDate || !checkOutDate) return 0;
-
         const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
         const displayPrice = selectedVilla.isOffer && selectedVilla.offerPrice
             ? selectedVilla.offerPrice
@@ -169,9 +185,13 @@ const VillaDetailsSection = ({ slug }) => {
         }
     };
 
-    useClickOutside(calendarRef, () => setBookingData(prev => ({ ...prev, showCalendar: false })));
-    useClickOutside(guestDropdownRef, () => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false })));
+    useClickOutside(calendarRef, () => {
+        if (window.innerWidth >= 768) {
+            setBookingData(prev => ({ ...prev, showCalendar: false }));
+        }
+    });
 
+    useClickOutside(guestDropdownRef, () => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false })));
 
     if (!selectedVilla) {
         return (
@@ -234,7 +254,14 @@ const VillaDetailsSection = ({ slug }) => {
             <div className="mb-5 relative">
                 <div
                     className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition"
-                    onClick={() => setBookingData(prev => ({ ...prev, showCalendar: !prev.showCalendar }))}
+                    onClick={() =>
+                        setBookingData(prev => ({
+                            ...prev,
+                            showCalendar: true,
+                            isGuestDropdownOpen: false
+                        }))
+                    }
+
                 >
                     <p className="text-sm font-medium">Dates</p>
                     <p className="text-gray-600 text-sm">
@@ -243,7 +270,10 @@ const VillaDetailsSection = ({ slug }) => {
                 </div>
 
                 {bookingData.showCalendar && (
-                    <div ref={calendarRef} className="absolute top-full left-0 z-50  shadow-xl rounded-lg overflow-hidden">
+                    <div
+                        ref={calendarRef}
+                        className="absolute md:absolute  md:top-full top-0 left-0 right-0 md:left-0 z-50 bg-white shadow-xl"
+                    >
                         <DateRange
                             editableDateInputs={false}
                             onChange={handleDateChange}

@@ -71,7 +71,7 @@ export const verifyPayment = createAsyncThunk(
     const token = thunkAPI.getState()?.auth?.accessToken;
     try {
       const response = await FetchApi({
-        endpoint: `/user/booking/verify-payment`,
+        endpoint: `/user/bookings/verify-payment`,
         method: "POST",
         body: payload,
         token,

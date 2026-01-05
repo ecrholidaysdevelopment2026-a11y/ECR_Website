@@ -27,7 +27,7 @@ export default function BannerSection({ initialData = null }) {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
-    const { locations } = useSelector((state) => state.location)
+    const { locations ,loading} = useSelector((state) => state.location)
 
     useEffect(() => {
         dispatch(fetchVillaLocations())

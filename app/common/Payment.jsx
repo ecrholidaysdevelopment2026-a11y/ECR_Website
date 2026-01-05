@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, useEffect } from "react";
 import { errorAlert } from "../utils/alertService";
 import { verifyPayment } from "../store/slice/bookingSlice";
 
-const Payment = forwardRef(({ totalAmount }, ref) => {
+const Payment = forwardRef(({ totalAmount ,dispatch}, ref) => {
     useEffect(() => {
         if (!window.Razorpay) {
             const script = document.createElement("script");
@@ -43,9 +43,6 @@ const Payment = forwardRef(({ totalAmount }, ref) => {
                     };
                     try {
                         await dispatch(verifyPayment(verifyPayload))
-                        setTimeout(() => {
-                            navigate("/cart")
-                        }, 300)
                     } catch (err) {
                         console.error("Verification error:", err);
                     }

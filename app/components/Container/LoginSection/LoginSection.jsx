@@ -75,8 +75,6 @@ const LoginSection = () => {
                     <p className="text-white/80 mb-6">
                         Login to continue your booking
                     </p>
-
-                    {/* ✅ CUSTOM BUTTON */}
                     <button
                         type="button"
                         onClick={() => {
@@ -94,8 +92,6 @@ const LoginSection = () => {
                     >
                         Login
                     </button>
-
-                    {/* ✅ HIDDEN PHONE.EMAIL BUTTON (REQUIRED) */}
                     <div
                         className="pe_signin_button hidden"
                         data-client-id="18764793523090256493"

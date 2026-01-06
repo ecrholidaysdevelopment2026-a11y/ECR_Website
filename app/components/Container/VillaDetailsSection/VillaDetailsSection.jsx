@@ -14,9 +14,7 @@ import { clearBookingError, createBooking } from "@/app/store/slice/bookingSlice
 import CustomImage from "@/app/common/Image";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 import { getAmenityIcon } from "@/app/utils/amenityIcons";
-import { FiChevronDown, FiGrid } from "react-icons/fi";
 import Link from "next/link";
-import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { errorAlert, successAlert, warningAlert } from "@/app/utils/alertService";
@@ -80,7 +78,6 @@ const VillaDetailsSection = ({ slug }) => {
             dispatch(clearBookingError())
         }
     }, [message, error])
-
 
     useEffect(() => {
         if (window.innerWidth >= 1024) return;
@@ -219,7 +216,6 @@ const VillaDetailsSection = ({ slug }) => {
         : 0;
 
 
-
     useEffect(() => {
         if (bookingerror) {
             errorAlert(bookingerror)
@@ -258,12 +254,12 @@ const VillaDetailsSection = ({ slug }) => {
                     {villaName}
                 </p>
                 <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
-                    {allImages.length > 0 ? (
+                    {allImages?.length > 0 ? (
                         <>
                             <div className="md:col-span-2 md:row-span-2">
                                 <CustomImage src={coverImg} className="w-full h-full min-h-[300px] md:min-h-[400px] object-cover rounded-lg" alt={`${villaName} main`} />
                             </div>
-                            {allImages.slice(1, 5).map((image, i) => (
+                            {allImages?.slice(1, 5)?.map((image, i) => (
                                 <div key={i} className="h-[200px] md:h-auto relative">
                                     <CustomImage src={image} className="w-full h-full object-cover rounded-lg" alt={`${villaName} ${i + 1}`} />
                                     {i === 3 && (
@@ -286,13 +282,13 @@ const VillaDetailsSection = ({ slug }) => {
                     )}
                 </div>
                 <div className="md:hidden mb-6">
-                    {allImages.length > 0 ? (
+                    {allImages?.length > 0 ? (
                         <>
                             <div className="h-[250px] w-full mb-2">
                                 <CustomImage src={coverImg} className="w-full h-full object-cover rounded-lg" alt={`${villaName} main`} />
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                                {allImages.slice(1, 5).map((image, i) => (
+                                {allImages?.slice(1, 5)?.map((image, i) => (
                                     <div key={i} className="h-[120px]">
                                         <CustomImage src={image} className="w-full h-full object-cover rounded-lg" alt={`${villaName} ${i + 1}`} />
                                     </div>
@@ -376,9 +372,9 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                         <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
                             <h2 className="text-lg font-semibold mb-4 md:mb-6">Reviews</h2>
-                            {selectedVilla.reviews?.length > 0 ? (
+                            {selectedVilla?.reviews?.length > 0 ? (
                                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                                    {selectedVilla.reviews.map((r, i) => (
+                                    {selectedVilla?.reviews?.map((r, i) => (
                                         <div key={i} className="min-w-[280px] shrink-0 border border-gray-300 rounded-xl p-4">
                                             <div className="flex text-yellow-500 mb-2">
                                                 {Array.from({ length: Math.floor(r.rating || 5) }).map((_, i) => (

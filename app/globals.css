@@ -142,3 +142,16 @@ body {
     width: 280px !important;
   }
 }
+
+
+
+/* allow custom range background */
+.rdrDayDisabled {
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+
+/* let custom bar fill cell */
+.rdrDayNumber {
+  width: 100%;
+}

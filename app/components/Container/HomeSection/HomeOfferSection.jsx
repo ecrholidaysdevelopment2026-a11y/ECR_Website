@@ -67,11 +67,11 @@ export default function HomeOfferSection() {
                                     <h3 className="font-semibold text-[15px] leading-tight">
                                         {offer?.villaName}
                                         <span className="ml-1 font-medium">
-                                            {offer?.offerPercentage}% OFF
+                                            {offer?.offerPercentage}%
                                         </span>
                                     </h3>
                                 </div>
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="flex items-center gap-2 md:mt-2">
                                     <span className="line-through text-gray-400 text-sm">
                                         ₹{offer?.price}
                                     </span>

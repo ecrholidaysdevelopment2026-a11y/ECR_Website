@@ -1,16 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { FetchApi } from "../../api/FetchApi";
 
-
 export const getAllBlockedDates = createAsyncThunk(
   "blockedDates/getAll",
   async (_, thunkAPI) => {
-    const token = thunkAPI.getState()?.auth?.accessToken;
     try {
       const response = await FetchApi({
-        endpoint: "/user/blocked-dates/getAll",
+        endpoint: "/admin/blocked-dates/getAll",
         method: "GET",
-        token,
       });
 
       return response?.data || [];
@@ -22,17 +19,13 @@ export const getAllBlockedDates = createAsyncThunk(
   }
 );
 
-
 export const getBlockedDatesCalendar = createAsyncThunk(
   "blockedDates/calendar",
   async (_, thunkAPI) => {
-    const token = thunkAPI.getState()?.auth?.accessToken;
-
     try {
       const response = await FetchApi({
         endpoint: "/user/blocked-dates/calendar",
         method: "GET",
-        token,
       });
 
       return response?.data || [];
@@ -43,7 +36,6 @@ export const getBlockedDatesCalendar = createAsyncThunk(
     }
   }
 );
-
 
 const initialState = {
   blockedDates: [],
@@ -98,7 +90,6 @@ const blockedDatesSlice = createSlice({
       });
   },
 });
-
 
 export const { clearBlockedDatesMessage, clearBlockedDatesError } =
   blockedDatesSlice.actions;

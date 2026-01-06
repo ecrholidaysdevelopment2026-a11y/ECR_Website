@@ -1,6 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { DateRange } from "react-date-range";
 import { FiChevronDown, FiX } from "react-icons/fi";
+import { warningAlert } from "../utils/alertService";
 
 const BookingCard = memo(({
     weeklyPrice,
@@ -19,12 +20,13 @@ const BookingCard = memo(({
     calculateTotalPrice,
     handleBooking,
     loading,
-    checkInTime,
-    checkOutTime
+    disabledDates = [],
+    blockedRanges = []
 }) => {
     const totalGuests =
         bookingData.guestDetails.adults +
         bookingData.guestDetails.children;
+    const [hoveredReason, setHoveredReason] = useState(null);
 
     return (
         <div
@@ -112,10 +114,63 @@ const BookingCard = memo(({
                             ]}
                             minDate={new Date()}
                             rangeColors={["#2b1a08"]}
+                            disabledDates={disabledDates}
+                            dayContentRenderer={(date) => {
+                                const blocked = blockedRanges?.find(item => {
+                                    const start = new Date(item.startDate);
+                                    const end = new Date(item.endDate);
+                                    return date >= start && date <= end;
+                                });
+
+                                if (!blocked) {
+                                    return <span>{date.getDate()}</span>;
+                                }
+
+                                const start = new Date(blocked.startDate);
+                                const end = new Date(blocked.endDate);
+                                const isStart = date.toDateString() === start.toDateString();
+                                const isEnd = date.toDateString() === end.toDateString();
+                                return (
+                                    <div className="flex flex-col items-center w-full">
+                                        <div
+                                            title={blocked.reason}
+                                            onClick={(e) => {
+                                                if (window.innerWidth < 768) {
+                                                    e.stopPropagation();
+
+                                                    const start = new Date(blocked.startDate).toLocaleDateString("en-US", {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                    });
+                                                    const end = new Date(blocked.endDate).toLocaleDateString("en-US", {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                    });
+
+                                                    warningAlert(
+                                                        `${blocked.reason}\n${blocked.locationId?.locationName || ""}\n${start} - ${end}`
+                                                    );
+                                                }
+                                            }}
+                                            style={{
+                                                backgroundColor: blocked.color,
+                                                color: "#fff",
+                                            }}
+                                            className={`
+    h-6.5 w-full flex items-center justify-center text-sm cursor-not-allowed
+    ${isStart ? "rounded-l-full" : ""}
+    ${isEnd ? "rounded-r-full" : ""}
+  `}
+                                        >
+                                            {date.getDate()}
+                                        </div>
+                                    </div>
+                                );
+                            }}
+
                         />
                     </div>
                 )}
-
             </div>
             <div className="mb-5 relative">
                 <div

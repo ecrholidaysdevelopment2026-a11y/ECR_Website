@@ -32,6 +32,7 @@ import { openPopup } from "@/app/store/slice/popupSlice";
 import { useRouter } from "next/navigation";
 import BookingCard from "@/app/common/BookingCard";
 import { FiGrid } from "react-icons/fi";
+import { getAllBlockedDates } from "@/app/store/slice/blockedDatesSlice";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const VillaDetailsSection = ({ slug }) => {
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
     const [promoCode, setPromoCode] = useState("");
-
+    const { blockedDates } = useSelector((state) => state.blockedDates)
     const paymentRef = useRef();
     const [bookingData, setBookingData] = useState({
         checkInDate: new Date(),
@@ -58,15 +59,23 @@ const VillaDetailsSection = ({ slug }) => {
     const calendarRef = useRef(null);
     const guestDropdownRef = useRef(null);
 
+
+
     useEffect(() => {
         dispatch(getVillaBySlug(slug));
     }, [slug, dispatch]);
+
+    useEffect(() => {
+        dispatch(getAllBlockedDates())
+    }, [dispatch]);
 
     useEffect(() => {
         if (selectedVilla?._id) {
             dispatch(fetchWeeklyPrice(selectedVilla._id));
         }
     }, [selectedVilla?._id, dispatch]);
+
+
 
     useEffect(() => {
         if (message) {
@@ -79,6 +88,7 @@ const VillaDetailsSection = ({ slug }) => {
             dispatch(clearBookingError())
         }
     }, [message, error])
+
 
     useEffect(() => {
         if (window.innerWidth >= 1024) return;
@@ -104,15 +114,32 @@ const VillaDetailsSection = ({ slug }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const handleDateChange = (ranges) => {
-        const { selection } = ranges;
-        setBookingData(prev => ({
-            ...prev,
-            checkInDate: selection.startDate,
-            checkOutDate: selection.endDate,
-        }));
+
+    const isDateBlocked = (date) => {
+        return applicableBlockedDates?.some(item => {
+            const start = new Date(item.startDate);
+            const end = new Date(item.endDate);
+            return date >= start && date <= end;
+        });
     };
 
+
+    const handleDateChange = (ranges) => {
+        const { startDate, endDate } = ranges.selection;
+        let current = new Date(startDate);
+        while (current <= endDate) {
+            if (isDateBlocked(current)) {
+                warningAlert("Selected dates include blocked dates");
+                return;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+        setBookingData(prev => ({
+            ...prev,
+            checkInDate: startDate,
+            checkOutDate: endDate,
+        }));
+    };
 
     const handleGuestChange = (type, operation) => {
         setBookingData(prev => ({
@@ -179,7 +206,6 @@ const VillaDetailsSection = ({ slug }) => {
             setBookingData(prev => ({ ...prev, showCalendar: false }));
         }
     });
-
     useClickOutside(guestDropdownRef, () => setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false })));
 
     if (!selectedVilla) {
@@ -236,6 +262,35 @@ const VillaDetailsSection = ({ slug }) => {
             );
         }
     }, [bookingMsg, bookingDetails]);
+
+    const applicableBlockedDates = blockedDates?.filter(item => {
+        if (item.villaId && item.villaId === selectedVilla?._id) {
+            return true;
+        }
+        if (
+            !item.villaId &&
+            item.locationId?._id === selectedVilla?.locationId?._id
+        ) {
+            return true;
+        }
+        return false;
+    });
+
+
+
+    console.log(applicableBlockedDates);
+    
+    const disabledDates = applicableBlockedDates?.flatMap(item => {
+        const dates = [];
+        let current = new Date(item.startDate);
+        const end = new Date(item.endDate);
+        while (current <= end) {
+            dates.push(new Date(current));
+            current.setDate(current.getDate() + 1);
+        }
+        return dates;
+    });
+
 
     return (
         <>
@@ -414,6 +469,8 @@ const VillaDetailsSection = ({ slug }) => {
                                 loading={loading}
                                 checkInTime={checkInTime}
                                 checkOutTime={checkOutTime}
+                                disabledDates={disabledDates}
+                                blockedRanges={applicableBlockedDates}
                             />
 
                         </div>
@@ -439,6 +496,8 @@ const VillaDetailsSection = ({ slug }) => {
                                 loading={loading}
                                 checkInTime={checkInTime}
                                 checkOutTime={checkOutTime}
+                                disabledDates={disabledDates}
+                                blockedRanges={applicableBlockedDates}
                             />
                             <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                                 <MapPicker initialPosition={mapPosition} isInput={false} />

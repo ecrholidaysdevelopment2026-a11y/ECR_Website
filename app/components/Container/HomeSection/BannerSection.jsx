@@ -27,7 +27,7 @@ export default function BannerSection({ initialData = null }) {
     const [children, setChildren] = useState(0);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
-    const { locations ,loading} = useSelector((state) => state.location)
+    const { locations, loading } = useSelector((state) => state.location)
 
     useEffect(() => {
         dispatch(fetchVillaLocations())
@@ -110,7 +110,7 @@ export default function BannerSection({ initialData = null }) {
                                     <button
                                         key={item._id}
                                         onClick={() => {
-                                            setDestination(item.slug); 
+                                            setDestination(item.slug);
                                             setMobilePopup(false);
                                         }}
                                         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"

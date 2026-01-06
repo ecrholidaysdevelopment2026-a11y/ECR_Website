@@ -5,6 +5,7 @@ import userReducer from "./slice/userSlice";
 import popupReducer from "./slice/popupSlice";
 import locationReducer from "./slice/locationSlice";
 import bookingnReducer from "./slice/bookingSlice";
+import blockedDatesReducer from "./slice/blockedDatesSlice";
 const reducer = combineReducers({
   auth: authReducer,
   user: userReducer,
@@ -12,5 +13,6 @@ const reducer = combineReducers({
   popup: popupReducer,
   location: locationReducer,
   booking: bookingnReducer,
+  blockedDates: blockedDatesReducer,
 });
 export default reducer;

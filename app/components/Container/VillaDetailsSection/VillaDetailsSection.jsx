@@ -6,6 +6,8 @@ import {
     FaMapMarkerAlt,
     FaShoppingCart,
     FaArrowDown,
+    FaUserFriends,
+    FaBed,
 } from "react-icons/fa";
 import MapPicker from "@/app/common/MapPicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -354,15 +356,19 @@ const VillaDetailsSection = ({ slug }) => {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
-                        <h1 className="text-xl md:text-2xl font-semibold mb-2">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm ">
-                            <span className="flex items-center gap-1">
+                        <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm text-gray-700">
+                            <span className="flex items-center gap-2">
+                                <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests
                             </span>
-                            <span>{selectedVilla?.bedrooms} bedroom</span>
-                            <span>{selectedVilla?.beds} bed</span>
-                            <span className="flex items-center gap-1">
-                                <FaMapMarkerAlt /> {locationId?.locationName || "Location"}
+                            <span className="flex items-center gap-2">
+                                <FaBed className="text-gray-500" />
+                                {selectedVilla?.bedrooms} bedroom
+                            </span>
+                            <span className="flex items-center gap-2">
+                                <FaMapMarkerAlt className="text-gray-500" />
+                                {locationId?.locationName || "Location"}
                             </span>
                         </div>
                         <div className="mb-7 flex items-center gap-2 text-sm text-gray-700">

@@ -25,6 +25,10 @@ body {
   color: var(--primary-red);
 }
 
+.text_montserrat {
+  font-family: var(--font-montserrat);
+}
+
 .text_manrope {
   font-family: var(--font-manrope);
 }

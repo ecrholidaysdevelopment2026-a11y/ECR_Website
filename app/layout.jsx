@@ -1,4 +1,3 @@
-import "./globals.css";
 import ReduxProvider from "./provider/ReduxProvider";
 import ConditionalHeader from "./common/ConditionalHeader";
 import Script from "next/script";
@@ -7,6 +6,7 @@ import ConditionalFooter from "./common/ConditionalFooter";
 import ToastProvider from "./common/ToastProvider";
 import PopupManager from "./common/PopupManager";
 import "leaflet/dist/leaflet.css";
+import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),

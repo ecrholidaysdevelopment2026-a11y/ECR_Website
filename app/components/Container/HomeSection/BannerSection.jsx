@@ -2,16 +2,15 @@
 import { useEffect, useRef, useState } from "react";
 import { FiMapPin, FiCalendar, FiUser, FiSearch, FiX } from "react-icons/fi";
 import { usePathname, useRouter } from "next/navigation";
-import { DateRange } from "react-date-range";
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
 import useClickOutside from "@/app/utils/useClickOutside";
 import { fetchVillaLocations } from "@/app/store/slice/locationSlice";
 import { useDispatch, useSelector } from "react-redux";
+import CustomCalendar from "@/app/common/CustomCalendar";
+import GuestDropdown from "@/app/common/GuestDropdown";
 
 export default function BannerSection({ initialData = null }) {
     const router = useRouter();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [destination, setDestination] = useState("");
     const [showCalendar, setShowCalendar] = useState(false);
     const [mobilePopup, setMobilePopup] = useState(false);
@@ -21,17 +20,18 @@ export default function BannerSection({ initialData = null }) {
     const calendarRef = useRef(null);
     const pathname = usePathname();
     const [dateRange, setDateRange] = useState([
-        { startDate: new Date(), endDate: new Date(), key: "selection" }
+        { startDate: new Date(), endDate: new Date(new Date().setDate(new Date().getDate() + 2)), key: "selection" }
     ]);
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
+    const [rooms, setRooms] = useState(1);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
-    const { locations, loading } = useSelector((state) => state.location)
+    const { locations, loading } = useSelector((state) => state.location);
 
     useEffect(() => {
-        dispatch(fetchVillaLocations())
-    }, [])
+        dispatch(fetchVillaLocations());
+    }, []);
 
     useEffect(() => {
         if (!initialData) return;
@@ -47,38 +47,49 @@ export default function BannerSection({ initialData = null }) {
         }
         setAdults(Number(initialData.adults || 1));
         setChildren(Number(initialData.children || 0));
+        setRooms(Number(initialData.rooms || 1));
     }, [initialData]);
-
 
     const handleSearch = () => {
         const searchData = {
             destination,
-            checkIn: dateRange[0].startDate.toISOString(),
-            checkOut: dateRange[0].endDate.toISOString(),
+            checkIn: dateRange[0].startDate.toISOString().split('T')[0],
+            checkOut: dateRange[0].endDate.toISOString().split('T')[0],
             guests: totalGuests,
             adults,
             children,
+            rooms
         };
+
         localStorage.setItem("searchParams", JSON.stringify(searchData));
         const queryString = "?" + new URLSearchParams(searchData).toString();
+
         if (pathname === "/search") {
             router.replace(`/search${queryString}`);
         } else {
             router.push(`/search${queryString}`);
         }
+        setShowCalendar(false);
+        setShowGuestDropdown(false);
     };
 
     useClickOutside(guestRef, () => setShowGuestDropdown(false));
     useClickOutside(calendarRef, () => setShowCalendar(false));
 
+    const formatDateRange = (start, end) => {
+        const options = { month: 'short', day: 'numeric' };
+        const startStr = start.toLocaleDateString('en-US', options);
+        const endStr = end.toLocaleDateString('en-US', options);
+        return `${startStr} - ${endStr}`;
+    };
+
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
-            {
-                pathname === "/" &&
+            {pathname === "/" && (
                 <h1 className="text-3xl md:text-4xl font-semibold text-black mb-3 mt-10">
                     Entire place, just for you
                 </h1>
-            }
+            )}
             <div className="md:hidden w-full max-w-md mx-auto">
                 <div
                     className="flex items-center gap-3 border rounded-full p-3 bg-white shadow-md cursor-pointer"
@@ -89,6 +100,7 @@ export default function BannerSection({ initialData = null }) {
                         {destination || "Where are you going?"}
                     </p>
                 </div>
+
                 {mobilePopup && (
                     <div className="fixed inset-0 mt-20 z-50 flex justify-center p-4">
                         <div
@@ -101,8 +113,9 @@ export default function BannerSection({ initialData = null }) {
                             >
                                 <FiX />
                             </button>
+
                             <h2 className="text-lg font-semibold mb-4">Where to?</h2>
-                            <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
+                            <div className="bg-white rounded-xl shadow-lg border overflow-hidden mb-6">
                                 {loading && (
                                     <p className="px-5 py-4 text-sm text-gray-500">Loading locations...</p>
                                 )}
@@ -118,7 +131,6 @@ export default function BannerSection({ initialData = null }) {
                                         <div className="w-10 h-10 rounded-full border flex items-center justify-center text-gray-600">
                                             <FiMapPin size={18} />
                                         </div>
-
                                         <span className="text-base font-medium text-gray-900">
                                             {item.locationName}
                                         </span>
@@ -129,14 +141,16 @@ export default function BannerSection({ initialData = null }) {
                                 )}
                             </div>
                             <h2 className="text-lg font-semibold mb-4">When</h2>
-                            <DateRange
-                                editableDateInputs
-                                onChange={(item) => setDateRange([item.selection])}
-                                moveRangeOnFirstSelection={false}
-                                ranges={dateRange}
-                                className="mb-4"
-                            />
-                            <h2 className="text-lg font-semibold mb-4">Guests</h2>
+                            <div className="mb-6 lg:hidden">
+                                <CustomCalendar
+                                    dateRange={dateRange}
+                                    setDateRange={setDateRange}
+                                    showFlexible={true}
+                                    showExact={true}
+                                    isMobile={true}
+                                />
+                            </div>
+                            <h2 className="text-lg font-semibold mb-4">Guests & Rooms</h2>
                             <div className="flex justify-between items-center py-3 border-b">
                                 <div>
                                     <p className="font-medium">Adults</p>
@@ -145,20 +159,20 @@ export default function BannerSection({ initialData = null }) {
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setAdults(a => Math.max(1, a - 1))}
-                                        className="w-8 h-8 border rounded-full"
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
                                     >
                                         −
                                     </button>
-                                    <span>{adults}</span>
+                                    <span className="w-6 text-center">{adults}</span>
                                     <button
                                         onClick={() => setAdults(a => a + 1)}
-                                        className="w-8 h-8 border rounded-full"
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
                                     >
                                         +
                                     </button>
                                 </div>
                             </div>
-                            <div className="flex justify-between items-center py-3">
+                            <div className="flex justify-between items-center py-3 border-b">
                                 <div>
                                     <p className="font-medium">Children</p>
                                     <p className="text-xs text-gray-500">Ages 2–12</p>
@@ -166,25 +180,51 @@ export default function BannerSection({ initialData = null }) {
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setChildren(c => Math.max(0, c - 1))}
-                                        className="w-8 h-8 border rounded-full"
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
                                     >
                                         −
                                     </button>
-                                    <span>{children}</span>
+                                    <span className="w-6 text-center">{children}</span>
                                     <button
                                         onClick={() => setChildren(c => c + 1)}
-                                        className="w-8 h-8 border rounded-full"
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
                                     >
                                         +
                                     </button>
                                 </div>
+                            </div>
+                            <div className="flex justify-between items-center py-3">
+                                <div>
+                                    <p className="font-medium">Rooms</p>
+                                    <p className="text-xs text-gray-500">Number of rooms</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => setRooms(r => Math.max(1, r - 1))}
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
+                                    >
+                                        −
+                                    </button>
+                                    <span className="w-6 text-center">{rooms}</span>
+                                    <button
+                                        onClick={() => setRooms(r => r + 1)}
+                                        className="w-8 h-8 border rounded-full hover:bg-gray-100"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-3 border-t">
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Total: {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}, {rooms} Room{rooms !== 1 ? 's' : ''}
+                                </p>
                             </div>
                             <button
                                 onClick={() => {
                                     handleSearch();
                                     setMobilePopup(false);
                                 }}
-                                className="w-full bg-[#2c2c2c] text-white py-3 rounded-full my-6 flex items-center justify-center gap-2"
+                                className="w-full bg-[#2c2c2c] text-white py-3 rounded-full my-6 flex items-center justify-center gap-2 hover:bg-black transition"
                             >
                                 <FiSearch /> Search
                             </button>
@@ -198,7 +238,7 @@ export default function BannerSection({ initialData = null }) {
                         <FiMapPin />
                     </div>
                     <div
-                        className="text-left cursor-pointer"
+                        className="text-left cursor-pointer min-w-[120px]"
                         onClick={() => setShowDestination(!showDestination)}
                     >
                         <p className="text-xs text-gray-500">Where</p>
@@ -236,7 +276,6 @@ export default function BannerSection({ initialData = null }) {
                         </div>
                     )}
                 </div>
-
                 <div className="flex items-center gap-3 border-r px-5 relative">
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"
@@ -245,28 +284,34 @@ export default function BannerSection({ initialData = null }) {
                         <FiCalendar />
                     </div>
                     <div
-                        className="text-left cursor-pointer"
+                        className="text-left cursor-pointer min-w-[150px]"
                         onClick={() => setShowCalendar(!showCalendar)}
                     >
                         <p className="text-xs text-gray-500">When</p>
                         <p className="text-sm">
-                            {dateRange[0].startDate.toLocaleDateString()} -{" "}
-                            {dateRange[0].endDate.toLocaleDateString()}
+                            {formatDateRange(dateRange[0].startDate, dateRange[0].endDate)}
                         </p>
                     </div>
-
                     {showCalendar && (
-                        <div ref={calendarRef} className="absolute top-14 z-50">
-                            <DateRange
-                                editableDateInputs
-                                onChange={(item) => setDateRange([item.selection])}
-                                moveRangeOnFirstSelection={false}
-                                ranges={dateRange}
+                        <div
+                            ref={calendarRef}
+                            className="
+    absolute top-1
+    left-1/1 -translate-x-1/2
+    z-50 bg-white p-6 rounded-xl shadow-xl border border-gray-300
+    w-[700px] max-w-[calc(100vw-40px)]
+  "
+                        >
+                            <CustomCalendar
+                                dateRange={dateRange}
+                                setDateRange={setDateRange}
+                                showFlexible={true}
+                                isMobile={false}
                             />
                         </div>
                     )}
                 </div>
-                <div className="flex items-center gap-3 px-5 relative">
+                <div className="flex items-center gap-3 px-5 relative" ref={guestRef}>
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"
                         onClick={() => setShowGuestDropdown(!showGuestDropdown)}
@@ -274,70 +319,30 @@ export default function BannerSection({ initialData = null }) {
                         <FiUser />
                     </div>
                     <div
-                        className="cursor-pointer text-left"
+                        className="cursor-pointer text-left min-w-[120px]"
                         onClick={() => setShowGuestDropdown(!showGuestDropdown)}
                     >
                         <p className="text-xs text-gray-500">Who</p>
-                        <p className="text-sm">{totalGuests} Guests</p>
+                        <p className="text-sm">
+                            {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}, {rooms} Room{rooms !== 1 ? 's' : ''}
+                        </p>
                     </div>
                     {showGuestDropdown && (
-                        <div
-                            ref={guestRef}
-                            className="absolute top-14 right-0 w-72 bg-white rounded-xl shadow-xl p-4 z-50">
-                            <div className="flex justify-between items-center py-3 border-b">
-                                <div>
-                                    <p className="font-medium text-sm">Adults</p>
-                                    <p className="text-xs text-gray-500">Age 13+</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={() => setAdults(a => Math.max(1, a - 1))}
-                                        className="w-8 h-8 border rounded-full"
-                                    >
-                                        −
-                                    </button>
-                                    <span>{adults}</span>
-                                    <button
-                                        onClick={() => setAdults(a => a + 1)}
-                                        className="w-8 h-8 border rounded-full"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-center py-3 border-b">
-                                <div>
-                                    <p className="font-medium text-sm">Children</p>
-                                    <p className="text-xs text-gray-500">Ages 2–12</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={() => setChildren(c => Math.max(0, c - 1))}
-                                        className="w-8 h-8 border rounded-full"
-                                    >
-                                        −
-                                    </button>
-                                    <span>{children}</span>
-                                    <button
-                                        onClick={() => setChildren(c => c + 1)}
-                                        className="w-8 h-8 border rounded-full"
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                            </div>
-                            <button
-                                onClick={() => setShowGuestDropdown(false)}
-                                className="mt-4 w-full bg-[#2c2c2c] text-white py-2 rounded-lg"
-                            >
-                                Apply
-                            </button>
-                        </div>
+                        <GuestDropdown
+                            adults={adults}
+                            setAdults={setAdults}
+                            children={children}
+                            setChildren={setChildren}
+                            rooms={rooms}
+                            setRooms={setRooms}
+                            showGuestDropdown={showGuestDropdown}
+                            setShowGuestDropdown={setShowGuestDropdown}
+                        />
                     )}
                 </div>
                 <button
                     onClick={handleSearch}
-                    className="w-20 h-10 bg-[#2c2c2c] rounded-full flex items-center justify-center text-white text-xl"
+                    className="w-20 h-10 bg-[#2c2c2c] rounded-full flex items-center justify-center text-white text-xl hover:bg-black transition"
                 >
                     <FiSearch />
                 </button>

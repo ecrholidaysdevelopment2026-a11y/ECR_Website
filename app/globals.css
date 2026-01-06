@@ -126,7 +126,6 @@ body {
   color: white !important;
 }
 
-
 .rdrMonth {
   width: 100% !important;
 }
@@ -143,8 +142,6 @@ body {
   }
 }
 
-
-
 /* allow custom range background */
 .rdrDayDisabled {
   background: transparent !important;
@@ -154,4 +151,33 @@ body {
 /* let custom bar fill cell */
 .rdrDayNumber {
   width: 100%;
+}
+
+.custom-calendar {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.custom-calendar button {
+  transition: all 0.2s ease;
+}
+
+.custom-calendar button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.custom-calendar .bg-blue-100 {
+  background-color: #dbeafe;
+}
+
+.custom-calendar .bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.custom-calendar .hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
+}
+
+.custom-calendar .hover\:bg-gray-50:hover {
+  background-color: #f9fafb;
 }

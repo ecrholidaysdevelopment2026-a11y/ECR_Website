@@ -276,10 +276,6 @@ const VillaDetailsSection = ({ slug }) => {
         return false;
     });
 
-
-
-    console.log(applicableBlockedDates);
-    
     const disabledDates = applicableBlockedDates?.flatMap(item => {
         const dates = [];
         let current = new Date(item.startDate);
@@ -290,7 +286,6 @@ const VillaDetailsSection = ({ slug }) => {
         }
         return dates;
     });
-
 
     return (
         <>
@@ -375,17 +370,6 @@ const VillaDetailsSection = ({ slug }) => {
                             <span>
                                 {selectedVilla.reviews?.length || 5} reviews
                             </span>
-                        </div>
-                        <div className="w-full bg-white border-y border-gray-300 py-4 mb-10">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <img src="https://i.pravatar.cc/100?img=12" alt="Host" className="w-10 h-10 rounded-full object-cover" />
-                                    <p className="text-sm font-medium text-gray-800">Sural Gaon, Mukteshwar</p>
-                                </div>
-                                <button className="px-4 py-2 text-sm font-medium rounded-full bg-gray-100 hover:bg-gray-200 transition">
-                                    Contact Host
-                                </button>
-                            </div>
                         </div>
                         <h2 className="text-lg font-semibold mb-2">About this property</h2>
                         <p className="text-gray-600 leading-relaxed pb-5 border-b border-gray-300 mb-10">

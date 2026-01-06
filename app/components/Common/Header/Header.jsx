@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -7,46 +8,116 @@ import { FiPhoneCall } from "react-icons/fi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { FaUserCircle } from "react-icons/fa";
 import EcrLogo from "@/app/assets/ecr-logo.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openPopup } from "@/app/store/slice/popupSlice";
-import { usePathname } from "next/navigation";
+import { logout } from "@/app/store/slice/authSlice";
+import { usePathname, useRouter } from "next/navigation";
+import { successAlert } from "@/app/utils/alertService";
 
 export default function Header() {
-    const pathname = usePathname()
+    const pathname = usePathname();
+    const router = useRouter();
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
+    const [profileOpen, setProfileOpen] = useState(false);
+    const { accessToken } = useSelector((state) => state.auth);
     const toggleMenu = () => setOpen(!open);
-    const path = pathname === "/" || pathname === "/login" || pathname === "/register" || pathname === "/search" || pathname.startsWith("/destination");
+    const path =
+        pathname === "/" ||
+        pathname === "/login" ||
+        pathname === "/register" ||
+        pathname === "/search" ||
+        pathname.startsWith("/destination");
+
+    const handleLogout = () => {
+        dispatch(logout());
+        successAlert("Logged out successfully");
+        setProfileOpen(false);
+        setOpen(false);
+        router.push("/");
+    };
 
     return (
-        <header className={`w-full sticky top-0 z-50 ${path ? "bg-transparent" : " bg-white shadow-sm"
-            } `}>
-            <div className=" mx-auto px-3 md:px-30 py-4 flex items-center justify-between">
-                <Link href={"/"} className="flex items-center gap-3">
+        <header
+            className={`w-full sticky top-0 z-50 ${path ? "bg-transparent" : "bg-white shadow-sm"
+                }`}
+        >
+            <div className="mx-auto px-3 md:px-30 py-4 flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-3">
                     <Image
                         src={EcrLogo}
                         alt="ECR Holidays"
                         width={80}
                         height={80}
-                        quality={100}
                         className="w-24 h-auto"
                     />
                 </Link>
                 <div className="flex items-center gap-4">
-                    <div className="hidden lg:flex items-center gap-8 text_inter ">
-                        <div className="flex items-center gap-2 text-[14px] text-gray-800 font-semibold">
-                            <FiPhoneCall className="text-black" />
+                    <div className="hidden lg:flex items-center gap-8">
+                        <a
+                            href="tel:+919498656273"
+                            className="flex items-center gap-2 text-[14px] font-semibold"
+                        >
+                            <FiPhoneCall />
                             Call to Book +91 94986 56273
-                        </div>
-                        <Link href="#" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
+                        </a>
+
+                        <Link
+                            href="/partner"
+                            className="hover:text-[#AE7F42] text-[14px] font-semibold"
+                        >
                             Partner with Us
                         </Link>
-                        <Link href="/member" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
-                            Become a Member
-                        </Link>
                     </div>
-                    <FaUserCircle className="text-[#B78E54] w-8 h-8" />
-                    <button onClick={toggleMenu}>
+                    {accessToken ? (
+                        <div
+                            className="relative hidden md:block"
+                            onMouseEnter={() => setProfileOpen(true)}
+                            onMouseLeave={() => setProfileOpen(false)}
+                        >
+                            <FaUserCircle className="text-[#B78E54] w-8 h-8 cursor-pointer" />
+
+                            <AnimatePresence>
+                                {profileOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg overflow-hidden"
+                                    >
+                                        <Link
+                                            href="/profile"
+                                            className="block px-4 py-2 hover:bg-gray-100"
+                                        >
+                                            Profile
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                                        >
+                                            Logout
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    ) : (
+                        <div className="hidden md:flex gap-2">
+                            <button
+                                onClick={() => dispatch(openPopup("login"))}
+                                className="px-4 py-2 bg-black text-white rounded"
+                            >
+                                Login
+                            </button>
+                            <button
+                                onClick={() => dispatch(openPopup("register"))}
+                                className="px-4 py-2 bg-black text-white rounded"
+                            >
+                                Register
+                            </button>
+                        </div>
+                    )}
+                    <button onClick={toggleMenu} className="md:hidden">
                         <HiMenu className="text-3xl text-[#B78E54]" />
                     </button>
                 </div>
@@ -55,62 +126,64 @@ export default function Header() {
                 {open && (
                     <>
                         <motion.div
-                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+                            className="fixed inset-0 bg-black/40 z-40"
                             onClick={toggleMenu}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                         />
+
                         <motion.div
-                            className="fixed top-0 right-0 w-3/4 max-w-xs bg-white shadow-xl h-full z-50 p-6"
+                            className="fixed top-0 right-0 w-3/4 max-w-xs bg-white h-full z-50 p-6"
                             initial={{ x: "100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         >
-                            <button className="absolute top-6 right-6" onClick={toggleMenu}>
-                                <HiX className="text-3xl text-gray-700" />
+                            <button
+                                className="absolute top-6 right-6"
+                                onClick={toggleMenu}
+                            >
+                                <HiX className="text-3xl" />
                             </button>
-                            <div className="flex gap-4 mt-10">
-                                <button
-                                    onClick={() => {
-                                        dispatch(openPopup("login"))
-                                        toggleMenu()
-                                    }}
-                                    className="px-4 py-2 bg-black text-white rounded"
-                                >
-                                    Login
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        dispatch(openPopup("register"))
-                                        toggleMenu()
-                                    }}
-                                    className="px-4 py-2 bg-black text-white rounded"
-                                >
-                                    Register
-                                </button>
-                            </div>
-                            <div className="mt-14 space-y-6 lg:hidden">
-                                <div className="flex items-center gap-3 text-gray-700">
-                                    <FiPhoneCall /> Call to Book +91 94986 56273
-                                </div>
-
-                                <Link
-                                    href="#"
-                                    onClick={toggleMenu}
-                                    className="block text-gray-700 text-lg font-medium hover:text-[#AE7F42]"
-                                >
-                                    Partner with Us
-                                </Link>
-                                <Link
-                                    href="/member"
-                                    onClick={toggleMenu}
-                                    className="block text-gray-700 text-lg font-medium hover:text-[#AE7F42]"
-                                >
-                                    Become a Member
-                                </Link>
-
+                            <div className="mt-10 space-y-4">
+                                {accessToken ? (
+                                    <>
+                                        <Link
+                                            href="/profile"
+                                            onClick={toggleMenu}
+                                            className="block text-lg"
+                                        >
+                                            Profile
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="text-left text-red-600"
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={() => {
+                                                dispatch(openPopup("login"));
+                                                toggleMenu();
+                                            }}
+                                            className="w-full bg-black text-white py-2 rounded"
+                                        >
+                                            Login
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                dispatch(openPopup("register"));
+                                                toggleMenu();
+                                            }}
+                                            className="w-full bg-black text-white py-2 rounded"
+                                        >
+                                            Register
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </motion.div>
                     </>

@@ -56,7 +56,7 @@ const LoginSection = () => {
     }, [message, error, dispatch, router]);
 
     return (
-        <div className="relative h-[450px] w-full rounded-xl overflow-hidden">
+        <div className="relative h-[450px] w-full  overflow-hidden">
             <Image src={bgImg} alt="Login" fill priority className="object-cover" />
             <div className="absolute inset-0 bg-black/40" />
 

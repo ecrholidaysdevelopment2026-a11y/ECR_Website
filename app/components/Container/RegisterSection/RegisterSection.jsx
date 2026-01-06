@@ -48,7 +48,7 @@ const RegisterSection = () => {
     };
 
     return (
-        <div className="relative h-[450px] w-full rounded-xl overflow-hidden">
+        <div className="relative h-[450px] w-full  overflow-hidden">
             <Image
                 src={bgImg}
                 alt="Register Background"

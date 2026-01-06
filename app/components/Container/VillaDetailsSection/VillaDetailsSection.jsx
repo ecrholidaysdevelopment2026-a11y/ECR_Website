@@ -32,6 +32,7 @@ import "swiper/css/pagination";
 import Payment from "@/app/common/Payment";
 import { openPopup } from "@/app/store/slice/popupSlice";
 import { useRouter } from "next/navigation";
+import BookingCard from "@/app/common/BookingCard";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -82,21 +83,18 @@ const VillaDetailsSection = ({ slug }) => {
 
 
     useEffect(() => {
+        if (window.innerWidth >= 1024) return;
         const handleScroll = () => {
-            if (window.innerWidth < 1024) {
-                const bookingCard = document.getElementById('booking-card-mobile');
-                if (bookingCard) {
-                    const rect = bookingCard.getBoundingClientRect();
-                    setShowBuyNowButton(rect.bottom < 0 || rect.top > window.innerHeight);
-                }
-            } else {
-                setShowBuyNowButton(false);
-            }
+            const bookingCard = document.getElementById('booking-card-mobile');
+            if (!bookingCard) return;
+            const rect = bookingCard.getBoundingClientRect();
+            const shouldShow = rect.bottom < 0 || rect.top > window.innerHeight;
+            setShowBuyNowButton(prev => (prev !== shouldShow ? shouldShow : prev));
         };
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
 
     useEffect(() => {
         const handleResize = () => {
@@ -220,210 +218,7 @@ const VillaDetailsSection = ({ slug }) => {
         ? Math.ceil((bookingData.checkOutDate - bookingData.checkInDate) / (1000 * 60 * 60 * 24))
         : 0;
 
-    const BookingCard = () => (
-        <div id="booking-card-mobile" className="rounded-2xl border border-gray-300 shadow-lg p-5 bg-white">
-            {weeklyPrice?.length > 0 && (
-                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-4 mb-2 border-b border-gray-200">
-                    {weeklyPrice.map(({ date, price }, i) => (
-                        <div key={i} className="min-w-[90px] text-center rounded-lg px-3 py-1 text-sm border border-gray-300">
-                            <p className="text-xs text-gray-500">
-                                {new Date(date).toLocaleDateString("en-US", { day: "numeric", month: "short" })}
-                            </p>
-                            <p className="font-medium">₹{price}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
-            <div className="mb-2">
-                <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold">₹{displayPrice}</span>
-                    {isOffer && originalPrice && originalPrice > displayPrice && (
-                        <span className="text-lg text-gray-500 line-through">₹{originalPrice}</span>
-                    )}
-                    <span className="text-lg text-gray-600">/ night</span>
-                </div>
 
-            </div>
-            <div className="mb-5 relative">
-                <div
-                    className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition"
-                    onClick={() =>
-                        setBookingData(prev => ({
-                            ...prev,
-                            showCalendar: true,
-                            isGuestDropdownOpen: false
-                        }))
-                    }
-
-                >
-                    <p className="text-sm font-medium">Dates</p>
-                    <p className="text-gray-600 text-sm">
-                        {bookingData.checkInDate.toLocaleDateString()} - {bookingData.checkOutDate.toLocaleDateString()}
-                    </p>
-                </div>
-
-                {bookingData.showCalendar && (
-                    <div
-                        ref={calendarRef}
-                        className="absolute md:absolute  md:top-full top-0 left-0 right-0 md:left-0 z-50 bg-white shadow-xl "
-                    >
-                        <DateRange
-                            editableDateInputs={false}
-                            onChange={handleDateChange}
-                            moveRangeOnFirstSelection={false}
-                            ranges={[{
-                                startDate: bookingData.checkInDate,
-                                endDate: bookingData.checkOutDate,
-                                key: 'selection'
-                            }]}
-                            minDate={new Date()}
-                            rangeColors={['#2b1a08']}
-                        />
-                    </div>
-                )}
-            </div>
-
-            <div className="mb-5">
-                <div
-                    className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:border-gray-400 transition relative"
-                    onClick={() => setBookingData(prev => ({
-                        ...prev,
-                        isGuestDropdownOpen: !prev.isGuestDropdownOpen,
-                        showCalendar: false
-                    }))}
-                >
-
-                    <p className="text-sm font-medium mb-1">Guests</p>
-                    <div className="flex items-center justify-between">
-                        <p className="text-gray-600 text-sm">
-                            {bookingData.guestDetails.adults + bookingData.guestDetails.children} guest
-                            {(bookingData.guestDetails.adults + bookingData.guestDetails.children) > 1 ? 's' : ''}
-                        </p>
-                        <FiChevronDown className={`transition-transform ${bookingData.isGuestDropdownOpen ? 'rotate-180' : ''}`} />
-                    </div>
-                </div>
-
-                {bookingData.isGuestDropdownOpen && (
-                    <div className="mt-1 bg-white rounded-xl shadow-xl border border-gray-300 p-4 z-50 relative">
-                        <div className="flex justify-between items-center py-2 border-b">
-                            <div>
-                                <p className="font-medium text-sm">Adults</p>
-                                <p className="text-xs text-gray-500">Age 13+</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleGuestChange('adults', 'decrement')
-                                    }}
-                                    disabled={bookingData.guestDetails.adults <= 1}
-                                    className="w-8 h-8 border rounded-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    −
-                                </button>
-                                <span className="w-8 text-center font-medium">{bookingData.guestDetails.adults}</span>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleGuestChange('adults', 'increment')
-                                    }}
-                                    disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests}
-                                    className="w-8 h-8 border rounded-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex justify-between items-center py-2 border-b">
-                            <div>
-                                <p className="font-medium text-sm">Children</p>
-                                <p className="text-xs text-gray-500">Ages 2–12</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleGuestChange('children', 'decrement')
-                                    }}
-                                    disabled={bookingData.guestDetails.children <= 0}
-                                    className="w-8 h-8 border rounded-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    −
-                                </button>
-                                <span className="w-8 text-center font-medium">{bookingData.guestDetails.children}</span>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleGuestChange('children', 'increment')
-                                    }}
-                                    disabled={bookingData.guestDetails.adults + bookingData.guestDetails.children >= maxGuests}
-                                    className="w-8 h-8 border rounded-full flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-3">Maximum {maxGuests} guests</p>
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setBookingData(prev => ({ ...prev, isGuestDropdownOpen: false }));
-                            }}
-                            className="mt-4 w-full bg-[#2b1a08] text-white py-2 rounded-lg font-medium hover:bg-[#1f1206] transition"
-                        >
-                            Apply
-                        </button>
-                    </div>
-                )}
-            </div>
-            <div className="grid grid-cols-2 border border-gray-300 rounded-xl overflow-hidden mb-3">
-                <div className="p-4 border-r border-gray-300">
-                    <p className="text-xs text-gray-500 ">Check In</p>
-                    <p className="text-sm font-medium">
-                        {bookingData.checkInDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                    </p>
-                    <p className="text-xs text-gray-500 ">{checkInTime}</p>
-                </div>
-                <div className="p-4">
-                    <p className="text-xs text-gray-500 ">Check Out</p>
-                    <p className="text-sm font-medium">
-                        {bookingData.checkOutDate?.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                    </p>
-                    <p className="text-xs text-gray-500 ">{checkOutTime}</p>
-                </div>
-            </div>
-
-            <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-base">
-                    <span>₹{displayPrice} × {nights} night{nights !== 1 ? 's' : ''}</span>
-                    <span className="font-medium">₹{displayPrice * nights}</span>
-                </div>
-                {/* <div>
-                    <p className="text-sm font-medium mb-1">Promo Code</p>
-                    <input
-                        type="text"
-                        placeholder="Enter promo code"
-                        value={promoCode}
-                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#2b1a08]"
-                    />
-                </div> */}
-                <div className="border-t pt-4">
-                    <div className="flex justify-between text-lg font-semibold">
-                        <span>Total</span>
-                        <span>₹{calculateTotalPrice()}</span>
-                    </div>
-                </div>
-            </div>
-            <button
-                onClick={handleBooking}
-                disabled={loading || nights === 0}
-                className="w-full bg-[#2b1a08] text-white py-4 rounded-full font-semibold hover:bg-[#1f1206] transition disabled:opacity-50"
-            >
-                {loading ? 'Processing...' : 'Reserve'}
-            </button>
-        </div >
-    );
 
     useEffect(() => {
         if (bookingerror) {
@@ -603,12 +398,51 @@ const VillaDetailsSection = ({ slug }) => {
                             )}
                         </div>
                         <div className="lg:hidden mt-10">
-                            <BookingCard />
+                            <BookingCard
+                                weeklyPrice={weeklyPrice}
+                                displayPrice={displayPrice}
+                                originalPrice={originalPrice}
+                                isOffer={isOffer}
+                                bookingData={bookingData}
+                                setBookingData={setBookingData}
+                                calendarRef={calendarRef}
+                                handleDateChange={handleDateChange}
+                                handleGuestChange={handleGuestChange}
+                                maxGuests={maxGuests}
+                                nights={nights}
+                                promoCode={promoCode}
+                                setPromoCode={setPromoCode}
+                                calculateTotalPrice={calculateTotalPrice}
+                                handleBooking={handleBooking}
+                                loading={loading}
+                                checkInTime={checkInTime}
+                                checkOutTime={checkOutTime}
+                            />
+
                         </div>
                     </div>
                     <div className="hidden lg:block">
                         <div className="sticky top-24 space-y-6">
-                            <BookingCard />
+                            <BookingCard
+                                weeklyPrice={weeklyPrice}
+                                displayPrice={displayPrice}
+                                originalPrice={originalPrice}
+                                isOffer={isOffer}
+                                bookingData={bookingData}
+                                setBookingData={setBookingData}
+                                calendarRef={calendarRef}
+                                handleDateChange={handleDateChange}
+                                handleGuestChange={handleGuestChange}
+                                maxGuests={maxGuests}
+                                nights={nights}
+                                promoCode={promoCode}
+                                setPromoCode={setPromoCode}
+                                calculateTotalPrice={calculateTotalPrice}
+                                handleBooking={handleBooking}
+                                loading={loading}
+                                checkInTime={checkInTime}
+                                checkOutTime={checkOutTime}
+                            />
                             <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                                 <MapPicker initialPosition={mapPosition} isInput={false} />
                             </div>

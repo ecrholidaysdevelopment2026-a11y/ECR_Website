@@ -174,6 +174,30 @@ export const getVillaBySlug = createAsyncThunk(
   }
 );
 
+export const fetchVillasByOffer = createAsyncThunk(
+  "villas/byOffer",
+  async (percentage, thunkAPI) => {
+    try {
+      const response = await FetchApi({
+        endpoint: `/user/villas/by-offer?percentage=${percentage}`,
+        method: "GET",
+      });
+
+      if (response?.data?.success === false) {
+        return thunkAPI.rejectWithValue(
+          response?.data?.errors || "Failed to fetch villas by offer"
+        );
+      }
+
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.message || "Failed to fetch villas by offer"
+      );
+    }
+  }
+);
+
 const villaSlice = createSlice({
   name: "villas",
   initialState: {
@@ -183,6 +207,7 @@ const villaSlice = createSlice({
     featured: [],
     popular: [],
     selectedVilla: {},
+    offerVillas: [],
     weeklyPrice: null,
     villaVideos: [],
     loading: false,
@@ -300,6 +325,18 @@ const villaSlice = createSlice({
         state.selectedVilla = action.payload;
       })
       .addCase(getVillaBySlug.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchVillasByOffer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchVillasByOffer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.offerVillas = action.payload?.villas || action.payload || [];
+      })
+      .addCase(fetchVillasByOffer.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

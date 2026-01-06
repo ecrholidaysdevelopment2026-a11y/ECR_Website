@@ -31,6 +31,7 @@ import Payment from "@/app/common/Payment";
 import { openPopup } from "@/app/store/slice/popupSlice";
 import { useRouter } from "next/navigation";
 import BookingCard from "@/app/common/BookingCard";
+import { FiGrid } from "react-icons/fi";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();

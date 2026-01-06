@@ -1,29 +1,16 @@
 "use client";
-import { useRef } from "react";
-import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import offerimg from "@/app/assets/offerimg.png";
-
-const offers = [
-    {
-        id: 1,
-        title: "Early Bird Special 15% OFF",
-        img: offerimg
-    },
-    {
-        id: 2,
-        title: "Early Bird Special 15% OFF",
-        img: offerimg
-    },
-    {
-        id: 3,
-        title: "Early Bird Special 15% OFF",
-        img: offerimg
-    },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVillasByOffer } from "@/app/store/slice/villaSlice";
+import CustomImage from "@/app/common/Image";
+import { useRouter } from "next/navigation";
 
 export default function HomeOfferSection() {
+    const dispatch = useDispatch();
+    const router = useRouter();
     const scrollRef = useRef(null);
+    const { offerVillas } = useSelector((state) => state.villas);
 
     const scroll = (direction) => {
         if (scrollRef.current) {
@@ -34,6 +21,10 @@ export default function HomeOfferSection() {
             });
         }
     };
+
+    useEffect(() => {
+        dispatch(fetchVillasByOffer(15));
+    }, [dispatch]);
 
     return (
         <div className="w-full px-3 md:px-30 my-10 relative">
@@ -56,34 +47,54 @@ export default function HomeOfferSection() {
             </div>
             <div
                 ref={scrollRef}
-                className="flex gap-5 overflow-x-auto  scrollbar-hide"
+                className="flex gap-5 overflow-x-auto scrollbar-hide"
             >
-                {offers?.map((offer) => (
-                    <div
-                        key={offer.id}
-                        className="min-w-[320px] bg-[#F3E8E2] rounded-xl flex overflow-hidden shadow-sm"
-                    >
-                        <div className="p-4 flex flex-col justify-between w-[55%]">
-                            <div>
-                                <h3 className="font-semibold text-[15px] leading-tight">
-                                    {offer.title}
-                                </h3>
-                            </div>
-                            <button className="text-sm font-medium mt-4 inline-flex items-center gap-2">
-                                Book now →
-                            </button>
-                        </div>
-                        <div className="w-[45%]">
-                            <Image
-                                src={offer.img}
-                                width={1000}
-                                height={1000}
-                                alt="Offer Image"
-                                className="w-full h-30 object-cover"
-                            />
-                        </div>
+                {offerVillas?.length === 0 ? (
+                    <div className="w-full py-10 text-center text-gray-500">
+                        <p className="text-sm md:text-base font-medium">
+                            No offers available at the moment
+                        </p>
                     </div>
-                ))}
+                ) : (
+                    offerVillas?.map((offer) => (
+                        <div
+                            key={offer._id}
+                            onClick={() => router.push(`/villa/${offer?.slug}`)}
+                            className="min-w-[320px] bg-[#F3E8E2] rounded-xl flex overflow-hidden shadow-sm cursor-pointer"
+                        >
+                            <div className="p-4 flex flex-col justify-between w-[55%]">
+                                <div>
+                                    <h3 className="font-semibold text-[15px] leading-tight">
+                                        {offer?.villaName}
+                                        <span className="ml-1 font-medium">
+                                            {offer?.offerPercentage}% OFF
+                                        </span>
+                                    </h3>
+                                </div>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="line-through text-gray-400 text-sm">
+                                        ₹{offer?.price}
+                                    </span>
+                                    <span className="text-base font-semibold text-black">
+                                        ₹{offer?.offerPrice}
+                                    </span>
+                                </div>
+                                <button className="text-sm font-medium mt-4 inline-flex items-center gap-2">
+                                    Book now →
+                                </button>
+                            </div>
+                            <div className="w-[45%]">
+                                <CustomImage
+                                    src={offer?.images?.villaImage}
+                                    width={1000}
+                                    height={1000}
+                                    alt={offer?.villaName}
+                                    className="w-full h-30 object-cover"
+                                />
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );

@@ -41,7 +41,7 @@ export default function Header() {
                         <Link href="#" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
                             Partner with Us
                         </Link>
-                        <Link href="#" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
+                        <Link href="/member" className="hover:text-[#AE7F42] transition text-[14px] text-gray-800 font-semibold">
                             Become a Member
                         </Link>
                     </div>
@@ -104,7 +104,7 @@ export default function Header() {
                                     Partner with Us
                                 </Link>
                                 <Link
-                                    href="#"
+                                    href="/member"
                                     onClick={toggleMenu}
                                     className="block text-gray-700 text-lg font-medium hover:text-[#AE7F42]"
                                 >

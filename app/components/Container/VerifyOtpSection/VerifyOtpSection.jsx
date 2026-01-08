@@ -37,8 +37,8 @@ const VerifyOtpSection = () => {
 
     return (
         <div className="relative w-full flex items-center justify-center">
-            <div className="w-full max-w-7xl overflow-hidden flex shadow-xl ">
-                <div className="relative w-1/2 hidden md:block">
+            <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row shadow-xl">
+                <div className="relative w-full h-48 md:h-auto md:w-1/2">
                     <Image
                         src={bgImg}
                         alt="StayVista"

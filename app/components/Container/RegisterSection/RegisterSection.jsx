@@ -35,8 +35,9 @@ const RegisterSection = () => {
 
     return (
         <div className="relative w-full  flex items-center justify-center">
-            <div className="w-full max-w-7xl  overflow-hidden flex shadow-xl">
-                <div className="relative w-1/2 hidden md:block">
+                <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row shadow-xl">
+                <div className="relative w-full h-48 md:h-auto md:w-1/2">
+
                     <Image
                         src={bgImg}
                         alt="StayVista"
@@ -56,7 +57,7 @@ const RegisterSection = () => {
                         </span>
                         {" / "}
                         <span
-                            className=" hover:text-black font-medium"
+                            className="cursor-pointer hover:text-black font-medium"
                         >
                             Register
                         </span>
@@ -87,7 +88,7 @@ const RegisterSection = () => {
                             )}
                         </button>
                     </form>
-                    <p className="text-xs text-gray-500 mt-6">
+                    <p className="text-xs t mt-6">
                         By signing up, you agree to our{" "}
                         <span className="text-blue-600 cursor-pointer">
                             Terms & Conditions

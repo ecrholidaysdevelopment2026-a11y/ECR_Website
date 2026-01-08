@@ -17,9 +17,33 @@ export default function VillaCard({
     const normalizedImages = Array.isArray(images) ? images : images ? [images] : [];
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
-
     const touchStartX = useRef(null);
     const router = useRouter();
+    const hoverTimer = useRef(null);
+
+    const isDesktopHover = () =>
+        typeof window !== "undefined" &&
+        window.matchMedia("(hover: hover)").matches;
+
+
+    const handleMouseEnter = () => {
+        if (!isDesktopHover()) return;
+        if (normalizedImages.length <= 1) return;
+
+        hoverTimer.current = setTimeout(() => {
+            setDirection(1);
+            setCurrentIndex(1);
+        }, 180); 
+    };
+
+    const handleMouseLeave = () => {
+        if (!isDesktopHover()) return;
+
+        clearTimeout(hoverTimer.current);
+        setDirection(-1);
+        setCurrentIndex(0);
+    };
+
 
     if (normalizedImages.length === 0) return null;
 
@@ -34,7 +58,6 @@ export default function VillaCard({
 
     const handleTouchEnd = (e) => {
         if (touchStartX.current === null) return;
-
         const touchEndX = e.changedTouches[0].clientX;
         const diff = touchStartX.current - touchEndX;
 
@@ -55,11 +78,14 @@ export default function VillaCard({
         router.push(`/villa/${slug}`);
     };
 
+
     return (
         <div className="w-full rounded-2xl py-3 cursor-pointer transition">
             <div
                 className="relative w-full h-40 rounded-xl overflow-hidden"
                 onClick={handleNavigate}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
@@ -70,7 +96,7 @@ export default function VillaCard({
                         initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-                        transition={{ duration: 0.35 }}
+                        transition={{ duration: 0.90,}}
                         className="absolute inset-0 w-full h-full"
                     >
                         <CustomImage
@@ -93,9 +119,8 @@ export default function VillaCard({
                     <span
                         key={index}
                         onClick={() => handleDotClick(index)}
-                        className={`w-2 h-2 rounded-full cursor-pointer ${
-                            currentIndex === index ? "bg-black" : "bg-gray-300"
-                        }`}
+                        className={`w-2 h-2 rounded-full cursor-pointer ${currentIndex === index ? "bg-black" : "bg-gray-300"
+                            }`}
                     />
                 ))}
             </div>

@@ -75,14 +75,14 @@ const SearchSection = () => {
                 <div className="flex justify-center items-center h-full">
                     <BannerSection initialData={searchData} />
                 </div>
-                <div className="absolute bottom-32 lg:bottom-20 left-0 w-full">
+                <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-90 left-0 w-full">
                     <SearchFilters />
                 </div>
             </div>
             <MainLayout className="px-3 md:px-30">
                 <div className="py-10">
                     {
-                        searchResults.length > 0 &&
+                        searchResults?.length > 0 &&
                         <motion.h3
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}

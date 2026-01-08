@@ -250,17 +250,13 @@ export default function BannerSection({ initialData = null }) {
                                 : "Select destination"}
                         </p>
                     </div>
-
                     {showDestination && (
                         <div className="absolute top-14 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-hidden">
-                            {[
-                                { label: "Chennai", value: "chennai" },
-                                { label: "Pondicherry", value: "puducherry" },
-                            ].map((item) => (
+                            {locations?.map((item) => (
                                 <button
-                                    key={item.value}
+                                    key={item._id}
                                     onClick={() => {
-                                        setDestination(item.value);
+                                        setDestination(item.slug);
                                         setShowDestination(false);
                                     }}
                                     className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
@@ -269,7 +265,7 @@ export default function BannerSection({ initialData = null }) {
                                         <FiMapPin size={18} />
                                     </div>
                                     <span className="text-base font-medium text-gray-900">
-                                        {item.label}
+                                        {item.locationName}
                                     </span>
                                 </button>
                             ))}
@@ -284,7 +280,7 @@ export default function BannerSection({ initialData = null }) {
                         <FiCalendar />
                     </div>
                     <div
-                        className="text-left cursor-pointer min-w-[150px]"
+                        className="text-left cursor-pointer min-w-[120px]"
                         onClick={() => setShowCalendar(!showCalendar)}
                     >
                         <p className="text-xs text-gray-500">When</p>
@@ -314,7 +310,7 @@ export default function BannerSection({ initialData = null }) {
                 <div className="flex items-center gap-3 px-5 relative" ref={guestRef}>
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"
-                        onClick={() => setShowGuestDropdown(!showGuestDropdown)}
+                        onClick={() => setShowGuestaDropdown(!showGuestDropdown)}
                     >
                         <FiUser />
                     </div>

@@ -1,37 +1,84 @@
 "use client";
-
-import { FiSliders, FiMap, FiChevronDown } from "react-icons/fi";
+import { FiSliders, FiChevronDown } from "react-icons/fi";
+import MiniFilterPopup from "@/app/common/MiniFilterPopup";
+import SortPopup from "./SortPopup";
 
 const pill =
-    "flex items-center gap-2 px-4 py-2 rounded-full " +
-    "border border-gray-300 bg-white " +
-    "text-sm font-medium text-gray-700 " +
-    "shadow-sm whitespace-nowrap";
+    "flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-sm whitespace-nowrap";
 
-const SearchFilters = () => {
+const SearchFilters = ({ activeFilter, setActiveFilter, sortBy, setSortBy }) => {
     return (
-        <div className="w-full flex justify-center">
-            <div className="overflow-x-scroll touch-pan-x scrollbar-hide px-4">
-                <div className="flex gap-3 w-max">
-                    <button className={pill}>
-                        <FiSliders /> Filters
-                    </button>
+        <div className="flex gap-3 justify-center flex-wrap">
+            <button
+                className={pill}
+                onClick={() => setActiveFilter("filters")}
+            >
+                <FiSliders /> Filters
+            </button>
+            <div className="relative">
+                <button
+                    className={pill}
+                    onClick={() =>
+                        setActiveFilter(activeFilter === "popular" ? null : "popular")
+                    }
+                >
+                    Popular <FiChevronDown />
+                </button>
 
-                    <button className={pill}>
-                        <FiMap /> Map View
-                    </button>
+                <MiniFilterPopup
+                    open={activeFilter === "popular"}
+                    onClose={() => setActiveFilter(null)}
+                    title="Popular"
+                    options={["Private Villa",
+                        "Luxury Villa",
+                        "Beachfront Villa",
+                        "Pool Villa",
+                        "Pet Friendly Villa",]}
+                />
+            </div>
+            <div className="relative">
+                <button
+                    className={pill}
+                    onClick={() =>
+                        setActiveFilter(activeFilter === "rooms" ? null : "rooms")
+                    }
+                >
+                    Room & Spaces <FiChevronDown />
+                </button>
 
-                    <button className={pill}>
-                        Popular <FiChevronDown />
-                    </button>
+                <MiniFilterPopup
+                    open={activeFilter === "rooms"}
+                    onClose={() => setActiveFilter(null)}
+                    title="Room & Spaces"
+                    options={["1 Bedroom", "2 Bedrooms", "3+ Bedrooms"]}
+                />
+            </div>
+            <div className="relative">
+                <button
+                    className={pill}
+                    onClick={() =>
+                        setActiveFilter(activeFilter === "sort" ? null : "sort")
+                    }
+                >
+                    Sort by{" "}
+                    {sortBy === "recommended"
+                        ? "Recommended"
+                        : sortBy === "price_low"
+                            ? "Price: low to high"
+                            : sortBy === "price_high"
+                                ? "Price: high to low"
+                                : sortBy === "rating"
+                                    ? "Guest rating"
+                                    : "Number of reviews"}
+                    <FiChevronDown />
+                </button>
 
-                    <button className={pill}>
-                        Room & Spaces <FiChevronDown />
-                    </button>
-                    <button className={pill}>
-                        Sort by Recommended <FiChevronDown />
-                    </button>
-                </div>
+                <SortPopup
+                    open={activeFilter === "sort"}
+                    onClose={() => setActiveFilter(null)}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                />
             </div>
         </div>
     );

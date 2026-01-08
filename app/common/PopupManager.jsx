@@ -5,7 +5,7 @@ import { closePopup } from "@/app/store/slice/popupSlice";
 import { AnimatePresence, motion } from "framer-motion";
 import RegisterSection from "../components/Container/RegisterSection/RegisterSection";
 import LoginSection from "../components/Container/LoginSection/LoginSection";
-import FirstLogin from "../components/Container/FirstLogin/FirstLogin";
+import VerifyOtpSection from "../components/Container/VerifyOtpSection/VerifyOtpSection";
 
 const formAnimation = {
     initial: { opacity: 0, x: 60, rotateY: 10, scale: 0.95 },
@@ -16,6 +16,7 @@ const formAnimation = {
 export default function PopupManager() {
     const dispatch = useDispatch();
     const { activePopup } = useSelector((state) => state.popup);
+
     return (
         <AnimatePresence>
             {activePopup && (
@@ -30,9 +31,8 @@ export default function PopupManager() {
                         >
                             {activePopup === "register" && <RegisterSection />}
                             {activePopup === "login" && <LoginSection />}
-                            {activePopup === "firstLogin" && <FirstLogin />}
+                            {activePopup === "verifyOtp" && <VerifyOtpSection />}
                         </motion.div>
-
                     </AnimatePresence>
                 </Modal>
             )}

@@ -26,12 +26,12 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const Firstlogin = createAsyncThunk(
-  "auth/Firstlogin",
+export const verifyOtp = createAsyncThunk(
+  "auth/verifyOtp",
   async (payload, thunkAPI) => {
     try {
       const res = await FetchApi({
-        endpoint: "/user/phone-register",
+        endpoint: "/user/verify-otp",
         method: "POST",
         body: payload,
       });
@@ -110,6 +110,7 @@ export const refreshToken = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
+    email: null,
     user: null,
     accessToken: null,
     refreshToken: null,
@@ -126,13 +127,12 @@ const authSlice = createSlice({
       state.message = null;
     },
     logout(state) {
-      state.user = null;
+      state.email = null;
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
       state.error = null;
       state.message = null;
-
       localStorage.clear();
       clearTokenRefresh();
     },
@@ -143,20 +143,21 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = "Registration successful";
+        state.message = action.payload?.message || "Registration successful";
+        state.email = action.payload?.email || null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(Firstlogin.pending, (state) => {
+      .addCase(verifyOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(Firstlogin.fulfilled, (state, action) => {
+      .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload?.user || null;
@@ -164,7 +165,7 @@ const authSlice = createSlice({
         state.refreshToken = action.payload?.refreshToken;
         state.message = action.payload?.message || "Login successful";
       })
-      .addCase(Firstlogin.rejected, (state, action) => {
+      .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
       })

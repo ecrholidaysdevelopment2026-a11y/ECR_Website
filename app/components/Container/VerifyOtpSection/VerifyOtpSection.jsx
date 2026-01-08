@@ -7,14 +7,14 @@ import { FiLoader } from "react-icons/fi";
 import {
     clearAuthError,
     clearAuthMessage,
-    registerUser,
+    verifyOtp,
 } from "@/app/store/slice/authSlice";
-import { errorAlert } from "@/app/utils/alertService";
-import { openPopup } from "@/app/store/slice/popupSlice";
+import { errorAlert, successAlert } from "@/app/utils/alertService";
+import { closePopup } from "@/app/store/slice/popupSlice";
 
-const RegisterSection = () => {
+const VerifyOtpSection = () => {
     const dispatch = useDispatch();
-    const { loading, error, message } = useSelector((state) => state.auth);
+    const { loading, error, message, email } = useSelector((state) => state.auth);
     const [value, setValue] = useState("");
 
     useEffect(() => {
@@ -23,19 +23,21 @@ const RegisterSection = () => {
             dispatch(clearAuthError());
         }
         if (message) {
-            dispatch(openPopup("verifyOtp"))
+            successAlert(message);
             dispatch(clearAuthMessage());
+            dispatch(closePopup());
         }
     }, [error, message, dispatch]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(registerUser({ email: value }));
+        if (!value) return;
+        dispatch(verifyOtp({ email, otp: value }));
     };
 
     return (
-        <div className="relative w-full  flex items-center justify-center">
-            <div className="w-full max-w-7xl  overflow-hidden flex shadow-xl">
+        <div className="relative w-full flex items-center justify-center">
+            <div className="w-full max-w-7xl overflow-hidden flex shadow-xl ">
                 <div className="relative w-1/2 hidden md:block">
                     <Image
                         src={bgImg}
@@ -56,7 +58,8 @@ const RegisterSection = () => {
                         </span>
                         {" / "}
                         <span
-                            className=" hover:text-black font-medium"
+                            onClick={() => dispatch(openPopup("register"))}
+                            className="cursor-pointer hover:text-black font-medium"
                         >
                             Register
                         </span>
@@ -64,17 +67,18 @@ const RegisterSection = () => {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-sm font-medium mb-1">
-                                Email Id <span className="text-red-500">*</span>
+                                OTP <span className="text-red-500">*</span>
                             </label>
                             <input
-                                type="email"
+                                type="text"
                                 value={value}
                                 onChange={(e) => setValue(e.target.value)}
-                                placeholder="Enter your email"
+                                placeholder="Enter your OTP"
                                 required
-                                className="w-full border   rounded-md px-4 py-2 focus:outline-none focus:border-black"
+                                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-black"
                             />
                         </div>
+
                         <button
                             type="submit"
                             disabled={loading}
@@ -103,4 +107,4 @@ const RegisterSection = () => {
     );
 };
 
-export default RegisterSection;
+export default VerifyOtpSection;

@@ -21,6 +21,7 @@ export default function Header() {
     const [open, setOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
     const { accessToken } = useSelector((state) => state.auth);
+
     const toggleMenu = () => setOpen(!open);
     const path =
         pathname === "/" ||

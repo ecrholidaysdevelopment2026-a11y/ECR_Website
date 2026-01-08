@@ -1,120 +1,106 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import bgImg from "@/app/assets/loginbg-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
+import { FiLoader } from "react-icons/fi";
 import {
-    loginUser,
     clearAuthError,
     clearAuthMessage,
+    registerUser,
 } from "@/app/store/slice/authSlice";
-import { useRouter } from "next/navigation";
-import { errorAlert, successAlert } from "@/app/utils/alertService";
-import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
+import { errorAlert } from "@/app/utils/alertService";
+import { openPopup } from "@/app/store/slice/popupSlice";
 
-const LoginSection = () => {
+const RegisterSection = () => {
     const dispatch = useDispatch();
-    const router = useRouter();
-    const { message, error } = useSelector((state) => state.auth);
-    const loginCalledRef = useRef(false);
+    const { loading, error, message } = useSelector((state) => state.auth);
+    const [value, setValue] = useState("");
 
     useEffect(() => {
-        const container = document.querySelector(".pe_signin_button");
-        if (!container) return;
-        container.innerHTML = "";
-        const script = document.createElement("script");
-        script.src = "https://www.phone.email/sign_in_button_v1.js";
-        script.async = true;
-        container.appendChild(script);
-        window.phoneEmailListener = function (userObj) {
-            if (
-                userObj?.user_json_url &&
-                !loginCalledRef.current
-            ) {
-                loginCalledRef.current = true;
-                dispatch(loginUser({ user_json_url: userObj.user_json_url }));
-            }
-        };
-
-        return () => {
-            window.phoneEmailListener = null;
-        };
-    }, [dispatch]);
-
-
-    useEffect(() => {
-        if (message) {
-            successAlert(message);
-            dispatch(clearAuthMessage());
-            dispatch(closePopup());
-
-        }
         if (error) {
             errorAlert(error);
             dispatch(clearAuthError());
         }
-    }, [message, error, dispatch, router]);
+        if (message) {
+            dispatch(openPopup("verifyOtp"))
+            dispatch(clearAuthMessage());
+        }
+    }, [error, message, dispatch]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(registerUser({ email: value }));
+    };
 
     return (
-        <div className="relative h-[450px] w-full  overflow-hidden">
-            <Image src={bgImg} alt="Login" fill priority className="object-cover" />
-            <div className="absolute inset-0 bg-black/40" />
-
-            <div className="relative z-10 h-full flex items-center justify-center">
-                <div
-                    className="
-                        w-[90%] max-w-md p-8 rounded-2xl
-                        bg-white/10 backdrop-blur-xl
-                        border border-white/10
-                        shadow-2xl text-white
-                    "
-                >
-                    <h2 className="text-3xl font-semibold mb-2">
-                        Welcome Back
-                    </h2>
-                    <p className="text-white/80 mb-6">
-                        Login to continue your booking
-                    </p>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            const btn = document.querySelector(
-                                ".pe_signin_button button"
-                            );
-                            if (btn) btn.click();
-                        }}
-                        className="
-                            w-full py-3 rounded-lg font-semibold
-                            bg-black/70 hover:bg-black
-                            transition duration-200
-                            text-white
-                        "
-                    >
-                        Login
-                    </button>
-                    <div
-                        className="pe_signin_button hidden"
-                        data-client-id="18764793523090256493"
-                        data-button-text="Login"
-                        data-button-size="large"
-                        data-button-theme="dark"
-                        data-button-radius="8"
+        <div className="relative w-full  flex items-center justify-center">
+            <div className="w-full max-w-7xl  overflow-hidden flex shadow-xl">
+                <div className="relative w-1/2 hidden md:block">
+                    <Image
+                        src={bgImg}
+                        alt="StayVista"
+                        fill
+                        className="object-cover"
+                        priority
                     />
-
-                    <button
-                        type="button"
-                        onClick={() => dispatch(openPopup("register"))}
-                        className="text-sm text-white/80 mt-6 text-center w-full"
-                    >
-                        Don’t have an account?
-                        <span className="text-blue-300 ml-1 cursor-pointer">
+                </div>
+                <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
+                    <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
+                    <p className="text-gray-600 text-sm mb-6">
+                        <span
+                            className=" hover:text-black font-medium"
+                        >
+                            Login
+                        </span>
+                        {" / "}
+                        <span
+                            onClick={() => dispatch(openPopup("register"))}
+                            className="cursor-pointer hover:text-black font-medium"
+                        >
                             Register
                         </span>
-                    </button>
+                    </p>
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">
+                                Email Id <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                                placeholder="Enter your email"
+                                required
+                                className="w-full border   rounded-md px-4 py-2 focus:outline-none focus:border-black"
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition disabled:opacity-50"
+                        >
+                            {loading ? (
+                                <FiLoader className="animate-spin mx-auto" />
+                            ) : (
+                                "Continue"
+                            )}
+                        </button>
+                    </form>
+                    <p className="text-xs text-gray-500 mt-6">
+                        By signing up, you agree to our{" "}
+                        <span className="text-blue-600 cursor-pointer">
+                            Terms & Conditions
+                        </span>{" "}
+                        and{" "}
+                        <span className="text-blue-600 cursor-pointer">
+                            Privacy Policy
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>
     );
 };
 
-export default LoginSection;
+export default RegisterSection;

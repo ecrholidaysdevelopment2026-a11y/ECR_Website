@@ -36,7 +36,7 @@ const Modal = ({ isOpen, onClose, children }) => {
                     <motion.div
                         onClick={(e) => e.stopPropagation()}
                         className="
-        w-auto md:w-[500px]
+        w-full mx-5 md:mx-0 md:max-w-3xl
         relative overflow-hidden
         backdrop-blur-xl 
         bg-white/20 

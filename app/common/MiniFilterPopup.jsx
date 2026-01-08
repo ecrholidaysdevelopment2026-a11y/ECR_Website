@@ -6,13 +6,14 @@ const MiniFilterPopup = ({ open, onClose, title, options }) => {
         <AnimatePresence>
             {open && (
                 <motion.div
-                    className="absolute top-full mt-2 left-0 z-50"
+                    className="absolute top-full left-0 mt-2 z-50"
                     initial={{ opacity: 0, y: -8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.2 }}
                 >
-                    <div className="bg-white rounded-xl  border-gray-300 shadow-xl p-4 w-72">
+                    <div className="bg-white rounded-xl shadow-xl p-4 w-72 border">
+
                         <div className="flex justify-between mb-3">
                             <h3 className="font-semibold">{title}</h3>
                             <button
@@ -36,6 +37,7 @@ const MiniFilterPopup = ({ open, onClose, title, options }) => {
                         >
                             Done
                         </button>
+
                     </div>
                 </motion.div>
             )}

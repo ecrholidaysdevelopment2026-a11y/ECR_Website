@@ -12,6 +12,7 @@ import Header from "../../Common/Header/Header";
 import bannerimg from "@/app/assets/banner-bg-img.png";
 import { errorAlert } from "@/app/utils/alertService";
 import EmptyState, { LoadingSkeleton } from "@/app/common/Animation";
+import FiltersModal from "@/app/common/FiltersModal";
 
 const SearchSection = () => {
     const dispatch = useDispatch();
@@ -21,7 +22,15 @@ const SearchSection = () => {
     );
 
     const [searchData, setSearchData] = useState(null);
+    const [activeFilter, setActiveFilter] = useState(null);
+    const [sortBy, setSortBy] = useState("recommended");
 
+    const [filters, setFilters] = useState({
+        popular: [],
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: 0,
+    });
     useEffect(() => {
         if (!searchParams.toString()) return;
 
@@ -75,8 +84,15 @@ const SearchSection = () => {
                 <div className="flex justify-center items-center h-full">
                     <BannerSection initialData={searchData} />
                 </div>
-                <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-90 left-0 w-full">
-                    <SearchFilters />
+                <div className="z-10">
+                    <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-90 left-0 w-full">
+                        <SearchFilters
+                            activeFilter={activeFilter}
+                            setActiveFilter={setActiveFilter}
+                            setSortBy={setSortBy}
+                            sortBy={sortBy}
+                        />
+                    </div>
                 </div>
             </div>
             <MainLayout className="px-3 md:px-30">
@@ -137,6 +153,12 @@ const SearchSection = () => {
                         )}
                     </AnimatePresence>
                 </div>
+                <FiltersModal
+                    open={activeFilter === "filters"}
+                    onClose={() => setActiveFilter(null)}
+                    filters={filters}
+                    setFilters={setFilters}
+                />
             </MainLayout>
         </>
     );

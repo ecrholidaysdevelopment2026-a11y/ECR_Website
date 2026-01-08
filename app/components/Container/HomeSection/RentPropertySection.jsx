@@ -12,7 +12,7 @@ const RentPropertySection = () => {
                     className="object-cover"
                 />
                 <div className="
-                    absolute top-8 md:left-8 
+                    absolute top-8 left-8 
                     bg-white p-6 md:p-8 
                     rounded-2xl shadow-lg 
                     max-w-[270px] md:max-w-sm

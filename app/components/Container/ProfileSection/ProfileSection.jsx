@@ -2,6 +2,7 @@ import { ProfileCart } from '@/app/common/Animation';
 import MainLayout from '@/app/common/MainLayout';
 import React from 'react'
 import logo from "@/app/assets/ecr-logo.svg";
+console.log(logo);
 
 const ProfileSection = () => {
     const emojis = ["✈️", "🏖️", "🌴", "🏨", "🍹", "🚗", "🛳️", "🗺️", "🎢", "🌅"];

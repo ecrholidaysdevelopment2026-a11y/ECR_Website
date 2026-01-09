@@ -1,3 +1,4 @@
+"use client";
 import { motion } from "framer-motion";
 
 export const LoadingSkeleton = ({ count = 4, className = "" }) => {
@@ -253,7 +254,7 @@ export const ProfileCart = ({ emojis, logo }) => {
                     </motion.div>
 
                     <motion.img
-                        src={logo}
+                        src={logo?.src}
                         alt="ECR Logo"
                         className="w-24 h-24 relative z-10"
                         animate={{

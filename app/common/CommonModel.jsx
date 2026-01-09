@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }) => {
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 model"
+                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-9999 model"
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"

@@ -100,7 +100,7 @@ export default function BannerSection({ initialData = null }) {
             )}
             <div className="md:hidden w-full max-w-md mx-auto">
                 <div
-                    className="flex items-center gap-3 border rounded-full p-3 bg-white shadow-md cursor-pointer"
+                    className="flex items-center gap-3 border border-gray-300 rounded-full p-3 bg-white shadow-md cursor-pointer"
                     onClick={() => setMobilePopup(true)}
                 >
                     <FiSearch className="text-xl" />

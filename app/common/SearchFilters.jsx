@@ -46,7 +46,7 @@ const SearchFilters = ({
     };
 
     return (
-        <div className="px-4">
+        <div className="md:px-4">
             <div className="flex justify-center gap-3 overflow-x-auto scrollbar-hide">
                 <button className={pill} onClick={() => setActiveFilter("filters")}>
                     <FiSliders /> Filters

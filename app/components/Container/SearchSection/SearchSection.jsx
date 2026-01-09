@@ -130,7 +130,7 @@ const SearchSection = () => {
                     <BannerSection initialData={searchData} />
                 </div>
                 <div className="z-10">
-                    <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-30 left-0 w-full">
+                    <div className="absolute bottom-32 md:bottom-20 2xl:bottom-30 left-0 w-full">
                         <SearchFilters
                             activeFilter={activeFilter}
                             setActiveFilter={setActiveFilter}

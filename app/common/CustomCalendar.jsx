@@ -75,23 +75,6 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
             }]);
         }
     };
-
-    const handleFlexibleClick = (days) => {
-        setFlexibleDays(days);
-        if (selectedRange.start && selectedRange.end) {
-            const flexStart = new Date(selectedRange.start);
-            const flexEnd = new Date(selectedRange.end);
-            flexStart.setDate(flexStart.getDate() - days);
-            flexEnd.setDate(flexEnd.getDate() + days);
-
-            setDateRange([{
-                startDate: flexStart,
-                endDate: flexEnd,
-                key: "selection"
-            }]);
-        }
-    };
-
     const isDateInRange = (date) => {
         if (!selectedRange.start || !date) return false;
         if (!selectedRange.end) return date.getTime() === selectedRange.start.getTime();

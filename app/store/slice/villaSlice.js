@@ -198,6 +198,44 @@ export const fetchVillasByOffer = createAsyncThunk(
   }
 );
 
+export const filterUserVillas = createAsyncThunk(
+  "villas/filter",
+  async (filters, thunkAPI) => {
+    try {
+      const params = {};
+      if (filters?.locationId) params.locationId = filters.locationId;
+      if (filters?.amenities?.length)
+        params.amenities = filters.amenities.join(",");
+      if (filters?.services?.length)
+        params.services = filters.services.join(",");
+      if (filters?.minPrice) params.minPrice = filters.minPrice;
+      if (filters?.bedrooms) params.bedrooms = filters.bedrooms; 
+      if (filters?.maxGuests) params.maxGuests = filters.maxGuests;
+      if (filters?.isFeatured !== null && filters?.isFeatured !== undefined)
+        params.isFeatured = filters.isFeatured;
+
+      const queryString = Object.keys(params).length
+        ? "?" + new URLSearchParams(params).toString()
+        : "";
+
+      const response = await FetchApi({
+        endpoint: `/user/villas/filter${queryString}`,
+        method: "GET",
+      });
+
+      if (response?.data?.success === false) {
+        return thunkAPI.rejectWithValue(
+          response?.data?.errors || "Villa filter failed"
+        );
+      }
+
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || "Failed to filter villas");
+    }
+  }
+);
+
 const villaSlice = createSlice({
   name: "villas",
   initialState: {
@@ -337,6 +375,18 @@ const villaSlice = createSlice({
         state.offerVillas = action.payload?.villas || action.payload || [];
       })
       .addCase(fetchVillasByOffer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(filterUserVillas.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(filterUserVillas.fulfilled, (state, action) => {
+        state.loading = false;
+        state.searchResults = action.payload?.villas || action.payload || [];
+      })
+      .addCase(filterUserVillas.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

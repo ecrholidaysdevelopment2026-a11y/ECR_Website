@@ -85,8 +85,6 @@ export default function BannerSection({ initialData = null }) {
 
     const handleDateChange = (range) => {
         setDateRange(range);
-
-        // Auto flow: Calendar → Guests
         setTimeout(() => {
             setShowCalendar(false);
             setShowGuestDropdown(true);

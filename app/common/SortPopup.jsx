@@ -4,17 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import useClickOutside from "@/app/utils/useClickOutside";
 
 const sortOptions = [
-    { label: "Recommended", value: "recommended" },
     { label: "Price: low to high", value: "price_low" },
     { label: "Price: high to low", value: "price_high" },
-    { label: "Guest rating", value: "rating" },
-    { label: "Number of reviews", value: "reviews" },
 ];
 
 const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
     const popupRef = useRef(null);
     const [isMobile, setIsMobile] = useState(false);
-
     useEffect(() => {
         const check = () => setIsMobile(window.innerWidth < 640);
         check();
@@ -23,7 +19,6 @@ const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
     }, []);
 
     useClickOutside(popupRef, onClose, open);
-
     if (!open) return null;
 
     return (
@@ -49,7 +44,7 @@ const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
                     className="bg-white rounded-t-2xl sm:rounded-xl border border-gray-300 shadow-lg p-4 w-full sm:w-80"
                 >
                     <div className="flex justify-between mb-3">
-                        <h3 className="font-semibold">Sort by</h3>
+                        <h3 className="font-semibold">Recommended</h3>
                         <button
                             className="text-blue-600 text-sm"
                             onClick={() => setSortBy("recommended")}
@@ -57,8 +52,7 @@ const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
                             Clear
                         </button>
                     </div>
-
-                    {sortOptions.map((opt) => (
+                    {sortOptions?.map((opt) => (
                         <label key={opt.value} className="flex gap-2 mb-3 text-sm">
                             <input
                                 type="radio"
@@ -68,7 +62,6 @@ const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
                             {opt.label}
                         </label>
                     ))}
-
                     <button
                         className="mt-4 w-full bg-black text-white py-2 rounded-full"
                         onClick={onClose}

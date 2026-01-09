@@ -47,7 +47,7 @@ const RegisterSection = () => {
                 </div>
                 <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
                     <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
-                    <p className="text-gray-600 text-sm mb-6">
+                    <p className=" text-sm mb-6">
                         <span
                             className=" hover:text-black font-medium"
                         >
@@ -87,7 +87,7 @@ const RegisterSection = () => {
                             )}
                         </button>
                     </form>
-                    <p className="text-xs text-gray-500 mt-6">
+                    <p className="text-xs  mt-6">
                         By signing up, you agree to our{" "}
                         <span className="text-blue-600 cursor-pointer">
                             Terms & Conditions

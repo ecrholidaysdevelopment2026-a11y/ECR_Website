@@ -35,7 +35,7 @@ const RegisterSection = () => {
 
     return (
         <div className="relative w-full  flex items-center justify-center">
-                <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row shadow-xl">
+            <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row shadow-xl">
                 <div className="relative w-full h-48 md:h-auto md:w-1/2">
 
                     <Image
@@ -48,7 +48,7 @@ const RegisterSection = () => {
                 </div>
                 <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
                     <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
-                    <p className="text-gray-600 text-sm mb-6">
+                    <p className=" text-sm mb-6">
                         <span
                             onClick={() => dispatch(openPopup("login"))}
                             className="cursor-pointer hover:text-black font-medium"

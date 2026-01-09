@@ -1,5 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import useClickOutside from "@/app/utils/useClickOutside";
 
 const sortOptions = [
     { label: "Recommended", value: "recommended" },
@@ -9,51 +11,72 @@ const sortOptions = [
     { label: "Number of reviews", value: "reviews" },
 ];
 
-const SortPopup = ({ open, onClose, sortBy, setSortBy }) => {
+const SortPopup = ({ open, onClose, sortBy, setSortBy, position }) => {
+    const popupRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 640);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
+    }, []);
+
+    useClickOutside(popupRef, onClose, open);
+
+    if (!open) return null;
+
     return (
         <AnimatePresence>
-            {open && (
-                <motion.div
-                    className="absolute top-full mt-2 left-0 z-50"
-                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            <motion.div
+                className={`fixed z-9999 ${isMobile ? "inset-x-0 bottom-0" : ""
+                    }`}
+                style={
+                    isMobile
+                        ? {}
+                        : {
+                            top: position?.top,
+                            left: position?.left,
+                            transform: "translateX(-50%)",
+                        }
+                }
+                initial={{ opacity: 0, y: isMobile ? 60 : -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: isMobile ? 60 : -10 }}
+            >
+                <div
+                    ref={popupRef}
+                    className="bg-white rounded-t-2xl sm:rounded-xl border border-gray-300 shadow-lg p-4 w-full sm:w-80"
                 >
-                    <div className="bg-white rounded-xl border border-gray-300 shadow-lg p-4 w-80">
-                        <div className="flex justify-between mb-3">
-                            <h3 className="font-semibold">Sort by</h3>
-                            <button
-                                className="text-blue-600 text-sm"
-                                onClick={() => setSortBy("recommended")}
-                            >
-                                Clear
-                            </button>
-                        </div>
-
-                        {sortOptions.map((opt) => (
-                            <label
-                                key={opt.value}
-                                className="flex items-center gap-3 mb-3 text-sm cursor-pointer"
-                            >
-                                <input
-                                    type="radio"
-                                    name="sort"
-                                    checked={sortBy === opt.value}
-                                    onChange={() => setSortBy(opt.value)}
-                                />
-                                {opt.label}
-                            </label>
-                        ))}
-
+                    <div className="flex justify-between mb-3">
+                        <h3 className="font-semibold">Sort by</h3>
                         <button
-                            className="mt-4 w-full bg-black text-white py-2 rounded-full"
-                            onClick={onClose}
+                            className="text-blue-600 text-sm"
+                            onClick={() => setSortBy("recommended")}
                         >
-                            Done
+                            Clear
                         </button>
                     </div>
-                </motion.div>
-            )}
+
+                    {sortOptions.map((opt) => (
+                        <label key={opt.value} className="flex gap-2 mb-3 text-sm">
+                            <input
+                                type="radio"
+                                checked={sortBy === opt.value}
+                                onChange={() => setSortBy(opt.value)}
+                            />
+                            {opt.label}
+                        </label>
+                    ))}
+
+                    <button
+                        className="mt-4 w-full bg-black text-white py-2 rounded-full"
+                        onClick={onClose}
+                    >
+                        Done
+                    </button>
+                </div>
+            </motion.div>
         </AnimatePresence>
     );
 };

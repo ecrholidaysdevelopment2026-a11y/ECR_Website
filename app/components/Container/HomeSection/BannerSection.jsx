@@ -83,6 +83,16 @@ export default function BannerSection({ initialData = null }) {
         return `${startStr} - ${endStr}`;
     };
 
+    const handleDateChange = (range) => {
+        setDateRange(range);
+
+        // Auto flow: Calendar → Guests
+        setTimeout(() => {
+            setShowCalendar(false);
+            setShowGuestDropdown(true);
+        }, 200);
+    };
+
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
             {pathname === "/" && (
@@ -124,7 +134,10 @@ export default function BannerSection({ initialData = null }) {
                                         key={item._id}
                                         onClick={() => {
                                             setDestination(item.slug);
-                                            setMobilePopup(false);
+                                            setShowDestination(false);
+                                            setTimeout(() => {
+                                                setShowCalendar(true);
+                                            }, 150);
                                         }}
                                         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
                                     >
@@ -144,7 +157,7 @@ export default function BannerSection({ initialData = null }) {
                             <div className="mb-6 lg:hidden">
                                 <CustomCalendar
                                     dateRange={dateRange}
-                                    setDateRange={setDateRange}
+                                    setDateRange={handleDateChange}
                                     showFlexible={true}
                                     showExact={true}
                                     isMobile={true}
@@ -258,6 +271,9 @@ export default function BannerSection({ initialData = null }) {
                                     onClick={() => {
                                         setDestination(item.slug);
                                         setShowDestination(false);
+                                        setTimeout(() => {
+                                            setShowCalendar(true);
+                                        }, 150);
                                     }}
                                     className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
                                 >
@@ -300,17 +316,19 @@ export default function BannerSection({ initialData = null }) {
                         >
                             <CustomCalendar
                                 dateRange={dateRange}
-                                setDateRange={setDateRange}
+                                setDateRange={handleDateChange}
                                 showFlexible={true}
                                 isMobile={false}
                             />
+
                         </div>
                     )}
                 </div>
                 <div className="flex items-center gap-3 px-5 relative" ref={guestRef}>
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"
-                        onClick={() => setShowGuestaDropdown(!showGuestDropdown)}
+                        onClick={() => setShowGuestDropdown(!showGuestDropdown)}
+
                     >
                         <FiUser />
                     </div>

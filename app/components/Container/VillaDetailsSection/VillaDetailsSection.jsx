@@ -296,9 +296,9 @@ const VillaDetailsSection = ({ slug }) => {
                 totalAmount={bookingDetails?.amout || 0}
                 dispatch={dispatch}
             />
-            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 pb-24 lg:pb-6">
+            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-80 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
-                    <Link href="/" className="hover:text-black transition">Home</Link>
+                    <Link href="/" className="hover:text-black transiton">Home</Link>
                     {" / "}
                     <Link href="/search" className="hover:text-black transition">Villas</Link>
                     {" / "}
@@ -357,7 +357,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
                         <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm text-gray-700">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-lg text-gray-700">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests
@@ -378,7 +378,7 @@ const VillaDetailsSection = ({ slug }) => {
                             </span>
                         </div>
                         <h2 className="text-lg font-semibold mb-2">About this property</h2>
-                        <p className="text-gray-600 leading-relaxed pb-5 border-b border-gray-300 mb-10">
+                        <p className="text-gray-600 leading-relaxed pb-5 border-b border-gray-300 mb-10 line-clamp-6">
                             {overview || "No description available."}
                         </p>
                         <div className="mb-10 md:mb-12">

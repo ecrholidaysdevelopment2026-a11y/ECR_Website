@@ -53,7 +53,6 @@ const MiniFilterPopup = ({ open, onClose, title, options, position }) => {
                             {opt}
                         </label>
                     ))}
-
                     <button
                         className="mt-4 w-full bg-black text-white py-2 rounded-full"
                         onClick={onClose}

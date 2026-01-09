@@ -311,7 +311,7 @@ const BookingCard = memo(({
             <button
                 onClick={handleBooking}
                 disabled={loading || nights === 0}
-                className="w-full bg-[#2b1a08] text-white py-4 rounded-full font-semibold disabled:opacity-50"
+                className="w-full bg-pink-700 text-white py-4 rounded-full font-semibold disabled:opacity-50"
             >
                 {loading ? "Processing..." : "Reserve"}
             </button>

@@ -13,13 +13,10 @@ export default function HomeOfferSection() {
     const { offerVillas } = useSelector((state) => state.villas);
 
     const scroll = (direction) => {
-        if (scrollRef.current) {
-            const scrollAmount = 350;
-            scrollRef.current.scrollBy({
-                left: direction === "left" ? -scrollAmount : scrollAmount,
-                behavior: "smooth",
-            });
-        }
+        scrollRef.current?.scrollBy({
+            left: direction === "left" ? -350 : 350,
+            behavior: "smooth",
+        });
     };
 
     useEffect(() => {
@@ -51,45 +48,43 @@ export default function HomeOfferSection() {
             >
                 {offerVillas?.length === 0 ? (
                     <div className="w-full py-10 text-center text-gray-500">
-                        <p className="text-sm md:text-base font-medium">
-                            No offers available at the moment
-                        </p>
+                        No offers available at the moment
                     </div>
                 ) : (
                     offerVillas?.map((offer) => (
                         <div
                             key={offer._id}
-                            onClick={() => router.push(`/villa/${offer?.slug}`)}
-                            className="min-w-[320px] bg-[#F3E8E2] rounded-xl flex overflow-hidden shadow-sm cursor-pointer"
+                            onClick={() => router.push(`/villa/${offer.slug}`)}
+                            className="min-w-[340px] h-[130px] bg-[#F3E8E2] rounded-xl flex overflow-hidden shadow-sm cursor-pointer"
                         >
-                            <div className="p-4 flex flex-col justify-between w-[55%]">
+                            <div className="w-[55%] p-4 flex flex-col justify-between ">
                                 <div>
-                                    <h3 className="font-semibold text-[15px] leading-tight">
-                                        {offer?.villaName}
+                                    <h3 className="font-semibold text-sm leading-tight">
+                                        {offer.villaName}
                                         <span className="ml-1 font-medium">
-                                            {offer?.offerPercentage}%
+                                            {offer.offerPercentage}% OFF
                                         </span>
                                     </h3>
                                 </div>
-                                <div className="flex items-center gap-2 md:mt-2">
+                                <div className="flex items-center gap-2">
                                     <span className="line-through text-gray-400 text-sm">
-                                        ₹{offer?.price}
+                                        ₹{offer.price}
                                     </span>
-                                    <span className="text-base font-semibold text-black">
-                                        ₹{offer?.offerPrice}
+                                    <span className="text-base font-semibold">
+                                        ₹{offer.offerPrice}
                                     </span>
                                 </div>
-                                <button className="text-sm font-medium mt-4 inline-flex items-center gap-2">
+                                <button className="text-sm font-medium text-black text-start">
                                     Book now →
                                 </button>
                             </div>
-                            <div className="w-[45%]">
+                            <div className="w-[45%] h-full">
                                 <CustomImage
                                     src={offer?.images?.villaImage}
-                                    width={1000}
-                                    height={1000}
-                                    alt={offer?.villaName}
-                                    className="w-full h-30 object-cover"
+                                    width={500}
+                                    height={500}
+                                    alt={offer.villaName}
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                         </div>

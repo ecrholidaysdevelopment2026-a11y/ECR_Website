@@ -20,11 +20,9 @@ const SearchSection = () => {
     const { searchResults = [], loading, searchError } = useSelector(
         (state) => state.villas
     );
-
     const [searchData, setSearchData] = useState(null);
     const [activeFilter, setActiveFilter] = useState(null);
     const [sortBy, setSortBy] = useState("recommended");
-
     const [filters, setFilters] = useState({
         popular: [],
         minPrice: "",
@@ -71,7 +69,7 @@ const SearchSection = () => {
     return (
         <>
             <div
-                className="relative w-full h-[440px] md:h-[350px] 2xl:h-screen"
+                className="relative w-full h-[440px] md:h-[350px] 2xl:h-[450px]"
                 style={{
                     backgroundImage: `url(${bannerimg.src})`,
                     backgroundSize: "cover",
@@ -85,7 +83,7 @@ const SearchSection = () => {
                     <BannerSection initialData={searchData} />
                 </div>
                 <div className="z-10">
-                    <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-90 left-0 w-full">
+                    <div className="absolute bottom-32 lg:bottom-20 2xl:bottom-30 left-0 w-full">
                         <SearchFilters
                             activeFilter={activeFilter}
                             setActiveFilter={setActiveFilter}

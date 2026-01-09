@@ -1,10 +1,6 @@
 "use client";
-
+import { useState, useRef, useEffect } from "react";
 import L from "leaflet";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
 import {
     MapContainer,
     TileLayer,
@@ -12,19 +8,35 @@ import {
     useMapEvents,
     useMap,
 } from "react-leaflet";
-import { useState, useRef, useEffect } from "react";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet/dist/leaflet.css";
+
+import { FiHome } from "react-icons/fi";
+import ReactDOMServer from "react-dom/server";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 
-/* ✅ FIX MARKER ICON (REQUIRED) */
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: markerIcon2x,
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
+const homeDivIcon = L.divIcon({
+    className: "",
+    html: ReactDOMServer.renderToString(
+        <div
+            style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#000",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.25)",
+            }}
+        >
+            <FiHome size={20} color="#fff" />
+        </div>
+    ),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40], 
 });
+
 
 const provider = new OpenStreetMapProvider({
     params: { countrycodes: "in" },
@@ -33,11 +45,14 @@ const provider = new OpenStreetMapProvider({
 
 const MapController = ({ mapRef }) => {
     const map = useMap();
+
     useEffect(() => {
         mapRef.current = map;
     }, [map]);
+
     return null;
 };
+
 
 const normalizePosition = (pos) => {
     if (!pos) return null;
@@ -45,6 +60,7 @@ const normalizePosition = (pos) => {
     if (pos.lat && pos.lng) return pos;
     return null;
 };
+
 
 const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
     const mapRef = useRef(null);
@@ -71,14 +87,20 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
         if (!query.trim()) return;
 
         const results = await provider.search({ query });
-        if (!results.length) return alert("Location not found");
+        if (!results.length) {
+            alert("Location not found");
+            return;
+        }
 
         const { y: lat, x: lng, bounds } = results[0];
         const newPos = { lat, lng };
+
         setPosition(newPos);
 
         if (onSelect) {
-            onSelect(`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}`);
+            onSelect(
+                `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}`
+            );
         }
 
         if (bounds && mapRef.current) {
@@ -90,6 +112,7 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
         useMapEvents({
             click(e) {
                 setPosition(e.latlng);
+
                 if (onSelect) {
                     onSelect(
                         `https://www.openstreetmap.org/?mlat=${e.latlng.lat}&mlon=${e.latlng.lng}`
@@ -98,7 +121,9 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
             },
         });
 
-        return position ? <Marker position={position} /> : null;
+        return position ? (
+            <Marker position={position} icon={homeDivIcon} />
+        ) : null;
     };
 
     return (
@@ -119,7 +144,6 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
                     </button>
                 </div>
             )}
-
             <MapContainer
                 center={position ? [position.lat, position.lng] : [20, 78]}
                 zoom={position ? 13 : 5}
@@ -129,6 +153,7 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; OpenStreetMap contributors"
                 />
+
                 <MapController mapRef={mapRef} />
                 <LocationMarker />
             </MapContainer>

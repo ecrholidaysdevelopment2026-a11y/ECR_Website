@@ -34,7 +34,7 @@ const DestinationDetailsSection = ({ slug }) => {
     return (
         <MainLayout>
             <div
-                className="relative w-full h-[420px] 2xl:h-screen flex items-center justify-center"
+                className="relative w-full h-[420px]  flex items-center justify-center"
                 style={{
                     backgroundImage: `url(${bannerimg.src})`,
                     backgroundSize: "cover",

@@ -29,7 +29,6 @@ import { Navigation, Pagination, Keyboard } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import Payment from "@/app/common/Payment";
 import { openPopup } from "@/app/store/slice/popupSlice";
 import { useRouter } from "next/navigation";
 import BookingCard from "@/app/common/BookingCard";
@@ -41,13 +40,12 @@ const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
     const router = useRouter()
     const { selectedVilla, weeklyPrice, loading } = useSelector((state) => state.villas);
-    const { bookingDetails, bookingerror, bookingMsg, message, error } = useSelector((state) => state.booking)
+    const { bookingerror, bookingMsg, message, error } = useSelector((state) => state.booking)
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
     const [promoCode, setPromoCode] = useState("");
     const { blockedDates } = useSelector((state) => state.blockedDates)
 
-    const paymentRef = useRef();
     const [bookingData, setBookingData] = useState({
         checkInDate: new Date(),
         checkOutDate: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -62,7 +60,6 @@ const VillaDetailsSection = ({ slug }) => {
     const [showBuyNowButton, setShowBuyNowButton] = useState(false);
     const calendarRef = useRef(null);
     const guestDropdownRef = useRef(null);
-
 
 
     useEffect(() => {
@@ -80,7 +77,6 @@ const VillaDetailsSection = ({ slug }) => {
     }, [selectedVilla?._id, dispatch]);
 
 
-
     useEffect(() => {
         if (message) {
             successAlert(message)
@@ -92,9 +88,6 @@ const VillaDetailsSection = ({ slug }) => {
             dispatch(clearBookingError())
         }
     }, [message, error])
-
-
-
 
 
     useEffect(() => {
@@ -146,8 +139,6 @@ const VillaDetailsSection = ({ slug }) => {
             checkOutDate: endDate,
         }));
     };
-
-
 
     const handleGuestChange = (type, operation) => {
         setBookingData(prev => ({
@@ -252,26 +243,18 @@ const VillaDetailsSection = ({ slug }) => {
 
 
     useEffect(() => {
+        if (bookingMsg) {
+            router.push("/confirmation")
+            successAlert(bookingMsg)
+            dispatch(clearBookingError())
+        }
         if (bookingerror) {
             errorAlert(bookingerror)
             dispatch(clearBookingError())
         }
-    }, [bookingerror])
+    }, [bookingerror, bookingMsg, dispatch]);
 
-
-    useEffect(() => {
-        if (
-            bookingMsg &&
-            bookingDetails?.orderId &&
-            paymentRef.current
-        ) {
-            paymentRef.current.initiatePayment(
-                bookingDetails.orderId
-            );
-        }
-    }, [bookingMsg, bookingDetails]);
-
-
+    
     const applicableBlockedDates = useMemo(() => {
         if (!blockedDates?.length || !selectedVilla?._id) return [];
 
@@ -332,11 +315,7 @@ const VillaDetailsSection = ({ slug }) => {
 
     return (
         <>
-            <Payment
-                ref={paymentRef}
-                totalAmount={bookingDetails?.amout || 0}
-                dispatch={dispatch}
-            />
+
             <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-80 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
                     <Link href="/" className="hover:text-black transiton">Home</Link>
@@ -398,7 +377,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
                         <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-md py-1 text-gray-700">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-lg py-1 text-gray-700">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests

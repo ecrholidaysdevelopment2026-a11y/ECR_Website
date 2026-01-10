@@ -323,7 +323,7 @@ export const ProfileCart = ({ emojis, logo }) => {
                             repeat: Infinity
                         }}
                     >
-                        ECR Holidays Admin
+                        ECR Holidays 
                     </motion.p>
 
                     <motion.div className="relative">

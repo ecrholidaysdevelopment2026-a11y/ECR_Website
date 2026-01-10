@@ -16,7 +16,6 @@ import { successAlert } from "@/app/utils/alertService";
 
 export default function Header() {
     const pathname = usePathname();
-    const router = useRouter();
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
@@ -35,7 +34,6 @@ export default function Header() {
         successAlert("Logged out successfully");
         setProfileOpen(false);
         setOpen(false);
-        router.push("/");
     };
 
     return (

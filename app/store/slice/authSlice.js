@@ -91,9 +91,7 @@ export const refreshToken = createAsyncThunk(
         method: "POST",
         body: { refreshToken },
       });
-
       const data = res?.data;
-
       if (data?.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("tokenExpiry", Date.now() + 50 * 60 * 1000);

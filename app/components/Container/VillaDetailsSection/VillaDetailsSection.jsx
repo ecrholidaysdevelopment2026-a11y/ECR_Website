@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/app/common/MainLayout";
-import React, { useEffect, useState, useRef, memo } from "react";
+import React, { useEffect, useState, useRef, memo, useMemo } from "react";
 import {
     FaStar,
     FaMapMarkerAlt,
@@ -35,6 +35,7 @@ import { useRouter } from "next/navigation";
 import BookingCard from "@/app/common/BookingCard";
 import { FiGrid } from "react-icons/fi";
 import { getAllBlockedDates } from "@/app/store/slice/blockedDatesSlice";
+import stripHtml from "@/app/utils/stripHtml";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -45,10 +46,11 @@ const VillaDetailsSection = ({ slug }) => {
     const [showAllImages, setShowAllImages] = useState(false);
     const [promoCode, setPromoCode] = useState("");
     const { blockedDates } = useSelector((state) => state.blockedDates)
+
     const paymentRef = useRef();
     const [bookingData, setBookingData] = useState({
         checkInDate: new Date(),
-        checkOutDate: new Date(new Date().setDate(new Date().getDate() + 3)),
+        checkOutDate: new Date(new Date().setDate(new Date().getDate() + 1)),
         guestDetails: {
             adults: 2,
             children: 1,
@@ -92,6 +94,9 @@ const VillaDetailsSection = ({ slug }) => {
     }, [message, error])
 
 
+
+
+
     useEffect(() => {
         if (window.innerWidth >= 1024) return;
         const handleScroll = () => {
@@ -118,13 +123,12 @@ const VillaDetailsSection = ({ slug }) => {
 
 
     const isDateBlocked = (date) => {
-        return applicableBlockedDates?.some(item => {
+        return hardBlockedRanges.some(item => {
             const start = new Date(item.startDate);
             const end = new Date(item.endDate);
             return date >= start && date <= end;
         });
     };
-
 
     const handleDateChange = (ranges) => {
         const { startDate, endDate } = ranges.selection;
@@ -142,6 +146,8 @@ const VillaDetailsSection = ({ slug }) => {
             checkOutDate: endDate,
         }));
     };
+
+
 
     const handleGuestChange = (type, operation) => {
         setBookingData(prev => ({
@@ -265,29 +271,64 @@ const VillaDetailsSection = ({ slug }) => {
         }
     }, [bookingMsg, bookingDetails]);
 
-    const applicableBlockedDates = blockedDates?.filter(item => {
-        if (item.villaId && item.villaId === selectedVilla?._id) {
-            return true;
-        }
-        if (
-            !item.villaId &&
-            item.locationId?._id === selectedVilla?.locationId?._id
-        ) {
-            return true;
-        }
-        return false;
-    });
 
-    const disabledDates = applicableBlockedDates?.flatMap(item => {
-        const dates = [];
-        let current = new Date(item.startDate);
-        const end = new Date(item.endDate);
-        while (current <= end) {
-            dates.push(new Date(current));
-            current.setDate(current.getDate() + 1);
-        }
-        return dates;
-    });
+    const applicableBlockedDates = useMemo(() => {
+        if (!blockedDates?.length || !selectedVilla?._id) return [];
+
+        return blockedDates.filter(item => {
+            if (item.scope === 1) return true;
+
+            if (item.scope === 2) {
+                if (!item.locationId) return true;
+                return item.locationId._id === selectedVilla.locationId?._id;
+            }
+
+            if (item.scope === 3) {
+                return item.villaId?._id === selectedVilla._id;
+            }
+
+            return false;
+        });
+    }, [blockedDates, selectedVilla]);
+
+
+    const hardBlockedRanges = useMemo(
+        () => applicableBlockedDates.filter(d => d.isBlocked === true),
+        [applicableBlockedDates]
+    );
+
+
+    const softBlockedRanges = useMemo(
+        () => applicableBlockedDates.filter(d => d.isBlocked === false),
+        [applicableBlockedDates]
+    );
+
+    const dynamicRangeColor = useMemo(() => {
+        const { checkInDate, checkOutDate } = bookingData;
+        if (!checkInDate || !checkOutDate) return "#2b1a08";
+
+        const match = softBlockedRanges.find(item => {
+            const start = new Date(item.startDate);
+            const end = new Date(item.endDate);
+            return checkInDate <= end && checkOutDate >= start;
+        });
+
+        return match?.color || "#2b1a08";
+    }, [bookingData, softBlockedRanges]);
+
+
+    const disabledDates = useMemo(() => {
+        return hardBlockedRanges.flatMap(item => {
+            const dates = [];
+            let current = new Date(item.startDate);
+            const end = new Date(item.endDate);
+            while (current <= end) {
+                dates.push(new Date(current));
+                current.setDate(current.getDate() + 1);
+            }
+            return dates;
+        });
+    }, [hardBlockedRanges]);
 
     return (
         <>
@@ -378,8 +419,8 @@ const VillaDetailsSection = ({ slug }) => {
                             </span>
                         </div>
                         <h2 className="text-lg font-semibold mb-2">About this property</h2>
-                        <p className="text-gray-600 leading-relaxed pb-5 border-b border-gray-300 mb-10 line-clamp-6">
-                            {overview || "No description available."}
+                        <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300 mb-10 line-clamp-6">
+                            {stripHtml(overview) || "No description available."}
                         </p>
                         <div className="mb-10 md:mb-12">
                             <h2 className="text-lg font-semibold mb-4 md:mb-6">Services</h2>
@@ -460,7 +501,10 @@ const VillaDetailsSection = ({ slug }) => {
                                 checkInTime={checkInTime}
                                 checkOutTime={checkOutTime}
                                 disabledDates={disabledDates}
-                                blockedRanges={applicableBlockedDates}
+                                blockedRanges={hardBlockedRanges}
+                                infoRanges={softBlockedRanges}
+                                rangeColor={dynamicRangeColor}
+
                             />
 
                         </div>
@@ -487,7 +531,10 @@ const VillaDetailsSection = ({ slug }) => {
                                 checkInTime={checkInTime}
                                 checkOutTime={checkOutTime}
                                 disabledDates={disabledDates}
-                                blockedRanges={applicableBlockedDates}
+                                blockedRanges={hardBlockedRanges}
+                                infoRanges={softBlockedRanges}
+                                rangeColor={dynamicRangeColor}
+
                             />
                             <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
                                 <MapPicker initialPosition={mapPosition} isInput={false} />

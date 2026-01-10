@@ -1,7 +1,6 @@
 import React, { memo, useState } from "react";
 import { DateRange } from "react-date-range";
 import { FiChevronDown, FiX } from "react-icons/fi";
-import { warningAlert } from "../utils/alertService";
 
 const BookingCard = memo(({
     weeklyPrice,
@@ -21,13 +20,14 @@ const BookingCard = memo(({
     handleBooking,
     loading,
     disabledDates = [],
-    blockedRanges = []
+    blockedRanges = [],
+    infoRanges = [],
+    rangeColor
+
 }) => {
     const totalGuests =
         bookingData.guestDetails.adults +
         bookingData.guestDetails.children;
-    const [hoveredReason, setHoveredReason] = useState(null);
-
     return (
         <div
             id="booking-card-mobile"
@@ -113,61 +113,52 @@ const BookingCard = memo(({
                                 }
                             ]}
                             minDate={new Date()}
-                            rangeColors={["#2b1a08"]}
+                            rangeColors={[rangeColor]}
                             disabledDates={disabledDates}
                             dayContentRenderer={(date) => {
-                                const blocked = blockedRanges?.find(item => {
-                                    const start = new Date(item.startDate);
-                                    const end = new Date(item.endDate);
-                                    return date >= start && date <= end;
+                                const hard = blockedRanges.find(item => {
+                                    const s = new Date(item.startDate);
+                                    const e = new Date(item.endDate);
+                                    return date >= s && date <= e;
                                 });
 
-                                if (!blocked) {
-                                    return <span>{date.getDate()}</span>;
-                                }
-
-                                const start = new Date(blocked.startDate);
-                                const end = new Date(blocked.endDate);
-                                const isStart = date.toDateString() === start.toDateString();
-                                const isEnd = date.toDateString() === end.toDateString();
-                                return (
-                                    <div className="flex flex-col items-center w-full">
+                                const soft = infoRanges.find(item => {
+                                    const s = new Date(item.startDate);
+                                    const e = new Date(item.endDate);
+                                    return date >= s && date <= e;
+                                });
+                                if (hard) {
+                                    return (
                                         <div
-                                            title={blocked.reason}
-                                            onClick={(e) => {
-                                                if (window.innerWidth < 768) {
-                                                    e.stopPropagation();
-
-                                                    const start = new Date(blocked.startDate).toLocaleDateString("en-US", {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                    });
-                                                    const end = new Date(blocked.endDate).toLocaleDateString("en-US", {
-                                                        day: "numeric",
-                                                        month: "short",
-                                                    });
-
-                                                    warningAlert(
-                                                        `${blocked.reason}\n${blocked.locationId?.locationName || ""}\n${start} - ${end}`
-                                                    );
-                                                }
-                                            }}
-                                            style={{
-                                                backgroundColor: blocked.color,
-                                                color: "#fff",
-                                            }}
-                                            className={`
-    h-6.5 w-full flex items-center justify-center text-sm cursor-not-allowed
-    ${isStart ? "rounded-l-full" : ""}
-    ${isEnd ? "rounded-r-full" : ""}
-  `}
+                                            title={hard.reason}
+                                            className="h-6.5 w-full flex items-center justify-center text-sm text-white rounded-full cursor-not-allowed"
+                                            style={{ backgroundColor: hard.color }}
                                         >
                                             {date.getDate()}
                                         </div>
-                                    </div>
-                                );
+                                    );
+                                }
+                                if (soft) {
+                                    return (
+                                        <div className="relative group flex items-center justify-center w-full h-full">
+                                            <span>{date.getDate()}</span>
+                                            <div className="absolute bottom-7 hidden group-hover:flex flex-col items-center z-50">
+                                                <div
+                                                    className="px-2 py-1 text-xs text-white rounded shadow-md whitespace-nowrap bg-black"
+                                                >
+                                                    {soft.reason}
+                                                </div>
+                                                <div
+                                                    className="w-2 h-2 rotate-45 -mt-1"
+                                                    style={{ backgroundColor: soft.color }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return <span
+                                >{date.getDate()}</span>;
                             }}
-
                         />
                     </div>
                 )}

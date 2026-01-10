@@ -35,3 +35,31 @@ export const steps = [
     desc: "Go live, manage bookings easily, and earn securely with every stay.",
   },
 ];
+
+export const faqs = [
+  {
+    question: "What are the steps to partner with you for my villa?",
+    answer:
+      "Simply fill out the form, our team will evaluate your property, and we’ll guide you through onboarding and launch.",
+  },
+  {
+    question: "How do you market and promote my villa?",
+    answer:
+      "We list your villa across multiple platforms, use targeted marketing, and optimize pricing to maximize occupancy.",
+  },
+  {
+    question: "What documents do I need to list my villa?",
+    answer:
+      "You’ll need ownership proof, ID verification, and basic compliance documents depending on your location.",
+  },
+  {
+    question: "Who manages guest communication and support for my villa?",
+    answer:
+      "Our dedicated team handles all guest communication, bookings, and on-ground support.",
+  },
+  {
+    question: "Which platforms will my villa be listed on?",
+    answer:
+      "Your villa will be listed on major OTAs like Airbnb, Booking.com, and our own website.",
+  },
+];

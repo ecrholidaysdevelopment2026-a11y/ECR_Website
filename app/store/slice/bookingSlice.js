@@ -135,6 +135,8 @@ const bookingsSlice = createSlice({
     bookingMsg: null,
     PaymentConfirmmessage: null,
     PaymentConfirmerror: null,
+    bookingData: null,
+    PaymentConfirData: null,
   },
   reducers: {
     clearBookingError(state) {
@@ -164,6 +166,7 @@ const bookingsSlice = createSlice({
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
         state.bookingMsg = action.payload?.message;
+        state.bookingData = action.payload?.booking;
       })
       .addCase(createBooking.rejected, (state, action) => {
         state.loading = false;
@@ -209,6 +212,7 @@ const bookingsSlice = createSlice({
         state.loading = false;
         state.PaymentConfirmmessage =
           action.payload?.message || "Booking payment updated successfully";
+        state.PaymentConfirData = action.payload?.booking;
       })
       .addCase(PaymentConfirm.rejected, (state, action) => {
         state.loading = false;

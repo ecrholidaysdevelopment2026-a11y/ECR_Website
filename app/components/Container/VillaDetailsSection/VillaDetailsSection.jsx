@@ -20,7 +20,6 @@ import Link from "next/link";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { errorAlert, successAlert, warningAlert } from "@/app/utils/alertService";
-import { services } from "@/app/utils/villaDummyData";
 import useClickOutside from "@/app/utils/useClickOutside";
 import Modal from "@/app/common/CommonModel";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -35,6 +34,7 @@ import BookingCard from "@/app/common/BookingCard";
 import { FiGrid } from "react-icons/fi";
 import { getAllBlockedDates } from "@/app/store/slice/blockedDatesSlice";
 import stripHtml from "@/app/utils/stripHtml";
+import { getServiceIcon } from "@/app/utils/serviceIcon";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -223,6 +223,7 @@ const VillaDetailsSection = ({ slug }) => {
         locationId,
         overview,
         amenities,
+        services,
         price,
         isOffer,
         offerPrice,
@@ -407,10 +408,15 @@ const VillaDetailsSection = ({ slug }) => {
                                 {services?.map((s, i) => (
                                     <div key={i} className="text-center md:text-left">
                                         <div className="w-14 h-14 md:w-16 md:h-16 mx-auto md:mx-0 mb-4 rounded-full bg-[#f6eee9] flex items-center justify-center text-[#5a3b34]">
-                                            {s?.icon}
+                                            <span className="text-lg">
+                                                {(() => {
+                                                    const Icon = getServiceIcon(s.icon);
+                                                    return <Icon size={20} />;
+                                                })()}
+                                            </span>
                                         </div>
-                                        <h3 className="font-semibold text-sm mb-2">{s?.title}</h3>
-                                        <p className="text-sm text-gray-500">{s?.desc}</p>
+                                        <h3 className="font-semibold text-sm mb-2">{s?.name}</h3>
+                                        <p className="text-sm text-gray-500">{s?.description}</p>
                                     </div>
                                 ))}
                             </div>

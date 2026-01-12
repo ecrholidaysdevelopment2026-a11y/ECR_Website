@@ -1,17 +1,93 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import MainLayout from "@/app/common/MainLayout";
 import { faqs, steps } from "@/app/utils/villaDummyData";
 import loginbg from "@/app/assets/loginbg-1.jpg";
-import bestprice from "@/app/assets/BestPricebg.png";
+import bestprice from "@/app/assets/BestPricebg.svg";
 import watervilla from "@/app/assets/watervilla.svg";
 import roombad from "@/app/assets/roombad.svg";
 import bluebed from "@/app/assets/bluebed.svg";
 import { FiChevronDown } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVillaLocations } from "@/app/store/slice/locationSlice";
+import { clearLeadError, clearLeadState, createLead } from "@/app/store/slice/partnerLeadSlice";
+import { errorAlert, successAlert } from "@/app/utils/alertService";
+
+const initialFormState = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    location: "",
+    rooms: "",
+    source: "",
+    mediaType: "",
+    description: "",
+    media: [],
+};
 
 const BecomeMember = () => {
+    const dispatch = useDispatch()
+
+    const { error, success, loading } = useSelector((state) => state.partnerLead)
+    const [formData, setFormData] = useState(initialFormState);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            media: Array.from(e.target.files),
+        }));
+    };
+
+    const { locations = [] } = useSelector((state) => state.location);
+
+    useEffect(() => {
+        dispatch(fetchVillaLocations())
+    }, [])
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const data = new FormData();
+        data.append("firstName", formData.firstName);
+        data.append("lastName", formData.lastName);
+        data.append("email", formData.email);
+        data.append("phone", formData.phone);
+        data.append("location", formData.location);
+        data.append("rooms", formData.rooms);
+        data.append("source", formData.source);
+        data.append("mediaType", formData.mediaType);
+        data.append("description", formData.description);
+        formData.media.forEach((file) => {
+            data.append("media", file);
+        });
+
+        dispatch(createLead(data));
+    };
+
+    useEffect(() => {
+        if (success) {
+            successAlert(success)
+            dispatch(clearLeadState())
+            setFormData(initialFormState);
+
+        }
+        if (error) {
+            errorAlert(error)
+            dispatch(clearLeadError())
+        }
+    }, [error, success])
+
     const [openIndex, setOpenIndex] = useState(null);
+    const inputClass =
+        "w-full border border-gray-300 rounded-md px-4 py-3 text-sm " +
+        "focus:outline-none focus:ring-0 focus:border-[#3b2a14]";
+
     return (
         <>
             <MainLayout className="relative w-full min-h-screen md:min-h-[500px] 2xl:min-h-[650px] px-4 md:px-30">
@@ -39,45 +115,135 @@ const BecomeMember = () => {
                         </div>
                         <div className="md:col-span-7 flex md:justify-end">
                             <div className="bg-white rounded-2xl shadow-2xl p-6 md:px-8 w-full max-w-2xl">
-
                                 <h3 className="font-semibold text-lg mb-6">
                                     Tell more about the villa
                                 </h3>
-                                <form className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    <input className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#3b2a14]" placeholder="First Name" />
-                                    <input className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#3b2a14]" placeholder="Last Name" />
-                                    <input className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#3b2a14]" placeholder="Email Id" />
-                                    <input className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#3b2a14]" placeholder="+91" />
-                                    <input className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:outline-none focus:border-[#3b2a14]" placeholder="Villa Location" />
+                                <form
+                                    onSubmit={handleSubmit}
+                                    className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                                    <select className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-500 focus:outline-none focus:border-[#3b2a14]">
-                                        <option>Select no. of Rooms</option>
-                                        <option>1–3</option>
-                                        <option>4–6</option>
-                                        <option>7+</option>
-                                    </select>
+                                    <input
+                                        name="firstName"
+                                        value={formData.firstName}
+                                        onChange={handleChange}
+                                        className={inputClass}
+                                        placeholder="First Name"
+                                    />
 
-                                    <select className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-500 focus:outline-none focus:border-[#3b2a14]">
-                                        <option>Where did you hear about us</option>
-                                    </select>
+                                    <input
+                                        name="lastName"
+                                        value={formData.lastName}
+                                        onChange={handleChange}
+                                        className={inputClass}
 
-                                    <select className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-500 focus:outline-none focus:border-[#3b2a14]">
-                                        <option>Photos / Videos (if any)</option>
+                                        placeholder="Last Name"
+                                    />
+
+                                    <input
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className={inputClass}
+
+                                        placeholder="Email Id"
+                                    />
+
+                                    <input
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        className={inputClass}
+
+                                        placeholder="+91"
+                                    />
+
+
+                                    <select
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleChange}
+                                        className={inputClass}
+
+                                    >
+                                        <option value="">Select Villa Location</option>
+                                        {locations?.map((loc) => (
+                                            <option key={loc._id} value={loc._id}>
+                                                {loc.locationName}
+                                            </option>
+                                        ))}
                                     </select>
+                                    <input
+                                        name="rooms"
+                                        type="number"
+                                        placeholder="rooms"
+                                        value={formData.rooms}
+                                        onChange={handleChange}
+                                        className={inputClass}
+
+                                    >
+                                    </input>
+
+                                    <select
+                                        name="source"
+                                        className={inputClass}
+
+                                        value={formData.source}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Where did you hear about us</option>
+                                        <option value="Google">Google</option>
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="Referral">Referral</option>
+                                    </select>
+                                    <select
+                                        name="mediaType"
+                                        value={formData.mediaType}
+                                        className={inputClass}
+
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Photos / Videos (if any)</option>
+                                        <option value="photos">Photos</option>
+                                        <option value="videos">Videos</option>
+                                    </select>
+                                    {formData.mediaType && (
+                                        <div className="md:col-span-2">
+                                            <input
+                                                type="file"
+                                                name="media"
+                                                multiple
+                                                accept={
+                                                    formData.mediaType === "photos"
+                                                        ? "image/*"
+                                                        : "video/*"
+                                                }
+                                                onChange={handleFileChange}
+                                                className={" border-dotted w-full p-3 border-gray-300 border-2"}
+
+                                            />
+                                        </div>
+                                    )}
 
                                     <textarea
+                                        name="description"
                                         rows={3}
+                                        value={formData.description}
+                                        onChange={handleChange}
                                         placeholder="Describe your property"
-                                        className="md:col-span-2 w-full border border-gray-300 rounded-md px-4 py-3 text-sm resize-none focus:outline-none focus:border-[#3b2a14]"
+                                        className="md:col-span-2 input resize-none w-full border border-gray-300 p-3"
                                     />
 
                                     <div className="md:col-span-2 mt-4">
-                                        <button className="w-full bg-[#3b2a14] text-white py-3 rounded-full font-medium hover:opacity-90 transition">
-                                            Send
+                                        <button
+                                            type="submit"
+                                            className="w-full bg-[#3b2a14] text-white py-3 rounded-full font-medium hover:opacity-90 transition"
+                                        >
+                                            {loading ? "submting..." : "submit"}
                                         </button>
                                     </div>
 
                                 </form>
+
                             </div>
                         </div>
 
@@ -118,15 +284,17 @@ const BecomeMember = () => {
                 </div>
             </MainLayout>
             <MainLayout className={" px-4 md:px-30"}>
-                <div className="relative w-full h-[380px]">
+                <div className="relative w-full h-[525px]">
                     <Image
                         src={bestprice}
                         alt="Villa View"
                         fill
-                        className="object-cover"
                         priority
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                        className="object-cover"
                     />
                 </div>
+
                 <div className="bg-white py-10">
                     <div className=" grid grid-cols-1 md:grid-cols-3 gap-8 ">
                         <div className="flex flex-col  gap-3 border-r pr-4 md:pr-8 border-gray-300">

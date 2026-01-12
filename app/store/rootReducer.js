@@ -7,6 +7,7 @@ import locationReducer from "./slice/locationSlice";
 import bookingnReducer from "./slice/bookingSlice";
 import blockedDatesReducer from "./slice/blockedDatesSlice";
 import servicesReducer from "./slice/servicesSlice";
+import partnerLeadReducer from "./slice/partnerLeadSlice";
 const reducer = combineReducers({
   auth: authReducer,
   user: userReducer,
@@ -16,5 +17,6 @@ const reducer = combineReducers({
   booking: bookingnReducer,
   blockedDates: blockedDatesReducer,
   services: servicesReducer,
+  partnerLead: partnerLeadReducer,
 });
 export default reducer;

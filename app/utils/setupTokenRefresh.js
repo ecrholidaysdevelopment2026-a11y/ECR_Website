@@ -12,11 +12,12 @@ export const isLoginExpired = () => {
 
 export const setupTokenRefresh = () => {
   if (isLoginExpired()) {
-    localStorage.clear();
     store.dispatch(logout());
     return;
   }
+
   const tokenExpiry = localStorage.getItem("tokenExpiry");
+  
   if (!tokenExpiry) return;
   const currentTime = Date.now();
   const expiresIn = Number(tokenExpiry) - currentTime;

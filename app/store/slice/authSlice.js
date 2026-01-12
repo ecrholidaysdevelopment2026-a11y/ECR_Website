@@ -84,22 +84,25 @@ export const refreshToken = createAsyncThunk(
   "auth/refreshUserToken",
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
-    const refreshToken = state?.auth?.refreshToken;
+    const refreshToken =
+      state?.auth?.refreshToken || localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+      return thunkAPI.rejectWithValue("No refresh token");
+    }
     try {
       const res = await FetchApi({
         endpoint: "/user/refresh",
         method: "POST",
-        body: { refreshToken },
+        token: refreshToken,
       });
       const data = res?.data;
       if (data?.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("tokenExpiry", Date.now() + 50 * 60 * 1000);
-        setupTokenRefresh(thunkAPI.dispatch);
+        setupTokenRefresh();
       }
-
       return data;
-    } catch (err) {
+    } catch {
       return thunkAPI.rejectWithValue("Token refresh failed");
     }
   }
@@ -126,12 +129,16 @@ const authSlice = createSlice({
     },
     logout(state) {
       state.email = null;
+      state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
       state.error = null;
       state.message = null;
-      localStorage.clear();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("tokenExpiry");
+      localStorage.removeItem("loginTimestamp");
       clearTokenRefresh();
     },
   },

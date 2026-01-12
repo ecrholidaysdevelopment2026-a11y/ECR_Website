@@ -85,9 +85,14 @@ export const LocationSection = ({ location }) => {
                         <VillaCard
                             title={villa.villaName}
                             images={villa.images?.villaGallery}
-                            price={villa.offerPrice || villa.price}
+                            price={villa.price}
+                            offerPrice={villa.offerPrice}
                             maxGuests={villa.maxGuests}
                             slug={villa.slug}
+                            bedroom={villa.bedrooms}
+                            bath={villa.bathrooms}
+                            rating={villa.rating}
+                            nights={1}
                         />
                     </div>
                 ))}

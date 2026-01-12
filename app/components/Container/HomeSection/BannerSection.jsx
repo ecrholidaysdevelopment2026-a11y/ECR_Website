@@ -27,6 +27,7 @@ export default function BannerSection({ initialData = null }) {
     const [rooms, setRooms] = useState(1);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
+    
     const { locations, loading } = useSelector((state) => state.location);
 
     useEffect(() => {
@@ -75,6 +76,7 @@ export default function BannerSection({ initialData = null }) {
 
     useClickOutside(guestRef, () => setShowGuestDropdown(false));
     useClickOutside(calendarRef, () => setShowCalendar(false));
+    useClickOutside(destinationRef, () => setShowDestination(false));
 
     const formatDateRange = (start, end) => {
         const options = { month: 'short', day: 'numeric' };

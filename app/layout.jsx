@@ -7,6 +7,7 @@ import ToastProvider from "./common/ToastProvider";
 import PopupManager from "./common/PopupManager";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
+import AuthBootstrap from "./AuthBootstrap";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
@@ -40,6 +41,7 @@ const schemaData = {
 
 
 export default function RootLayout({ children }) {
+
   return (
     <html lang="en">
       <head>
@@ -54,6 +56,7 @@ export default function RootLayout({ children }) {
       </head>
       <body suppressHydrationWarning={true}>
         <ReduxProvider>
+          <AuthBootstrap />
           <SmoothScrollProvider>
             <ConditionalHeader />
             <PopupManager />

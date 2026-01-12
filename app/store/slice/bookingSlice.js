@@ -145,6 +145,9 @@ const bookingsSlice = createSlice({
       (state.error = null), (state.message = null);
       state.PaymentConfirmerror = null;
       state.PaymentConfirmmessage = null;
+      state.verifyMessage = null;
+      state.PaymentConfirData = null;
+      state.bookingData = null;
     },
   },
   extraReducers: (builder) => {
@@ -184,12 +187,12 @@ const bookingsSlice = createSlice({
       })
       .addCase(verifyPayment.fulfilled, (state, action) => {
         state.loading = false;
-        state.message =
+        state.verifyMessage =
           action.payload?.message || "Booking payment updated successfully";
       })
       .addCase(verifyPayment.rejected, (state, action) => {
         state.loading = false;
-        state.PaymentConfirmerror = action.payload;
+        state.error = action.payload;
       })
 
       .addCase(userBooking.pending, (state) => {
@@ -212,7 +215,7 @@ const bookingsSlice = createSlice({
         state.loading = false;
         state.PaymentConfirmmessage =
           action.payload?.message || "Booking payment updated successfully";
-        state.PaymentConfirData = action.payload?.booking;
+        state.PaymentConfirData = action.payload;
       })
       .addCase(PaymentConfirm.rejected, (state, action) => {
         state.loading = false;

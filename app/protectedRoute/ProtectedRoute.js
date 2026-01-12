@@ -1,17 +1,25 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoginExpired } from "../utils/isLoginExpired";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slice/authSlice";
+import { isLoginExpired } from "@/app/utils/setupTokenRefresh";
 
 const ProtectedRoute = ({ children }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (isLoginExpired()) {
-      localStorage.clear();
-      router.push("/login");
+      dispatch(logout());
+      router.replace("/login");
+    } else {
+      setChecked(true);
     }
-  }, [router]);
+  }, [dispatch, router]);
+
+  if (!checked) return null;
 
   return children;
 };

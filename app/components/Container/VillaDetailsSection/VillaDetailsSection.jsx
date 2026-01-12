@@ -254,7 +254,7 @@ const VillaDetailsSection = ({ slug }) => {
         }
     }, [bookingerror, bookingMsg, dispatch]);
 
-    
+
     const applicableBlockedDates = useMemo(() => {
         if (!blockedDates?.length || !selectedVilla?._id) return [];
 
@@ -377,7 +377,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
                         <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-lg py-1 text-gray-700">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-2xl py-1 text-gray-700">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests
@@ -391,18 +391,18 @@ const VillaDetailsSection = ({ slug }) => {
                                 {locationId?.locationName || "Location"}
                             </span>
                         </div>
-                        <div className="mb-7 flex items-center gap-2 text-sm text-gray-700">
+                        <div className="mb-7 flex items-center gap-2 text-md text-gray-700">
                             <FaStar className="text-yellow-400" />
                             <span>
                                 {selectedVilla.reviews?.length || 5} reviews
                             </span>
                         </div>
-                        <h2 className="text-lg font-semibold mb-2">About this property</h2>
+                        <h2 className="text-xl font-semibold mb-2">About this property</h2>
                         <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300 mb-10 line-clamp-6">
                             {stripHtml(overview) || "No description available."}
                         </p>
                         <div className="mb-10 md:mb-12">
-                            <h2 className="text-lg font-semibold mb-4 md:mb-6">Services</h2>
+                            <h2 className="text-xl font-semibold mb-4 md:mb-6">Services</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                                 {services?.map((s, i) => (
                                     <div key={i} className="text-center md:text-left">
@@ -416,7 +416,7 @@ const VillaDetailsSection = ({ slug }) => {
                             </div>
                         </div>
                         <div className="border-t border-gray-300 pt-8 md:pt-10 mb-10">
-                            <h2 className="text-lg font-semibold mb-4 md:mb-6">Popular amenities</h2>
+                            <h2 className="text-xl font-semibold mb-4 md:mb-6">Popular amenities</h2>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
                                 {amenities?.map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 text-sm">
@@ -437,7 +437,7 @@ const VillaDetailsSection = ({ slug }) => {
                             </div>
                         </div>
                         <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
-                            <h2 className="text-lg font-semibold mb-4 md:mb-6">Reviews</h2>
+                            <h2 className="text-xl font-semibold mb-4 md:mb-6">Reviews</h2>
                             {selectedVilla?.reviews?.length > 0 ? (
                                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                                     {selectedVilla?.reviews?.map((r, i) => (

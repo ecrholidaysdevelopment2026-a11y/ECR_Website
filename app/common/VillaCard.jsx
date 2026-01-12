@@ -8,11 +8,15 @@ import { useRouter } from "next/navigation";
 export default function VillaCard({
     title,
     price,
-    nights,
+    offerPrice,
+    nights = 1,
     rating,
     saleTag,
     images,
-    slug
+    slug,
+    bath,
+    bedroom
+
 }) {
     const normalizedImages = Array.isArray(images) ? images : images ? [images] : [];
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,7 +37,7 @@ export default function VillaCard({
         hoverTimer.current = setTimeout(() => {
             setDirection(1);
             setCurrentIndex(1);
-        }, 180); 
+        }, 180);
     };
 
     const handleMouseLeave = () => {
@@ -96,7 +100,7 @@ export default function VillaCard({
                         initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-                        transition={{ duration: 0.90,}}
+                        transition={{ duration: 0.90, }}
                         className="absolute inset-0 w-full h-full"
                     >
                         <CustomImage
@@ -124,15 +128,40 @@ export default function VillaCard({
                     />
                 ))}
             </div>
-
             <h3 className="mt-2 text-[15px] font-semibold text-gray-800 truncate">
                 {title}
             </h3>
-
-            <div className="flex justify-between items-center mt-1">
-                <p className="text-gray-600 text-sm">
-                    ₹{price.toLocaleString()} for {nights} night
-                </p>
+            {
+                bedroom && bath && (
+                    <div className="flex gap-2 text-gray-600">
+                        <p>{bedroom} bedroom</p>
+                        <p>{bath} bath</p>
+                    </div>
+                )
+            }
+            <div className="flex justify-between items-center ">
+                {offerPrice && offerPrice < price ? (
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className="text-black text-lg font-semibold">
+                            ₹{offerPrice.toLocaleString()}
+                        </span>
+                        <span className="text-gray-400  line-through">
+                            ₹{price.toLocaleString()}
+                        </span>
+                        <span className="text-xs text-green-600 font-medium">
+                            {Math.round(((price - offerPrice) / price) * 100)}% OFF
+                        </span>
+                    </div>
+                ) : (
+                    <p className="text-gray-600 text-sm">
+                        <span className="font-semibold text-gray-800">
+                            ₹{price.toLocaleString()}
+                        </span>
+                        <span>
+                            {" "}for {nights} nights
+                        </span>
+                    </p>
+                )}
                 <div className="flex items-center text-gray-700 text-sm">
                     <FaStar className="text-yellow-500 mr-1" size={12} />
                     {rating || 4.9}

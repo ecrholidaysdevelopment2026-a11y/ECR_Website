@@ -11,7 +11,7 @@
 }
 
 body {
-  font-family: var(--font-playfair);
+  font-family: var(--font-montserrat);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;

@@ -1,5 +1,5 @@
 "use client";
-import { FaStar } from "react-icons/fa";
+import { FaBath, FaBed, FaStar } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomImage from "./Image";
@@ -14,8 +14,6 @@ export default function VillaCard({
     saleTag,
     images,
     slug,
-    bath,
-    bedroom
 
 }) {
     const normalizedImages = Array.isArray(images) ? images : images ? [images] : [];
@@ -131,14 +129,6 @@ export default function VillaCard({
             <h3 className="mt-2 text-[15px] font-semibold text-gray-800 truncate">
                 {title}
             </h3>
-            {
-                bedroom && bath && (
-                    <div className="flex gap-2 text-gray-600">
-                        <p>{bedroom} bedroom</p>
-                        <p>{bath} bath</p>
-                    </div>
-                )
-            }
             <div className="flex justify-between items-center ">
                 {offerPrice && offerPrice < price ? (
                     <div className="flex items-center gap-2 text-sm">

@@ -10,7 +10,8 @@ const GuestDropdown = ({
     rooms,
     setRooms,
     showGuestDropdown,
-    setShowGuestDropdown
+    setShowGuestDropdown,
+    handleSearch
 }) => {
     const guestRef = useRef(null);
     const totalGuests = adults + children;
@@ -89,7 +90,10 @@ const GuestDropdown = ({
             <div className="mt-4 pt-3 ">
                 <p className="text-sm text-gray-600 mb-2">Total: {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}, {rooms} Room{rooms !== 1 ? 's' : ''}</p>
                 <button
-                    onClick={() => setShowGuestDropdown(false)}
+                    onClick={() => {
+                        handleSearch();
+                        setShowGuestDropdown(false)
+                    }}
                     className="w-full bg-[#2c2c2c] text-white py-2 rounded-lg hover:bg-black transition"
                 >
                     Apply

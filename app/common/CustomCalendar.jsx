@@ -2,15 +2,44 @@
 import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobile = false }) => {
+const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobile = false, blockedDates }) => {
+    console.log(blockedDates);
+
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [nextMonth, setNextMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1));
     const [selectedRange, setSelectedRange] = useState({
         start: dateRange[0].startDate,
         end: dateRange[0].endDate
     });
-    const [flexibleDays, setFlexibleDays] = useState(0);
     const [isSingleMonth, setIsSingleMonth] = useState(false);
+    const blockedDatesSafe = Array.isArray(blockedDates) ? blockedDates : [];
+
+    const getRangeInfo = (date) => {
+        if (!date) return null;
+        return blockedDatesSafe.find(block => {
+            const start = new Date(block.startDate);
+            const end = new Date(block.endDate);
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+            return date >= start && date <= end;
+        });
+    };
+
+
+
+
+    const getBlockedInfo = (date) => {
+        if (!date) return null;
+        return blockedDatesSafe.find((block) => {
+            const start = new Date(block.startDate);
+            const end = new Date(block.endDate);
+            start.setHours(0, 0, 0, 0);
+            end.setHours(23, 59, 59, 999);
+            return date >= start && date <= end && block.isBlocked !== false;
+        });
+    };
+
+
     useEffect(() => {
         const checkScreenSize = () => {
             setIsSingleMonth(window.innerWidth < 768 || isMobile);
@@ -37,44 +66,39 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
         for (let i = 0; i < firstDay; i++) {
             days.push(null);
         }
-
         for (let i = 1; i <= daysInMonth; i++) {
             days.push(new Date(year, month, i));
         }
-
         return days;
     };
 
     const handleDateClick = (date) => {
         if (!date) return;
 
-        if (!selectedRange.start || (selectedRange.start && selectedRange.end)) {
+        const blocked = getBlockedInfo(date);
+        if (blocked) return;
+
+        if (!selectedRange.start || selectedRange.end) {
             setSelectedRange({ start: date, end: null });
-        } else if (selectedRange.start && !selectedRange.end) {
+        } else {
             let start = selectedRange.start;
             let end = date;
 
-            if (start > date) {
-                [start, end] = [date, start];
-            }
+            if (start > date) [start, end] = [date, start];
 
             setSelectedRange({ start, end });
 
-            let finalStart = new Date(start);
-            let finalEnd = new Date(end);
-
-            if (flexibleDays > 0) {
-                finalStart.setDate(finalStart.getDate() - flexibleDays);
-                finalEnd.setDate(finalEnd.getDate() + flexibleDays);
-            }
-
-            setDateRange([{
-                startDate: finalStart,
-                endDate: finalEnd,
-                key: "selection"
-            }]);
+            setDateRange([
+                {
+                    startDate: start,
+                    endDate: end,
+                    key: "selection",
+                },
+            ]);
         }
     };
+
+
     const isDateInRange = (date) => {
         if (!selectedRange.start || !date) return false;
         if (!selectedRange.end) return date.getTime() === selectedRange.start.getTime();
@@ -115,6 +139,8 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
     const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"];
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
 
     return (
         <div className="custom-calendar w-full">
@@ -167,27 +193,32 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
                     </div>
 
                     <div className="grid grid-cols-7 gap-0.5 md:gap-1">
-                        {currentMonthDays.map((date, index) => (
-                            <button
-                                key={index}
-                                onClick={() => handleDateClick(date)}
-                                className={`
-                                    h-8 md:h-10 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm transition
-                                    ${!date ? 'invisible' : ''}
-                                    ${isDateStart(date) ? 'bg-blue-600 text-white rounded-l md:rounded-l-lg' : ''}
-                                    ${isDateEnd(date) ? 'bg-blue-600 text-white rounded-r md:rounded-r-lg' : ''}
-                                    ${isDateInRange(date) && !isDateStart(date) && !isDateEnd(date) ? 'bg-blue-100' : ''}
-                                    ${date && date.getMonth() !== currentMonth.getMonth() ? 'text-gray-400' : 'text-gray-800'}
-                                    ${date ? 'hover:bg-gray-100 active:scale-95' : ''}
-                                    ${date && date.toDateString() === new Date().toDateString() ? 'border border-blue-500' : ''}
-                                `}
-                                disabled={!date}
-                                aria-label={date ? `Select date ${date.toLocaleDateString()}` : 'Empty day'}
-                            >
-                                {date ? date.getDate() : ''}
-                            </button>
-                        ))}
+                        {currentMonthDays.map((date, index) => {
+                            const blockedInfo = getBlockedInfo(date);
+                            const rangeInfo = getRangeInfo(date);
+                            return (
+                                <button
+                                    key={index}
+                                    onClick={() => handleDateClick(date)}
+                                    disabled={!date || blockedInfo}
+                                    className={`
+          h-8 md:h-10 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm transition
+          ${!date ? "invisible" : ""}
+          ${blockedInfo ? "cursor-not-allowed text-white" : ""}
+          ${isDateStart(date) ? "bg-blue-600 text-white" : ""}
+          ${isDateEnd(date) ? "bg-blue-600 text-white" : ""}
+          ${isDateInRange(date) && !blockedInfo ? "bg-blue-100" : ""}
+        `}
+                                    style={{
+                                        backgroundColor: rangeInfo ? rangeInfo.color : undefined
+                                    }}
+                                >
+                                    {date?.getDate()}
+                                </button>
+                            );
+                        })}
                     </div>
+
                 </div>
                 {!isSingleMonth && (
                     <div className="md:flex-1">
@@ -214,32 +245,43 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
                         </div>
 
                         <div className="grid grid-cols-7 gap-0.5 md:gap-1">
-                            {nextMonthDays.map((date, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handleDateClick(date)}
-                                    className={`
-                                        h-8 md:h-10 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm transition
-                                        ${!date ? 'invisible' : ''}
-                                        ${isDateStart(date) ? 'bg-blue-600 text-white rounded-l md:rounded-l-lg' : ''}
-                                        ${isDateEnd(date) ? 'bg-blue-600 text-white rounded-r md:rounded-r-lg' : ''}
-                                        ${isDateInRange(date) && !isDateStart(date) && !isDateEnd(date) ? 'bg-blue-100' : ''}
-                                        ${date && date.getMonth() !== nextMonth.getMonth() ? 'text-gray-400' : 'text-gray-800'}
-                                        ${date ? 'hover:bg-gray-100 active:scale-95' : ''}
-                                        ${date && date.toDateString() === new Date().toDateString() ? 'border border-blue-500' : ''}
-                                    `}
-                                    disabled={!date}
-                                    aria-label={date ? `Select date ${date.toLocaleDateString()}` : 'Empty day'}
-                                >
-                                    {date ? date.getDate() : ''}
-                                </button>
-                            ))}
+                            {nextMonthDays.map((date, index) => {
+                                const blockedInfo = getBlockedInfo(date);
+                                const rangeInfo = getRangeInfo(date);
+                                return (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleDateClick(date)}
+                                        disabled={!date || blockedInfo}
+                                        className={`
+        h-8 md:h-10 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm transition
+        ${!date ? "invisible" : ""}
+        ${blockedInfo ? "cursor-not-allowed opacity-80 text-white" : ""}
+        ${isDateStart(date) ? "bg-blue-600 text-white" : ""}
+        ${isDateEnd(date) ? "bg-blue-600 text-white" : ""}
+        ${isDateInRange(date) && !blockedInfo ? "bg-blue-100" : ""}
+      `}
+                                        style={{
+                                            backgroundColor: rangeInfo ? rangeInfo.color : undefined
+                                        }}
+                                    >
+                                        {date?.getDate()}
+                                    </button>
+                                );
+                            })}
+
                         </div>
                     </div>
                 )}
             </div>
-
-           
+            <ul className="px-3 mt-3 flex flex-wrap gap-4">
+                {blockedDatesSafe?.slice().map(item => (
+                    <li key={item._id} className="flex items-center gap-2">
+                        <span className="h-3 w-3 rounded-sm" style={{ background: item.color }} />
+                        <span className="text-xs">{item.reason}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

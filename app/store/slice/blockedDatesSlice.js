@@ -37,8 +37,27 @@ export const getBlockedDatesCalendar = createAsyncThunk(
   }
 );
 
+export const globalCalendar = createAsyncThunk(
+  "blockedDates/globalCalendar",
+  async (_, thunkAPI) => {
+    try {
+      const response = await FetchApi({
+        endpoint: "/admin/blocked-dates/getGlobal",
+        method: "GET",
+      });
+
+      return response?.data || [];
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.message || "Failed to fetch calendar blocked dates"
+      );
+    }
+  }
+);
+
 const initialState = {
   blockedDates: [],
+  globaldDates: [],
   calendarBlockedDates: [],
   loadingAll: false,
   loadingCalendar: false,
@@ -86,6 +105,19 @@ const blockedDatesSlice = createSlice({
       })
       .addCase(getBlockedDatesCalendar.rejected, (state, action) => {
         state.loadingCalendar = false;
+        state.error = action.payload;
+      })
+
+      .addCase(globalCalendar.pending, (state) => {
+        state.loadingAll = true;
+        state.error = null;
+      })
+      .addCase(globalCalendar.fulfilled, (state, action) => {
+        state.loadingAll = false;
+        state.globaldDates = action.payload;
+      })
+      .addCase(globalCalendar.rejected, (state, action) => {
+        state.loadingAll = false;
         state.error = action.payload;
       });
   },

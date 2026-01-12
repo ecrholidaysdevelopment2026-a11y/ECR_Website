@@ -28,6 +28,7 @@ export default function Header() {
         pathname === "/register" ||
         pathname === "/search" ||
         pathname.startsWith("/destination");
+        pathname.startsWith("/villas");
 
     const handleLogout = () => {
         dispatch(logout());

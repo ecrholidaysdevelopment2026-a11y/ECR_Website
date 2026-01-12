@@ -7,6 +7,7 @@ import { fetchVillaLocations } from "@/app/store/slice/locationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomCalendar from "@/app/common/CustomCalendar";
 import GuestDropdown from "@/app/common/GuestDropdown";
+import { globalCalendar } from "@/app/store/slice/blockedDatesSlice";
 
 export default function BannerSection({ initialData = null }) {
     const router = useRouter();
@@ -27,8 +28,13 @@ export default function BannerSection({ initialData = null }) {
     const [rooms, setRooms] = useState(1);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
-    
+
     const { locations, loading } = useSelector((state) => state.location);
+    const { globaldDates } = useSelector((state) => state.blockedDates);
+
+    useEffect(() => {
+        dispatch(globalCalendar())
+    }, [])
 
     useEffect(() => {
         dispatch(fetchVillaLocations());
@@ -161,6 +167,7 @@ export default function BannerSection({ initialData = null }) {
                                     showFlexible={true}
                                     showExact={true}
                                     isMobile={true}
+                                    blockedDates={globaldDates}
                                 />
                             </div>
                             <h2 className="text-lg font-semibold mb-4">Guests & Rooms</h2>
@@ -319,6 +326,7 @@ export default function BannerSection({ initialData = null }) {
                                 setDateRange={handleDateChange}
                                 showFlexible={true}
                                 isMobile={false}
+                                blockedDates={globaldDates}
                             />
 
                         </div>
@@ -351,6 +359,7 @@ export default function BannerSection({ initialData = null }) {
                             setRooms={setRooms}
                             showGuestDropdown={showGuestDropdown}
                             setShowGuestDropdown={setShowGuestDropdown}
+                            handleSearch={() => handleSearch()}
                         />
                     )}
                 </div>

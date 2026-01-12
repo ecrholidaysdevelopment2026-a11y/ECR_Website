@@ -320,7 +320,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
                     <Link href="/" className="hover:text-black transiton">Home</Link>
                     {" / "}
-                    <Link href="/search" className="hover:text-black transition">Villas</Link>
+                    <Link href="/villas" className="hover:text-black transition">Villas</Link>
                     {" / "}
                     {locationId?.locationName || "Location"}
                     {" / "}

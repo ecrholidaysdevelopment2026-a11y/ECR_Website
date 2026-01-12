@@ -1,6 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { FetchApi } from "../../api/FetchApi";
 
+export const getAllVillas = createAsyncThunk(
+  "villas/getAllVillas",
+  async (_, thunkAPI) => {
+    try {
+      const response = await FetchApi({
+        endpoint: `/user/villas`,
+        method: "GET",
+      });
+
+      if (response?.data?.success === false) {
+        return thunkAPI.rejectWithValue(response?.data?.data?.message);
+      }
+      return response?.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || "Failed to search villas");
+    }
+  }
+);
+
 export const searchVillas = createAsyncThunk(
   "villas/search",
   async (params, thunkAPI) => {
@@ -209,7 +228,7 @@ export const filterUserVillas = createAsyncThunk(
       if (filters?.services?.length)
         params.services = filters.services.join(",");
       if (filters?.minPrice) params.minPrice = filters.minPrice;
-      if (filters?.bedrooms) params.bedrooms = filters.bedrooms; 
+      if (filters?.bedrooms) params.bedrooms = filters.bedrooms;
       if (filters?.maxGuests) params.maxGuests = filters.maxGuests;
       if (filters?.isFeatured !== null && filters?.isFeatured !== undefined)
         params.isFeatured = filters.isFeatured;
@@ -240,6 +259,7 @@ const villaSlice = createSlice({
   name: "villas",
   initialState: {
     getAllVillas: [],
+    villas: [],
     destinationByvillas: [],
     searchResults: [],
     featured: [],
@@ -269,6 +289,18 @@ const villaSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getAllVillas.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllVillas.fulfilled, (state, action) => {
+        state.loading = false;
+        state.villas = action.payload || [];
+      })
+      .addCase(getAllVillas.rejected, (state, action) => {
+        state.loading = false;
+        state.searchError = action.payload || "Search failed";
+      })
 
       .addCase(searchVillas.pending, (state) => {
         state.loading = true;

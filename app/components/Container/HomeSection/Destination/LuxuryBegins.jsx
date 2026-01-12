@@ -4,6 +4,7 @@ import Luxury from "@/app/assets/luxury.png";
 import gold from "@/app/assets/gold.png";
 import Image from "next/image";
 import { MdPool, MdCurrencyRupee, MdGroups, MdOutlineHomeWork } from "react-icons/md";
+import Link from "next/link";
 
 const LuxuryBegins = () => {
     const features = [
@@ -32,22 +33,26 @@ const LuxuryBegins = () => {
     return (
         <>
             <div className="flex flex-col items-center bg-white  justify-center relative">
-                <div className="relative w-full h-[450px] z-40">
+                <div className="relative w-full h-[450px] z-40 rounded-3xl overflow-hidden">
                     <Image
                         src={Luxury}
                         alt="Luxury Villas"
-                        width={1000}
-                        height={1000}
-                        className="w-full h-full object-cover rounded-3xl"
+                        fill
+                        priority
+                        className="object-cover"
                     />
+                    <div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/40 to-transparent"></div>
                     <div className="absolute bottom-16 left-12 text-white max-w-lg z-30">
-                        <h1 className="text-3xl font-bold mb-3">Luxury begins here</h1>
-                        <p className="mb-4">
-                            We bring together luxury villas, intuitive hospitality, and thoughtfully created community spaces - all at an easier price point.
+                        <h1 className="text-4xl font-bold mb-4 leading-tight">
+                            Luxury begins here
+                        </h1>
+                        <p className="mb-6 text-white/90 text-base leading-relaxed">
+                            We bring together luxury villas, intuitive hospitality, and thoughtfully
+                            created community spaces — all at an easier price point.
                         </p>
-                        <button className="bg-white text-black px-4 py-2 rounded-full font-semibold hover:bg-gray-200 transition">
+                        <Link href={"/villas"} className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
                             Explore Villas
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-[#F3E9DC] p-6 rounded-3xl shadow-lg 

@@ -4,7 +4,7 @@ import Image from "next/image";
 import MainLayout from "@/app/common/MainLayout";
 import { faqs, steps } from "@/app/utils/villaDummyData";
 import loginbg from "@/app/assets/loginbg-1.jpg";
-import bestprice from "@/app/assets/BestPricebg.svg";
+import bestprice from "@/app/assets/BestPricebg.jpg";
 import watervilla from "@/app/assets/watervilla.svg";
 import roombad from "@/app/assets/roombad.svg";
 import bluebed from "@/app/assets/bluebed.svg";
@@ -29,7 +29,6 @@ const initialFormState = {
 
 const BecomeMember = () => {
     const dispatch = useDispatch()
-
     const { error, success, loading } = useSelector((state) => state.partnerLead)
     const [formData, setFormData] = useState(initialFormState);
 
@@ -287,14 +286,11 @@ const BecomeMember = () => {
                 <div className="relative w-full h-[525px]">
                     <Image
                         src={bestprice}
-                        alt="Villa View"
+                        alt="Property Background"
                         fill
-                        priority
-                        sizes="(max-width: 768px) 100vw, 1200px"
                         className="object-cover"
                     />
                 </div>
-
                 <div className="bg-white py-10">
                     <div className=" grid grid-cols-1 md:grid-cols-3 gap-8 ">
                         <div className="flex flex-col  gap-3 border-r pr-4 md:pr-8 border-gray-300">

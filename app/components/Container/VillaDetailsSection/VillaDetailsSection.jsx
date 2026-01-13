@@ -343,7 +343,7 @@ const VillaDetailsSection = ({ slug }) => {
         if (selectedVilla.locationId?.mapLink) {
             return {
                 id: selectedVilla._id,
-                mapLink: selectedVilla.locationId.mapLink, 
+                mapLink: selectedVilla.locationId.mapLink,
                 image: selectedVilla.images?.villaImage,
                 title: selectedVilla.villaName,
                 price: selectedVilla.isOffer
@@ -367,8 +367,7 @@ const VillaDetailsSection = ({ slug }) => {
 
     return (
         <>
-
-            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-80 pb-24 lg:pb-6">
+            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-70 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
                     <Link href="/" className="hover:text-black transiton">Home</Link>
                     {" / "}
@@ -450,7 +449,7 @@ const VillaDetailsSection = ({ slug }) => {
                             </span>
                         </div>
                         <h2 className="text-xl font-semibold mb-2">About this property</h2>
-                        <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300 mb-10 line-clamp-6">
+                        <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300 mb-10 ">
                             {stripHtml(overview) || "No description available."}
                         </p>
                         <div className="mb-10 md:mb-12">

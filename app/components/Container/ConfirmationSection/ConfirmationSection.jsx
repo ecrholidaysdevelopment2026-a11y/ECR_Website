@@ -93,7 +93,7 @@ const ConfirmationSection = () => {
                 totalAmount={razorpay?.amount}
                 dispatch={dispatch}
             />
-            <div className="min-h-screen bg-white md:px-8 lg:px-30 2xl:px-80 py-8">
+            <div className="min-h-screen bg-white md:px-8 lg:px-30 2xl:px-70 py-8">
                 <div className="flex items-center gap-3 mb-8">
                     <button className="p-2 rounded-full bg-gray-300">
                         <FaArrowLeft size={18} />

@@ -10,7 +10,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { FiHome } from "react-icons/fi";
+import { FaBed } from "react-icons/fa";
 import ReactDOMServer from "react-dom/server";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
@@ -27,14 +27,15 @@ const homeDivIcon = L.divIcon({
                 width: 40,
                 height: 40,
                 borderRadius: "50%",
-                background: "#000",
+                background: "#E91E63",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0 6px 12px rgba(0,0,0,0.25)",
             }}
         >
-            <FiHome size={20} color="#fff" />
+            <FaBed size={18} color="#fff" />
+            
         </div>
     ),
     iconSize: [40, 40],

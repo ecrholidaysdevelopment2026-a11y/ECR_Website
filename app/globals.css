@@ -152,6 +152,14 @@ body {
   padding: 0% !important;
   margin: 0% !important;
 }
+
+.leaflet-popup-tip {
+  display: none;
+}
+.padding_none .leaflet-popup-content {
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .rdrCalendarWrapper {
     width: 300px !important;

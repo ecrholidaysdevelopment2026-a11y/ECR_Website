@@ -67,7 +67,7 @@ const GuestDropdown = ({
             </div>
             <div className="flex justify-between items-center py-3 border-b">
                 <div>
-                    <p className="font-medium text-sm">Rooms</p>
+                    <p className="font-medium text-start text-sm">Rooms</p>
                     <p className="text-xs text-gray-500">Number of rooms</p>
                 </div>
                 <div className="flex items-center gap-3">

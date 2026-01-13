@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchWeeklyPrice, getVillaBySlug } from "@/app/store/slice/villaSlice";
 import { clearBookingError, createBooking } from "@/app/store/slice/bookingSlice";
 import CustomImage from "@/app/common/Image";
-import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
 import { getAmenityIcon } from "@/app/utils/amenityIcons";
 import Link from "next/link";
 import "react-date-range/dist/styles.css";
@@ -236,7 +235,7 @@ const VillaDetailsSection = ({ slug }) => {
     const allImages = [images?.villaImage, ...(images?.villaGallery || [])].filter(Boolean);
     const displayPrice = isOffer && offerPrice ? offerPrice : price;
     const originalPrice = isOffer ? price : null;
-    const mapPosition = getLatLngFromMapLink(selectedVilla?.locationId?.mapLink);
+
 
     const nights = bookingData.checkInDate && bookingData.checkOutDate
         ? Math.ceil((bookingData.checkOutDate - bookingData.checkInDate) / (1000 * 60 * 60 * 24))
@@ -313,6 +312,58 @@ const VillaDetailsSection = ({ slug }) => {
             return dates;
         });
     }, [hardBlockedRanges]);
+
+    const mapPosition = useMemo(() => {
+        if (!selectedVilla) return null;
+        if (
+            selectedVilla.map?.latitude &&
+            selectedVilla.map?.longitude
+        ) {
+            return {
+                id: selectedVilla._id,
+                lat: selectedVilla.map.latitude,
+                lng: selectedVilla.map.longitude,
+                image: selectedVilla.images?.villaImage,
+                title: selectedVilla.villaName,
+                price: selectedVilla.isOffer
+                    ? selectedVilla.offerPrice
+                    : selectedVilla.price,
+                slug: `/villa/${selectedVilla.slug}`,
+                rating:
+                    selectedVilla.reviews?.length > 0
+                        ? (
+                            selectedVilla.reviews.reduce(
+                                (a, b) => a + (b.rating || 5),
+                                0
+                            ) / selectedVilla.reviews.length
+                        ).toFixed(1)
+                        : 4.8,
+            };
+        }
+        if (selectedVilla.locationId?.mapLink) {
+            return {
+                id: selectedVilla._id,
+                mapLink: selectedVilla.locationId.mapLink, 
+                image: selectedVilla.images?.villaImage,
+                title: selectedVilla.villaName,
+                price: selectedVilla.isOffer
+                    ? selectedVilla.offerPrice
+                    : selectedVilla.price,
+                slug: `/villa/${selectedVilla.slug}`,
+                rating:
+                    selectedVilla.reviews?.length > 0
+                        ? (
+                            selectedVilla.reviews.reduce(
+                                (a, b) => a + (b.rating || 5),
+                                0
+                            ) / selectedVilla.reviews.length
+                        ).toFixed(1)
+                        : 4.8,
+            };
+        }
+        return null;
+    }, [selectedVilla]);
+
 
     return (
         <>
@@ -439,7 +490,9 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                         <div className="mt-10 lg:hidden">
                             <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
-                                <MapPicker initialPosition={mapPosition} isInput={false} />
+                                <MapPicker initialPosition={mapPosition} isInput={false}
+                                    multiple={false}
+                                />
                             </div>
                         </div>
                         <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
@@ -522,7 +575,9 @@ const VillaDetailsSection = ({ slug }) => {
 
                             />
                             <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
-                                <MapPicker initialPosition={mapPosition} isInput={false} />
+                                <MapPicker initialPosition={mapPosition} isInput={false}
+                                    multiple={false}
+                                />
                             </div>
                         </div>
                     </div>

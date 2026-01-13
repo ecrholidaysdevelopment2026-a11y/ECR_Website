@@ -11,7 +11,7 @@
 }
 
 body {
-  font-family: var(--font-montserrat);
+  font-family: var(--font-montserrat) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
@@ -23,26 +23,6 @@ body {
 
 .text_primary {
   color: var(--primary-red);
-}
-
-.text_montserrat {
-  font-family: var(--font-montserrat);
-}
-
-.text_manrope {
-  font-family: var(--font-manrope);
-}
-
-.text_inter {
-  font-family: var(--font-inter);
-}
-
-.text_poppins {
-  font-family: var(--font-poppins);
-}
-
-.text_playfair {
-  font-family: var(--font-playfair);
 }
 
 .bg_primary {
@@ -130,25 +110,11 @@ body {
   width: 100% !important;
 }
 
-@media (max-width: 768px) {
-  .rdrCalendarWrapper {
-    width: 300px !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .rdrCalendarWrapper {
-    width: 280px !important;
-  }
-}
-
-/* allow custom range background */
 .rdrDayDisabled {
   background: transparent !important;
   pointer-events: auto !important;
 }
 
-/* let custom bar fill cell */
 .rdrDayNumber {
   width: 100%;
 }
@@ -171,7 +137,7 @@ body {
 }
 
 .custom-calendar .bg-blue-600 {
-  background-color: #2563eb;
+  background-color: #000;
 }
 
 .custom-calendar .hover\:bg-gray-100:hover {
@@ -180,4 +146,20 @@ body {
 
 .custom-calendar .hover\:bg-gray-50:hover {
   background-color: #f9fafb;
+}
+
+.leaflet-popup-content {
+  padding: 0% !important;
+  margin: 0% !important;
+}
+@media (max-width: 768px) {
+  .rdrCalendarWrapper {
+    width: 300px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .rdrCalendarWrapper {
+    width: 280px !important;
+  }
 }

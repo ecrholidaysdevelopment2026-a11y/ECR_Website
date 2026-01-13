@@ -14,6 +14,10 @@ import { FiHome } from "react-icons/fi";
 import ReactDOMServer from "react-dom/server";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { getLatLngFromMapLink } from "@/app/utils/getLatLngFromMapLink";
+import { Popup } from "react-leaflet";
+import CustomImage from "./Image";
+import Link from "next/link";
+
 
 const homeDivIcon = L.divIcon({
     className: "",
@@ -34,9 +38,8 @@ const homeDivIcon = L.divIcon({
         </div>
     ),
     iconSize: [40, 40],
-    iconAnchor: [20, 40], 
+    iconAnchor: [20, 40],
 });
-
 
 const provider = new OpenStreetMapProvider({
     params: { countrycodes: "in" },
@@ -45,85 +48,112 @@ const provider = new OpenStreetMapProvider({
 
 const MapController = ({ mapRef }) => {
     const map = useMap();
-
     useEffect(() => {
         mapRef.current = map;
     }, [map]);
-
     return null;
 };
-
 
 const normalizePosition = (pos) => {
     if (!pos) return null;
-    if (typeof pos === "string") return getLatLngFromMapLink(pos);
-    if (pos.lat && pos.lng) return pos;
+
+    if (pos.mapLink) {
+        const latlng = getLatLngFromMapLink(pos.mapLink);
+        if (!latlng) return null;
+
+        return {
+            ...latlng,
+            ...pos,
+        };
+    }
+
+    if (pos.lat && pos.lng) {
+        return pos;
+    }
+
     return null;
 };
 
 
-const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
+const MapPicker = ({
+    onSelect,
+    initialPosition = null,
+    multiple = false,
+    isInput = true,
+}) => {
     const mapRef = useRef(null);
-    const [position, setPosition] = useState(null);
+    const [markers, setMarkers] = useState([]);
     const [query, setQuery] = useState("");
 
     useEffect(() => {
-        const normalized = normalizePosition(initialPosition);
-        if (normalized) setPosition(normalized);
+        if (!initialPosition) return;
+
+        const data = Array.isArray(initialPosition)
+            ? initialPosition
+            : [initialPosition];
+
+        const normalized = data
+            .map(normalizePosition)
+            .filter(Boolean);
+
+        setMarkers(normalized);
     }, [initialPosition]);
 
     useEffect(() => {
-        if (position && mapRef.current) {
+        if (!mapRef.current || markers.length === 0) return;
+
+        if (markers.length === 1) {
             mapRef.current.setView(
-                [position.lat, position.lng],
-                13,
-                { animate: true }
+                [markers[0].lat, markers[0].lng],
+                13
+            );
+        } else {
+            mapRef.current.fitBounds(
+                markers.map((m) => [m.lat, m.lng]),
+                { padding: [40, 40] }
             );
         }
-    }, [position]);
+    }, [markers]);
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!query.trim()) return;
+    const emitChange = (list) => {
+        if (!onSelect) return;
 
-        const results = await provider.search({ query });
-        if (!results.length) {
-            alert("Location not found");
-            return;
-        }
+        const links = list.map(
+            (p) =>
+                `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}`
+        );
 
-        const { y: lat, x: lng, bounds } = results[0];
-        const newPos = { lat, lng };
-
-        setPosition(newPos);
-
-        if (onSelect) {
-            onSelect(
-                `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}`
-            );
-        }
-
-        if (bounds && mapRef.current) {
-            mapRef.current.fitBounds(bounds, { padding: [40, 40] });
-        }
+        onSelect(multiple ? links : links[0]);
     };
 
-    const LocationMarker = () => {
+    const handleSearch = async () => {
+        if (!query.trim()) return;
+
+        const res = await provider.search({ query });
+        if (!res.length) return alert("Location not found");
+
+        const pos = { lat: res[0].y, lng: res[0].x };
+
+        setMarkers((prev) => {
+            const updated = multiple ? [...prev, pos] : [pos];
+            emitChange(updated);
+            return updated;
+        });
+    };
+
+    const ClickHandler = () => {
         useMapEvents({
             click(e) {
-                setPosition(e.latlng);
-
-                if (onSelect) {
-                    onSelect(
-                        `https://www.openstreetmap.org/?mlat=${e.latlng.lat}&mlon=${e.latlng.lng}`
-                    );
-                }
+                setMarkers((prev) => {
+                    const updated = multiple
+                        ? [...prev, e.latlng]
+                        : [e.latlng];
+                    emitChange(updated);
+                    return updated;
+                });
             },
         });
-
-        return position ? (
-            <Marker position={position} icon={homeDivIcon} />
-        ) : null;
+        return null;
     };
 
     return (
@@ -140,22 +170,63 @@ const MapPicker = ({ onSelect, initialPosition = null, isInput = true }) => {
                         onClick={handleSearch}
                         className="px-4 bg-black text-white rounded"
                     >
-                        Search
+                        {multiple ? "Add" : "Select"}
                     </button>
                 </div>
             )}
+
             <MapContainer
-                center={position ? [position.lat, position.lng] : [20, 78]}
-                zoom={position ? 13 : 5}
+                center={[20, 78]}
+                zoom={5}
                 style={{ height: "400px", width: "100%" }}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; OpenStreetMap contributors"
                 />
-
                 <MapController mapRef={mapRef} />
-                <LocationMarker />
+                <ClickHandler />
+                {markers?.map((pos, index) => (
+                    <Marker
+                        key={index}
+                        position={[pos.lat, pos.lng]}
+                        icon={homeDivIcon}
+                    >
+                        <Popup
+                            closeButton={false}
+                            className="padding_none"
+                            offset={[0, -30]}
+                        >
+                            <div className="w-[241px] rounded-xl overflow-hidden">
+                                <Link href={pos?.slug} className="relative">
+                                    <CustomImage
+                                        src={pos.image}
+                                        alt={pos.title}
+                                        className="w-full h-[140px] object-cover"
+                                    />
+                                </Link>
+                                <div className="p-3">
+                                    <div className="flex items-center justify-between text-sm font-semibold">
+                                        <span className="truncate max-w-[161px]">
+                                            {pos.title}
+                                        </span>
+                                        {pos.rating && (
+                                            <span className="flex items-center gap-1 text-black">
+                                                ⭐ {pos.rating}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="mt-1 flex items-center gap-1 text-sm font-semibold text-black">
+                                        ₹{pos.price?.toLocaleString()}
+                                        <span className="text-xs font-normal text-gray-500">
+                                            for  1 {" "} / night
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Popup>
+
+                    </Marker>
+                ))}
             </MapContainer>
         </>
     );

@@ -28,7 +28,7 @@ export default function Header() {
         pathname === "/register" ||
         pathname === "/search" ||
         pathname.startsWith("/destination");
-        pathname.startsWith("/villas");
+    pathname.startsWith("/villas");
 
     const handleLogout = () => {
         dispatch(logout());
@@ -87,13 +87,13 @@ export default function Header() {
                                     >
                                         <Link
                                             href="/profile"
-                                            className="block px-4 py-2 hover:bg-gray-100"
+                                            className="block px-4 py-2 hover:bg-gray-100 font-medium"
                                         >
                                             Profile
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                                            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 font-medium cursor-pointer"
                                         >
                                             Logout
                                         </button>
@@ -105,13 +105,13 @@ export default function Header() {
                         <div className="hidden md:flex gap-2">
                             <button
                                 onClick={() => dispatch(openPopup("login"))}
-                                className="px-4 py-2 bg-black text-white rounded"
+                                className="px-4 py-2 bg-black text-white rounded font-medium"
                             >
                                 Login
                             </button>
                             <button
                                 onClick={() => dispatch(openPopup("register"))}
-                                className="px-4 py-2 bg-black text-white rounded"
+                                className="px-4 py-2 bg-black text-white rounded font-medium"
                             >
                                 Register
                             </button>

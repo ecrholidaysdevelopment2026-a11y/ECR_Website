@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Header from "../../Common/Header/Header";
 import MainLayout from "@/app/common/MainLayout";
@@ -7,6 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllVillas } from "@/app/store/slice/villaSlice";
 import VillaCard from "@/app/common/VillaCard";
+import MapPicker from "@/app/common/MapPicker";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+
+const ITEMS_PER_PAGE = 8;
 
 const headings = [
     "Explore Our Luxury Villas",
@@ -15,10 +19,11 @@ const headings = [
 ];
 
 const VillasSection = () => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [index, setIndex] = useState(0);
-    const { villas } = useSelector((state) => state.villas)
+    const [page, setPage] = useState(0);
 
+    const { villas = [] } = useSelector((state) => state.villas);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -28,9 +33,43 @@ const VillasSection = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(getAllVillas())
-    }, []
-    )
+        dispatch(getAllVillas());
+    }, [dispatch]);
+
+    const paginatedVillas = villas.slice(
+        page * ITEMS_PER_PAGE,
+        page * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+    );
+
+    const totalPages = Math.ceil(villas.length / ITEMS_PER_PAGE);
+
+    const mapPosition = villas
+        .map((villa) => {
+            if (villa?.map?.latitude && villa?.map?.longitude) {
+                return {
+                    id: villa._id,
+                    lat: villa.map.latitude,
+                    lng: villa.map.longitude,
+                    image: villa.images?.villaImage,
+                    price: villa.offerPrice || villa.price,
+                    title: villa.villaName,
+                    slug: `/villa/${villa.slug}`,
+                };
+            }
+            if (villa?.locationId?.mapLink) {
+                return {
+                    id: villa._id,
+                    mapLink: villa.locationId.mapLink,
+                    image: villa.images?.villaImage,
+                    price: villa.offerPrice || villa.price,
+                    title: villa.villaName,
+                    slug: `/villa/${villa.slug}`,
+                };
+            }
+
+            return null;
+        })
+        .filter(Boolean);
 
     return (
         <MainLayout>
@@ -45,6 +84,7 @@ const VillasSection = () => {
                 <div className="absolute top-0 left-0 w-full z-20">
                     <Header />
                 </div>
+
                 <div className="relative z-10 text-center px-4 max-w-3xl">
                     <div className="relative h-[65px] md:h-[81px] mb-6">
                         <AnimatePresence mode="wait">
@@ -53,38 +93,84 @@ const VillasSection = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                transition={{ duration: 0.4 }}
                                 className="absolute inset-0 text-4xl md:text-5xl font-bold text-black"
                             >
                                 {headings[index]}
                             </motion.h1>
                         </AnimatePresence>
                     </div>
-                    <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                        Experience luxury villas designed for comfort and relaxation.
-                        Curated luxury villas for comfort, elegance, and perfect getaways
+                    <p className="text-gray-600 text-base md:text-lg">
+                        Curated luxury villas for comfort, elegance,
+                        and unforgettable getaways.
                     </p>
                 </div>
             </div>
-            <div className="px-4 md:px-6  py-10">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4 }}
-                    className="flex gap-4 overflow-x-auto md:grid md:grid-cols-3 lg:grid-cols-6 md:overflow-visible scrollbar-hide"
-                >
-                    {villas?.map((villa) => (
-                        <div key={villa._id} className="w-[280px] shrink-0 md:w-full">
-                            <VillaCard
-                                title={villa.villaName}
-                                images={villa.images?.villaGallery}
-                                price={villa.offerPrice || villa.price}
-                                maxGuests={villa.maxGuests}
-                                slug={villa.slug}
+            <div className="px-4 md:px-10 py-10">
+                <div className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-10">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
+                        className="md:col-span-4 lg:col-span-7"
+                    >
+                        {villas?.length > 8 &&
+                            <div className="flex items-center justify-end gap-3 mb-4">
+                                <button
+                                    onClick={() => setPage((p) => Math.max(p - 1, 0))}
+                                    disabled={page === 0}
+                                    className="p-2 rounded-full border disabled:opacity-40"
+                                >
+                                    <FiChevronLeft size={20} />
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        setPage((p) =>
+                                            p + 1 < totalPages ? p + 1 : p
+                                        )
+                                    }
+                                    disabled={page + 1 >= totalPages}
+                                    className="p-2 rounded-full border disabled:opacity-40"
+                                >
+                                    <FiChevronRight size={20} />
+                                </button>
+                            </div>}
+                        <div
+                            className="
+                                flex gap-4 overflow-x-auto
+                                md:grid md:grid-cols-2
+                                lg:grid-cols-4
+                                md:overflow-visible
+                                scrollbar-hide
+                            "
+                        >
+                            {paginatedVillas?.map((villa) => (
+                                <div
+                                    key={villa._id}
+                                    className="w-[280px] shrink-0 md:w-full"
+                                >
+                                    <VillaCard
+                                        title={villa.villaName}
+                                        images={villa.images?.villaGallery}
+                                        price={villa.offerPrice || villa.price}
+                                        maxGuests={villa.maxGuests}
+                                        slug={villa.slug}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
+                    <div className="md:col-span-5 lg:col-span-4">
+                        <div className="sticky top-24 w-full rounded-xl overflow-hidden">
+                            <MapPicker
+                                initialPosition={mapPosition}
+                                isInput={false}
+                                multiple={true}
                             />
                         </div>
-                    ))}
-                </motion.div>
+                    </div>
+
+                </div>
             </div>
         </MainLayout>
     );

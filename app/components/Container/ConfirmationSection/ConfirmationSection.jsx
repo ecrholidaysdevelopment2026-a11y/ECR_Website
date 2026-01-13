@@ -43,6 +43,11 @@ const ConfirmationSection = () => {
     }, [dispatch, profile?._id, bookingData?.bookingId]);
 
     const handlePayment = () => {
+        if (!profile?.firstName || !profile?.email || !profile?.mobile) {
+            warningAlert("Please complete your profile before payment");
+            router.push("/profile")
+            return;
+        }
         const payload = {
             bookingId: booking?.bookingId,
             customer: {
@@ -88,7 +93,7 @@ const ConfirmationSection = () => {
                 totalAmount={razorpay?.amount}
                 dispatch={dispatch}
             />
-            <div className="min-h-screen bg-white px-4 md:px-30 py-8">
+            <div className="min-h-screen bg-white md:px-8 lg:px-30 2xl:px-80 py-8">
                 <div className="flex items-center gap-3 mb-8">
                     <button className="p-2 rounded-full bg-gray-300">
                         <FaArrowLeft size={18} />

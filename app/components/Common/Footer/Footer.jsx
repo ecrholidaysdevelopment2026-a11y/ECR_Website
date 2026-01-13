@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt, FaYoutube } from 'react-icons/fa';
 
 const Footer = () => {
     return (
@@ -66,17 +66,17 @@ const Footer = () => {
                     <div>
                         <h3 className="text-xl font-bold mb-6 text-[#C69C6D]">Social</h3>
                         <div className="flex space-x-4 mb-6">
-                            <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
+                            <a target='_blank' href="https://www.facebook.com/ecrholidays/" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
                                 <FaFacebook className="text-xl" />
                             </a>
                             <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
                                 <FaTwitter className="text-xl" />
                             </a>
-                            <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
+                            <a target='_blank' href="https://www.instagram.com/ecrholidays/" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
                                 <FaInstagram className="text-xl" />
                             </a>
-                            <a href="#" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
-                                <FaLinkedin className="text-xl" />
+                            <a target='_blank' href="https://www.youtube.com/@ecrbeachhouse_ecrholidays" className="bg-gray-800 hover:bg-gray-700 p-3 rounded-full transition-colors">
+                                <FaYoutube className="text-xl" />
                             </a>
                         </div>
 

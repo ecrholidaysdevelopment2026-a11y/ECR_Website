@@ -1,40 +1,20 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import Image from "next/image";
-import Event1 from "@/app/assets/event1.png";
-import Event2 from "@/app/assets/event2.png";
-import Event3 from "@/app/assets/event3.png";
-import Event4 from "@/app/assets/event4.png";
-
-const events = [
-    {
-        id: 1,
-        title: "Destination Weddings",
-        img: Event1
-    },
-    {
-        id: 2,
-        title: "Corporate Retreats",
-        img: Event2
-    },
-    {
-        id: 3,
-        title: "Birthdays & Anniversaries",
-        img: Event3
-    },
-    {
-        id: 4,
-        title: "Wellness Retreats",
-        img: Event4
-    },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getUserEvents } from "@/app/store/slice/eventSlice";
+import CustomImage from "@/app/common/Image";
 
 export default function UnforgettableEvents() {
+    const dispatch = useDispatch()
+    const { events } = useSelector((state) => state.event)
+    useEffect(() => {
+        dispatch(getUserEvents())
+    }, [])
     const sliderRef = useRef(null);
 
     const handlePrev = () => sliderRef.current.swiper.slidePrev();
@@ -75,18 +55,18 @@ export default function UnforgettableEvents() {
                     1280: { slidesPerView: 4 },
                 }}
             >
-                {events.map((item) => (
+                {events?.map((item) => (
                     <SwiperSlide key={item.id}>
                         <div className="relative h-60 rounded-xl overflow-hidden cursor-pointer">
-                            <Image
-                                src={item.img}
-                                alt={item.title}
+                            <CustomImage
+                                src={item?.eventImages[0]}
+                                alt={item?.title}
                                 fill
                                 className="object-cover"
                             />
                             <div className="absolute inset-0"></div>
                             <div className="absolute top-4 left-4 text-white text-[15px] font-medium">
-                                {item.title}
+                                {item?.title}
                             </div>
                         </div>
                     </SwiperSlide>

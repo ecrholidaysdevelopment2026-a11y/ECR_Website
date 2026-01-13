@@ -42,7 +42,6 @@ const VillaDetailsSection = ({ slug }) => {
     const { bookingerror, bookingMsg, message, error } = useSelector((state) => state.booking)
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
-    const [promoCode, setPromoCode] = useState("");
     const { blockedDates } = useSelector((state) => state.blockedDates)
 
     const [bookingData, setBookingData] = useState({
@@ -530,8 +529,6 @@ const VillaDetailsSection = ({ slug }) => {
                                 handleGuestChange={handleGuestChange}
                                 maxGuests={maxGuests}
                                 nights={nights}
-                                promoCode={promoCode}
-                                setPromoCode={setPromoCode}
                                 calculateTotalPrice={calculateTotalPrice}
                                 handleBooking={handleBooking}
                                 loading={loading}
@@ -560,8 +557,6 @@ const VillaDetailsSection = ({ slug }) => {
                                 handleGuestChange={handleGuestChange}
                                 maxGuests={maxGuests}
                                 nights={nights}
-                                promoCode={promoCode}
-                                setPromoCode={setPromoCode}
                                 calculateTotalPrice={calculateTotalPrice}
                                 handleBooking={handleBooking}
                                 loading={loading}
@@ -573,7 +568,7 @@ const VillaDetailsSection = ({ slug }) => {
                                 rangeColor={dynamicRangeColor}
 
                             />
-                            <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px]">
+                            <div className="rounded-xl overflow-hidden border border-gray-300 h-[300px] mt-18">
                                 <MapPicker initialPosition={mapPosition} isInput={false}
                                     multiple={false}
                                 />

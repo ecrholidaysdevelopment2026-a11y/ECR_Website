@@ -14,8 +14,6 @@ const BookingCard = memo(({
     handleGuestChange,
     maxGuests,
     nights,
-    promoCode,
-    setPromoCode,
     calculateTotalPrice,
     handleBooking,
     loading,
@@ -282,19 +280,8 @@ const BookingCard = memo(({
                     </div>
                 )}
             </div>
-            <div className="space-y-4 mb-6">
-                <div>
-                    <p className="text-sm font-medium mb-1">Promo Code</p>
-                    <input
-                        type="text"
-                        value={promoCode}
-                        onChange={(e) =>
-                            setPromoCode(e.target.value.toUpperCase())
-                        }
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-0 "
-                    />
-                </div>
-                <div className="border-t border-gray-300 pt-4 flex justify-between text-lg font-semibold">
+            <div className="space-y-4 mb-8">
+                <div className=" border-gray-300 pt-3 flex justify-between text-lg font-semibold">
                     <span>Total</span>
                     <span>₹{calculateTotalPrice()}</span>
                 </div>

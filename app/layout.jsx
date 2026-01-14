@@ -8,6 +8,7 @@ import PopupManager from "./common/PopupManager";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import AuthBootstrap from "./AuthBootstrap";
+import { Montserrat } from "next/font/google";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
@@ -39,11 +40,16 @@ const schemaData = {
   ],
 };
 
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export default function RootLayout({ children }) {
-
   return (
-    <html lang="en">
+    <html lang="en" className={montserrat.variable}>
       <head>
         <Script
           id="schema-org"
@@ -60,7 +66,7 @@ export default function RootLayout({ children }) {
           <SmoothScrollProvider>
             <ConditionalHeader />
             <PopupManager />
-            <main>{children}</main>
+            <main  >{children}</main>
             <ConditionalFooter />
             <ToastProvider />
           </SmoothScrollProvider>

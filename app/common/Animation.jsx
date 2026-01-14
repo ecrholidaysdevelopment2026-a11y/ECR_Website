@@ -129,6 +129,7 @@ const EmptyState = ({
 export default EmptyState;
 
 
+
 export const ProfileCart = ({ emojis, logo }) => {
     return (
         <motion.div
@@ -253,8 +254,9 @@ export const ProfileCart = ({ emojis, logo }) => {
                         ✨
                     </motion.div>
 
+                    {/* FIX: Use logo directly or check if it's an object */}
                     <motion.img
-                        src={logo?.src}
+                        src={typeof logo === 'string' ? logo : logo?.src || logo}
                         alt="ECR Logo"
                         className="w-24 h-24 relative z-10"
                         animate={{
@@ -323,7 +325,7 @@ export const ProfileCart = ({ emojis, logo }) => {
                             repeat: Infinity
                         }}
                     >
-                        ECR Holidays 
+                        ECR Holidays
                     </motion.p>
 
                     <motion.div className="relative">
@@ -384,7 +386,6 @@ export const ProfileCart = ({ emojis, logo }) => {
             </motion.div>
         </motion.div>
     )
-
 }
 
 

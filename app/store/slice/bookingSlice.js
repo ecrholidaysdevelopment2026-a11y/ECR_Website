@@ -4,8 +4,7 @@ import { FetchApi } from "../../api/FetchApi";
 export const createBooking = createAsyncThunk(
   "bookings/create",
   async (payload, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const token = state?.auth?.accessToken;
+    const token = thunkAPI.getState()?.auth?.accessToken;
     try {
       const res = await FetchApi({
         endpoint: "/user/bookings/create",
@@ -13,10 +12,10 @@ export const createBooking = createAsyncThunk(
         body: payload,
         token,
       });
-      if (res?.data?.success === false) {
+      if (res?.success === false) {
         return thunkAPI.rejectWithValue(res?.data?.message);
       }
-      return res?.data;
+      return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
@@ -124,7 +123,7 @@ export const PaymentConfirm = createAsyncThunk(
   }
 );
 
-const bookingsSlice = createSlice({
+const bookingSlice = createSlice({
   name: "bookings",
   initialState: {
     message: null,
@@ -142,12 +141,11 @@ const bookingsSlice = createSlice({
     clearBookingError(state) {
       state.bookingerror = null;
       state.bookingMsg = null;
-      (state.error = null), (state.message = null);
+      state.error = null;
+      state.message = null;
       state.PaymentConfirmerror = null;
       state.PaymentConfirmmessage = null;
       state.verifyMessage = null;
-      state.PaymentConfirData = null;
-      state.bookingData = null;
     },
   },
   extraReducers: (builder) => {
@@ -163,6 +161,7 @@ const bookingsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       .addCase(createBooking.pending, (state) => {
         state.loading = true;
       })
@@ -175,6 +174,7 @@ const bookingsSlice = createSlice({
         state.loading = false;
         state.bookingerror = action.payload;
       })
+
       .addCase(cancelBooking.fulfilled, (state, action) => {
         state.list = state.list.map((booking) =>
           booking._id === action.payload.bookingId
@@ -182,6 +182,7 @@ const bookingsSlice = createSlice({
             : booking
         );
       })
+
       .addCase(verifyPayment.pending, (state) => {
         state.loading = true;
       })
@@ -224,5 +225,5 @@ const bookingsSlice = createSlice({
   },
 });
 
-export const { clearBookingError } = bookingsSlice.actions;
-export default bookingsSlice.reducer;
+export const { clearBookingError } = bookingSlice.actions;
+export default bookingSlice.reducer;

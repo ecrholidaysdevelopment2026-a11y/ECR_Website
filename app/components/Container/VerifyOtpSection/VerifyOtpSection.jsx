@@ -10,7 +10,7 @@ import {
     verifyOtp,
 } from "@/app/store/slice/authSlice";
 import { errorAlert, successAlert } from "@/app/utils/alertService";
-import { closePopup } from "@/app/store/slice/popupSlice";
+import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
 
 const VerifyOtpSection = () => {
     const dispatch = useDispatch();

@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobile = false, blockedDates }) => {
-    console.log(blockedDates);
-
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [nextMonth, setNextMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1));
     const [selectedRange, setSelectedRange] = useState({

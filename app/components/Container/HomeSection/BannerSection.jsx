@@ -99,6 +99,11 @@ export default function BannerSection({ initialData = null }) {
         }, 200);
     };
 
+    const selectedLocation = locations?.find(
+        (item) => item.slug === destination
+    );
+
+
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
             {pathname === "/" && (
@@ -129,8 +134,10 @@ export default function BannerSection({ initialData = null }) {
                             >
                                 <FiX />
                             </button>
-
-                            <h2 className="text-lg font-semibold mb-4">Where to?</h2>
+                            <h2 className="text-lg font-semibold ">Where to?</h2>
+                            <p className="text-gray-500 text-sm mb-3">
+                                {selectedLocation ? selectedLocation.locationName : "Where are you going?"}
+                            </p>
                             <div className="bg-white rounded-xl shadow-lg border overflow-hidden mb-6">
                                 {loading && (
                                     <p className="px-5 py-4 text-sm text-gray-500">Loading locations...</p>
@@ -140,10 +147,6 @@ export default function BannerSection({ initialData = null }) {
                                         key={item._id}
                                         onClick={() => {
                                             setDestination(item.slug);
-                                            setShowDestination(false);
-                                            setTimeout(() => {
-                                                setShowCalendar(true);
-                                            }, 150);
                                         }}
                                         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
                                     >
@@ -263,11 +266,7 @@ export default function BannerSection({ initialData = null }) {
                     >
                         <p className="text-xs text-gray-500">Where</p>
                         <p className={`text-sm ${destination ? "text-black font-medium" : "text-gray-400"}`}>
-                            {destination
-                                ? destination === "chennai"
-                                    ? "Chennai"
-                                    : "Pondicherry"
-                                : "Select destination"}
+                            {selectedLocation ? selectedLocation.locationName : "Select destination"}
                         </p>
                     </div>
                     {showDestination && (
@@ -336,7 +335,6 @@ export default function BannerSection({ initialData = null }) {
                     <div
                         className="w-10 h-10 bg-[#efc37d] rounded-full flex items-center justify-center cursor-pointer"
                         onClick={() => setShowGuestDropdown(!showGuestDropdown)}
-
                     >
                         <FiUser />
                     </div>

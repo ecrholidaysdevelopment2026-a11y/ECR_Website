@@ -24,7 +24,6 @@ const SearchSection = () => {
     );
     const { locations } = useSelector((state) => state.location);
     const { list } = useSelector((state) => state.services);
-
     const [searchData, setSearchData] = useState(null);
     const [activeFilter, setActiveFilter] = useState(null);
     const [sortBy, setSortBy] = useState("recommended");
@@ -37,7 +36,6 @@ const SearchSection = () => {
         isFeatured: null,
         bedrooms: 0,
     });
-
 
     useEffect(() => {
         if (!searchParams.toString()) return;
@@ -90,27 +88,38 @@ const SearchSection = () => {
     });
 
     useEffect(() => {
-        if (!searchData) return;
-        dispatch(
-            filterUserVillas({
-                locationId: filters.locationId || searchData?.locationId || null,
-                services: filters.services,
-                minPrice: filters.minPrice,
-                maxGuests: filters.maxGuests,
-                isFeatured: filters.isFeatured,
-                bedrooms: filters.bedrooms,
-            })
-        );
+        if (!filters.locationId) return;
+        dispatch(filterUserVillas({
+            locationId: filters.locationId,
+            services: filters.services,
+            minPrice: filters.minPrice,
+            maxGuests: filters.maxGuests,
+            isFeatured: filters.isFeatured,
+            bedrooms: filters.bedrooms,
+        }));
     }, [
         filters.locationId,
         filters.services,
         filters.minPrice,
         filters.maxGuests,
         filters.isFeatured,
-        searchData,
         filters.bedrooms,
         dispatch,
     ]);
+
+
+    useEffect(() => {
+        if (!searchData || !locations?.length) return;
+        const location = locations.find(
+            (item) => item.slug === searchData.destination
+        );
+        if (location) {
+            setFilters((prev) => ({
+                ...prev,
+                locationId: location._id,
+            }));
+        }
+    }, [searchData, locations]);
 
 
     return (

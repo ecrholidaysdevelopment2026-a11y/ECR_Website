@@ -34,6 +34,7 @@ import { FiGrid } from "react-icons/fi";
 import { getAllBlockedDates } from "@/app/store/slice/blockedDatesSlice";
 import stripHtml from "@/app/utils/stripHtml";
 import { getServiceIcon } from "@/app/utils/serviceIcon";
+import { FaBath } from "react-icons/fa";
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -368,9 +369,9 @@ const VillaDetailsSection = ({ slug }) => {
         <>
             <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-70 pb-24 lg:pb-6">
                 <p className="text-sm text-gray-500 mb-4 md:mb-6">
-                    <Link href="/" className="hover:text-black transiton">Home</Link>
+                    <Link href="/" className="text-black transiton">Home</Link>
                     {" / "}
-                    <Link href="/villas" className="hover:text-black transition">Villas</Link>
+                    <Link href="/villas" className="text-black transition">Villas</Link>
                     {" / "}
                     {locationId?.locationName || "Location"}
                     {" / "}
@@ -427,7 +428,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
                         <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm 2xl:text-2xl py-1 text-gray-700">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-md capitalize 2xl:text-2xl py-1 text-gray-700">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests
@@ -435,6 +436,10 @@ const VillaDetailsSection = ({ slug }) => {
                             <span className="flex items-center gap-2">
                                 <FaBed className="text-gray-500" />
                                 {selectedVilla?.bedrooms} bedroom
+                            </span>
+                            <span className="flex items-center gap-2">
+                                <FaBath className="text-gray-500" />
+                                {selectedVilla?.bathrooms} Bathroom
                             </span>
                             <span className="flex items-center gap-2">
                                 <FaMapMarkerAlt className="text-gray-500" />
@@ -472,7 +477,7 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                         <div className="border-t border-gray-300 pt-8 md:pt-10 mb-10">
                             <h2 className="text-xl font-semibold mb-4 md:mb-6">Popular amenities</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ">
                                 {amenities?.map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 text-sm">
                                         <span className="text-lg">

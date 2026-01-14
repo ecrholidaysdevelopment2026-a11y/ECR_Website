@@ -107,7 +107,7 @@ const VillasSection = () => {
                 </div>
             </div>
             <div className="px-4 md:px-10 py-10">
-                <div className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-10 justify-between">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -139,7 +139,7 @@ const VillasSection = () => {
                             className="
                                 flex gap-4 overflow-x-auto
                                 md:grid md:grid-cols-2
-                                lg:grid-cols-4
+                                2xl:grid-cols-4
                                 md:overflow-visible
                                 scrollbar-hide
                             "
@@ -161,15 +161,16 @@ const VillasSection = () => {
                         </div>
                     </motion.div>
                     <div className="md:col-span-5 lg:col-span-4">
-                        <div className="sticky top-24 w-full rounded-xl overflow-hidden">
-                            <MapPicker
-                                initialPosition={mapPosition}
-                                isInput={false}
-                                multiple={true}
-                            />
+                        <div className="sticky top-24 h-[calc(100vh-120px)]">
+                            <div className="h-full w-full rounded-xl overflow-hidden">
+                                <MapPicker
+                                    initialPosition={mapPosition}
+                                    isInput={false}
+                                    multiple={true}
+                                />
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </MainLayout>

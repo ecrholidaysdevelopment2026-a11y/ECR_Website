@@ -35,7 +35,7 @@ const homeDivIcon = L.divIcon({
             }}
         >
             <FaBed size={18} color="#fff" />
-            
+
         </div>
     ),
     iconSize: [40, 40],
@@ -179,7 +179,7 @@ const MapPicker = ({
             <MapContainer
                 center={[20, 78]}
                 zoom={5}
-                style={{ height: "400px", width: "100%" }}
+                className="h-full w-full"
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -21,7 +21,7 @@ const GuestDropdown = ({
     return (
         <div
             ref={guestRef}
-            className="absolute top-14 right-0 w-80 bg-white rounded-xl shadow-xl p-4 z-50 border border-gray-300"
+            className="absolute top-15  w-80 bg-white rounded-xl shadow-xl p-4 z-50 border border-gray-300"
         >
             <div className="flex justify-between items-center py-3 border-b">
                 <div>
@@ -88,7 +88,7 @@ const GuestDropdown = ({
             </div>
 
             <div className="mt-4 pt-3 ">
-                <p className="text-sm text-gray-600 mb-2">Total: {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}, {rooms} Room{rooms !== 1 ? 's' : ''}</p>
+                <p className="text-sm text-gray-600 mb-2 ">Total: {totalGuests} Guest{totalGuests !== 1 ? 's' : ''}, {rooms} Room{rooms !== 1 ? 's' : ''}</p>
                 <button
                     onClick={() => {
                         handleSearch();

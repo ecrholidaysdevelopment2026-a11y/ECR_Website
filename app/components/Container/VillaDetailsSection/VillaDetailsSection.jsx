@@ -8,6 +8,7 @@ import {
     FaArrowDown,
     FaUserFriends,
     FaBed,
+    FaHeart,
 } from "react-icons/fa";
 import MapPicker from "@/app/common/MapPicker";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,18 +24,19 @@ import useClickOutside from "@/app/utils/useClickOutside";
 import Modal from "@/app/common/CommonModel";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Keyboard } from "swiper/modules";
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { openPopup } from "@/app/store/slice/popupSlice";
 import { useRouter } from "next/navigation";
 import BookingCard from "@/app/common/BookingCard";
-import { FiGrid } from "react-icons/fi";
+import { FiGrid, FiShare2 } from "react-icons/fi";
 import { getAllBlockedDates } from "@/app/store/slice/blockedDatesSlice";
 import stripHtml from "@/app/utils/stripHtml";
 import { getServiceIcon } from "@/app/utils/serviceIcon";
 import { FaBath } from "react-icons/fa";
+import { addToFavourites, clearFavError, clearFavSuccess, getUserFavourites, removeFromFavourites } from "@/app/store/slice/userFavouriteSlice";
+
 
 const VillaDetailsSection = ({ slug }) => {
     const dispatch = useDispatch();
@@ -44,6 +46,7 @@ const VillaDetailsSection = ({ slug }) => {
     const { accessToken } = useSelector((state) => state.auth)
     const [showAllImages, setShowAllImages] = useState(false);
     const { blockedDates } = useSelector((state) => state.blockedDates)
+    const { favourites, favSuccess, favError } = useSelector((state) => state.userFavourite);
 
     const [bookingData, setBookingData] = useState({
         checkInDate: new Date(),
@@ -70,23 +73,38 @@ const VillaDetailsSection = ({ slug }) => {
     }, [dispatch]);
 
     useEffect(() => {
+        if (accessToken) {
+            dispatch(getUserFavourites());
+        }
+    }, [accessToken, dispatch]);
+
+
+    useEffect(() => {
         if (selectedVilla?._id) {
             dispatch(fetchWeeklyPrice(selectedVilla._id));
         }
     }, [selectedVilla?._id, dispatch]);
 
 
-    useEffect(() => {
-        if (message) {
-            successAlert(message)
-            router.push("/")
-            dispatch(clearBookingError())
+    const isFavourite = useMemo(() => {
+        if (!selectedVilla?._id || !favourites?.length) return false;
+        return favourites.some(
+            (fav) => fav?.villaId?._id === selectedVilla._id
+        );
+    }, [favourites, selectedVilla]);
+
+
+    const handleFavouriteToggle = () => {
+        if (!accessToken) {
+            dispatch(openPopup("login"));
+            return;
         }
-        if (error) {
-            errorAlert(error)
-            dispatch(clearBookingError())
+        if (isFavourite) {
+            dispatch(removeFromFavourites(selectedVilla._id));
+        } else {
+            dispatch(addToFavourites(selectedVilla._id));
         }
-    }, [message, error])
+    };
 
 
     useEffect(() => {
@@ -215,7 +233,6 @@ const VillaDetailsSection = ({ slug }) => {
             </MainLayout>
         );
     }
-
     const {
         villaName,
         images,
@@ -363,11 +380,35 @@ const VillaDetailsSection = ({ slug }) => {
         return null;
     }, [selectedVilla]);
 
+    useEffect(() => {
+        if (favSuccess) {
+            dispatch(clearFavSuccess());
+            dispatch(getUserFavourites())
+        }
+        if (favError) {
+            errorAlert(favError);
+            dispatch(clearFavError());
+        }
+    }, [favSuccess, favError]);
+
+
+    useEffect(() => {
+        if (message) {
+            successAlert(message)
+            dispatch(clearBookingError())
+        }
+        if (error) {
+            errorAlert(error)
+            dispatch(clearBookingError())
+        }
+    }, [message, error])
+
+
 
     return (
         <>
-            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-70 pb-24 lg:pb-6">
-                <p className="text-sm text-gray-500 mb-4 md:mb-6">
+            <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-70">
+                <p className="text-sm text-gray-500">
                     <Link href="/" className="text-black transiton">Home</Link>
                     {" / "}
                     <Link href="/villas" className="text-black transition">Villas</Link>
@@ -376,6 +417,29 @@ const VillaDetailsSection = ({ slug }) => {
                     {" / "}
                     {villaName}
                 </p>
+                <div className="flex items-center justify-between my-2 mb-4">
+                    <h1 className="text-xl md:text-2xl font-semibold">
+                        {villaName}
+                    </h1>
+                    <div className="flex items-center gap-3">
+                        <button
+                            className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  w-25  justify-center py-2 hover:bg-gray-100 transition"
+                        >
+                            <FiShare2 size={16} />
+                            Share
+                        </button>
+                        <button
+                            onClick={handleFavouriteToggle}
+                            className="flex items-center cursor-pointer gap-2 text-sm font-medium border border-gray-300 rounded-sm w-25  justify-center py-2 hover:bg-gray-100 transition"
+                        >
+                            <FaHeart
+                                size={14}
+                                className={isFavourite ? "text-red-500" : "text-gray-600"}
+                            />
+                            {isFavourite ? "Saved" : "Save"}
+                        </button>
+                    </div>
+                </div>
                 <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
                     {allImages?.length > 0 ? (
                         <>
@@ -426,7 +490,6 @@ const VillaDetailsSection = ({ slug }) => {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
-                        <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
                         <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize 2xl:text-2xl font-medium py-1 text-gray-600">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
@@ -542,7 +605,6 @@ const VillaDetailsSection = ({ slug }) => {
                                 blockedRanges={hardBlockedRanges}
                                 infoRanges={softBlockedRanges}
                                 rangeColor={dynamicRangeColor}
-
                             />
 
                         </div>

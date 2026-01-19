@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, } from "react";
 import { DateRange } from "react-date-range";
 import { FiChevronDown, FiX } from "react-icons/fi";
 
@@ -59,7 +59,7 @@ const BookingCard = memo(({
                                 ₹{originalPrice}
                             </span>
                         )}
-                    <span className="text-lg text-gray-600">/ night</span>
+                    <span className="text-sm text-gray-600 font-medium capitalize">nights + taxes</span>
                 </div>
             </div>
             <div className="mb-5 relative">
@@ -83,7 +83,7 @@ const BookingCard = memo(({
                 {bookingData.showCalendar && (
                     <div
                         ref={calendarRef}
-                        className="absolute top-0 md:top-full z-50 bg-white shadow-xl rounded-xl border border-gray-300"
+                        className="absolute top-0  right-6 md:right-10 md:top-full z-999 bg-white shadow-xl rounded-xl "
                     >
                         <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300 md:hidden  ">
                             <p className="text-sm font-medium md:hidden text-gray-600">Select Dates</p>

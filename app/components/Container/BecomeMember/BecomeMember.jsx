@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchVillaLocations } from "@/app/store/slice/locationSlice";
 import { clearLeadError, clearLeadState, createLead } from "@/app/store/slice/partnerLeadSlice";
 import { errorAlert, successAlert } from "@/app/utils/alertService";
+import { motion } from "framer-motion";
+import { TypewriterText } from "@/app/common/Animation";
 
 const initialFormState = {
     firstName: "",
@@ -84,9 +86,55 @@ const BecomeMember = () => {
 
     const [openIndex, setOpenIndex] = useState(null);
     const inputClass =
-        "w-full border border-gray-300 rounded-md px-4 py-3 text-sm " +
+        "w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 " +
+        "placeholder:text-gray-400 " +
         "focus:outline-none focus:ring-0 focus:border-[#3b2a14]";
 
+    const container = {
+        hidden: {},
+        visible: {
+            transition: {
+                staggerChildren: 0.15,
+            },
+        },
+    };
+
+    const fadeUp = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.6, ease: "easeOut" },
+        },
+    };
+
+    const slideIn = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.5, ease: "easeOut" },
+        },
+    };
+
+
+    const slideRight = {
+        hidden: { opacity: 0, x: 50 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.7, ease: "easeOut" },
+        },
+    };
+
+    const stagger = {
+        hidden: {},
+        visible: {
+            transition: {
+                staggerChildren: 0.08,
+            },
+        },
+    };
     return (
         <>
             <MainLayout className="relative w-full min-h-screen md:min-h-[500px] 2xl:min-h-[650px] px-4 md:px-30">
@@ -98,118 +146,128 @@ const BecomeMember = () => {
                     className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40" />
-
                 <div className="relative z-10 pt-16 md:pt-24 pb-16">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
-                        <div className="md:col-span-5 text-white">
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            className="md:col-span-5 text-white"
+                        >
                             <h2 className="text-2xl md:text-4xl font-semibold mb-4 leading-tight">
-                                List with the brand that delivers higher occupancy, better
-                                returns, and seamless hosting.
+                                List with the brand that delivers higher occupancy,
+                                better returns, and seamless hosting.
                             </h2>
 
                             <p className="text-sm text-white/90 max-w-md pb-6">
-                                Join our community to unlock your greatest asset and welcome
-                                paying guests into your home.
+                                <TypewriterText
+                                    text={" Join our community to unlock your greatest asset andwelcome paying guests into your home."}
+                                    speed={30}
+                                />
                             </p>
-                        </div>
-                        <div className="md:col-span-7 flex md:justify-end">
-                            <div className="bg-white rounded-2xl shadow-2xl p-6 md:px-8 w-full max-w-2xl">
-                                <h3 className="font-semibold text-lg mb-6">
+                        </motion.div>
+                        <motion.div
+                            variants={slideRight}
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            className="md:col-span-7 flex md:justify-end"
+                        >
+                            <motion.div
+                                variants={stagger}
+                                initial="hidden"
+                                animate="visible"
+                                className="bg-white rounded-2xl shadow-2xl p-6 md:px-8 w-full max-w-2xl"
+                            >
+                                <motion.h3
+                                    variants={fadeUp}
+                                    className="font-semibold text-lg mb-6"
+                                >
                                     Tell more about the villa
-                                </h3>
+                                </motion.h3>
+
                                 <form
                                     onSubmit={handleSubmit}
-                                    className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                                >
+                                    {[
+                                        { name: "firstName", placeholder: "First Name" },
+                                        { name: "lastName", placeholder: "Last Name" },
+                                        { name: "email", placeholder: "Email Id" },
+                                        { name: "phone", placeholder: "+91" },
+                                    ]?.map((field, i) => (
+                                        <motion.input
+                                            key={i}
+                                            variants={fadeUp}
+                                            name={field.name}
+                                            value={formData[field.name]}
+                                            onChange={handleChange}
+                                            placeholder={field.placeholder}
+                                            className={inputClass}
+                                        />
+                                    ))}
 
-                                    <input
-                                        name="firstName"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        className={inputClass}
-                                        placeholder="First Name"
-                                    />
-
-                                    <input
-                                        name="lastName"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        className={inputClass}
-
-                                        placeholder="Last Name"
-                                    />
-
-                                    <input
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        className={inputClass}
-
-                                        placeholder="Email Id"
-                                    />
-
-                                    <input
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        className={inputClass}
-
-                                        placeholder="+91"
-                                    />
-
-
-                                    <select
+                                    <motion.select
+                                        variants={fadeUp}
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        className={inputClass}
-
+                                        className={`${inputClass} ${formData.location ? "placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300" : "placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300"
+                                            }`}
                                     >
-                                        <option value="">Select Villa Location</option>
+                                        <option value="" disabled hidden>
+                                            Select Villa Location
+                                        </option>
+
                                         {locations?.map((loc) => (
                                             <option key={loc._id} value={loc._id}>
                                                 {loc.locationName}
                                             </option>
                                         ))}
-                                    </select>
-                                    <input
+                                    </motion.select>
+
+
+                                    <motion.input
+                                        variants={fadeUp}
                                         name="rooms"
                                         type="number"
-                                        placeholder="rooms"
+                                        placeholder="Rooms"
                                         value={formData.rooms}
                                         onChange={handleChange}
                                         className={inputClass}
-
-                                    >
-                                    </input>
-
-                                    <select
+                                    />
+                                    <motion.select
+                                        variants={fadeUp}
                                         name="source"
-                                        className={inputClass}
-
                                         value={formData.source}
                                         onChange={handleChange}
+                                        className={inputClass}
                                     >
                                         <option value="">Where did you hear about us</option>
                                         <option value="Google">Google</option>
                                         <option value="Instagram">Instagram</option>
                                         <option value="Referral">Referral</option>
-                                    </select>
-                                    <select
+                                    </motion.select>
+
+                                    <motion.select
+                                        variants={fadeUp}
                                         name="mediaType"
                                         value={formData.mediaType}
-                                        className={inputClass}
-
                                         onChange={handleChange}
+                                        className={inputClass}
                                     >
                                         <option value="">Photos / Videos (if any)</option>
                                         <option value="photos">Photos</option>
                                         <option value="videos">Videos</option>
-                                    </select>
+                                    </motion.select>
                                     {formData.mediaType && (
-                                        <div className="md:col-span-2">
+                                        <motion.div
+                                            variants={fadeUp}
+                                            className="md:col-span-2"
+                                        >
                                             <input
                                                 type="file"
-                                                name="media"
                                                 multiple
                                                 accept={
                                                     formData.mediaType === "photos"
@@ -217,60 +275,87 @@ const BecomeMember = () => {
                                                         : "video/*"
                                                 }
                                                 onChange={handleFileChange}
-                                                className={" border-dotted w-full p-3 border-gray-300 border-2"}
-
+                                                className="border-dotted w-full p-3 border-gray-300 border-2 placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300"
                                             />
-                                        </div>
+                                        </motion.div>
                                     )}
 
-                                    <textarea
+                                    <motion.textarea
+                                        variants={fadeUp}
                                         name="description"
                                         rows={3}
                                         value={formData.description}
                                         onChange={handleChange}
                                         placeholder="Describe your property"
-                                        className="md:col-span-2 input resize-none w-full border border-gray-300 p-3"
+                                        className="md:col-span-2 resize-none w-full border border-gray-300 p-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300"
                                     />
 
-                                    <div className="md:col-span-2 mt-4">
-                                        <button
+                                    <motion.div
+                                        variants={fadeUp}
+                                        className="md:col-span-2 mt-4"
+                                    >
+                                        <motion.button
+                                            whileHover={{ scale: 1.03 }}
+                                            whileTap={{ scale: 0.97 }}
                                             type="submit"
-                                            className="w-full bg-[#3b2a14] text-white py-3 rounded-full font-medium hover:opacity-90 transition"
+                                            className="w-full bg-[#3b2a14] text-white py-3 rounded-full font-medium"
                                         >
-                                            {loading ? "submting..." : "submit"}
-                                        </button>
-                                    </div>
-
+                                            {loading ? "Submitting..." : "Submit"}
+                                        </motion.button>
+                                    </motion.div>
                                 </form>
-
-                            </div>
-                        </div>
-
+                            </motion.div>
+                        </motion.div>
                     </div>
                 </div>
             </MainLayout>
             <MainLayout className="w-full px-4 md:px-30 py-14 bg-white">
-                <h2 className="text-2xl md:text-3xl font-semibold text-center mb-10">
+                <motion.h2
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="text-2xl md:text-3xl font-semibold text-center mb-10"
+                >
                     Start Hosting in Minutes
-                </h2>
-                <div className="relative max-w-3xl mx-auto mb-12">
+                </motion.h2>
+                <motion.div
+                    variants={container}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="relative max-w-3xl mx-auto mb-12"
+                >
                     <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 hidden md:block" />
                     <div className="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-3 relative z-10">
                         {steps?.map((item, i) => (
-                            <span
+                            <motion.span
                                 key={i}
+                                variants={slideIn}
                                 className="bg-white px-5 py-1 rounded-full border text-sm text-gray-700"
                             >
                                 {item.step}
-                            </span>
+                            </motion.span>
                         ))}
                     </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                </motion.div>
+                <motion.div
+                    variants={container}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto"
+                >
                     {steps?.map((item, i) => (
-                        <div
+                        <motion.div
                             key={i}
-                            className="border border-gray-200 rounded-xl p-6 md:p-8 text-center hover:shadow-sm transition"
+                            variants={fadeUp}
+                            whileHover={{
+                                y: -6,
+                                boxShadow:
+                                    "0 10px 25px rgba(0,0,0,0.08)",
+                            }}
+                            className="border border-gray-200 rounded-xl p-6 md:p-8 text-center transition"
                         >
                             <h3 className="font-semibold text-lg mb-2">
                                 {item.title}
@@ -278,9 +363,9 @@ const BecomeMember = () => {
                             <p className="text-gray-600 text-sm leading-relaxed">
                                 {item.desc}
                             </p>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </MainLayout>
             <MainLayout className={" px-4 md:px-30"}>
                 <div className="relative w-full h-[525px]">
@@ -329,18 +414,38 @@ const BecomeMember = () => {
             </MainLayout>
             <MainLayout className="bg-[#FFF6EA]">
                 <div className="px-4 md:px-30 py-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-                        <div className="space-y-6">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-snug">
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.3 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start"
+                    >
+                        <motion.div
+                            variants={fadeUp}
+                            className="space-y-6"
+                        >
+                            <motion.h2
+                                variants={fadeUp}
+                                className="text-3xl md:text-4xl font-bold text-gray-900 leading-snug"
+                            >
                                 A Trusted partner for <br /> seamless hosting
-                            </h2>
+                            </motion.h2>
 
-                            <p className="text-gray-600 text-sm md:text-base max-w-md">
-                                We empower property owners with transparent pricing,
-                                hassle-free operations, and unparalleled support,
-                                ensuring you maximize returns with complete peace of mind.
-                            </p>
-                            <div className="relative h-[310px]  rounded-xl overflow-hidden shadow-lg">
+                            <motion.p
+                                variants={fadeUp}
+                                className="text-gray-600 text-sm md:text-base max-w-md"
+                            >
+                                <TypewriterText
+                                    text={"We empower property owners with transparent pricing,hassle-free operations, and unparalleled support, ensuring you maximize returns with complete peace of mind."}
+                                    speed={40}
+                                />
+                            </motion.p>
+                            <motion.div
+                                variants={fadeUp}
+                                whileHover={{ scale: 1.03 }}
+                                className="relative h-[310px] rounded-xl overflow-hidden shadow-lg"
+                            >
                                 <Image
                                     src={roombad}
                                     alt="Luxury bedroom"
@@ -348,28 +453,39 @@ const BecomeMember = () => {
                                     className="object-cover"
                                     priority
                                 />
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-6">
-                            <div className="relative h-[260px] md:h-[300px] rounded-xl overflow-hidden shadow-lg">
+                            </motion.div>
+                        </motion.div>
+                        <motion.div
+                            variants={container}
+                            className="flex flex-col gap-6"
+                        >
+                            <motion.div
+                                variants={fadeUp}
+                                whileHover={{ scale: 1.03 }}
+                                className="relative h-[260px] md:h-[300px] rounded-xl overflow-hidden shadow-lg"
+                            >
                                 <Image
                                     src={watervilla}
                                     alt="Water Villa"
                                     fill
                                     className="object-cover"
                                 />
-                            </div>
-                            <div className="relative h-[180px] md:h-[200px] rounded-xl overflow-hidden shadow-lg">
+                            </motion.div>
+
+                            <motion.div
+                                variants={fadeUp}
+                                whileHover={{ scale: 1.03 }}
+                                className="relative h-[180px] md:h-[200px] rounded-xl overflow-hidden shadow-lg"
+                            >
                                 <Image
                                     src={bluebed}
                                     alt="Living room"
                                     fill
                                     className="object-cover"
                                 />
-                            </div>
-
-                        </div>
-                    </div>
+                            </motion.div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </MainLayout>
             <MainLayout>

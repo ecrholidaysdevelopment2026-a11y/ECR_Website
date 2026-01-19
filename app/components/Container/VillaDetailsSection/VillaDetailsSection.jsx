@@ -428,7 +428,7 @@ const VillaDetailsSection = ({ slug }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
                         <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-md capitalize 2xl:text-2xl py-1 text-gray-700">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize 2xl:text-2xl font-medium py-1 text-gray-600">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests

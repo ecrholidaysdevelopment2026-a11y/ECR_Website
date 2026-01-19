@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export const LoadingSkeleton = ({ count = 4, className = "" }) => {
     return (
@@ -391,3 +392,37 @@ export const ProfileCart = ({ emojis, logo }) => {
 
 
 
+
+
+export const TypewriterText = ({
+    text,
+    speed = 20,
+    cursor = true,
+    className = "",
+}) => {
+    const [displayedText, setDisplayedText] = useState("");
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        setDisplayedText("");
+        setIndex(0);
+    }, [text]);
+
+    useEffect(() => {
+        if (index < text.length) {
+            const timeout = setTimeout(() => {
+                setDisplayedText((prev) => prev + text[index]);
+                setIndex((prev) => prev + 1);
+            }, speed);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [index, text, speed]);
+
+    return (
+        <span className={className}>
+            {displayedText}
+            {cursor && <span className="animate-pulse">|</span>}
+        </span>
+    );
+};

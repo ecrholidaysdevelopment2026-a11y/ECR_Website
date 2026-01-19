@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import MainLayout from "@/app/common/MainLayout";
-import { faqs, steps } from "@/app/utils/villaDummyData";
+import { faqs, steps } from "@/app/utils/villaObjData";
 import loginbg from "@/app/assets/loginbg-1.jpg";
 import bestprice from "@/app/assets/BestPricebg.jpg";
 import watervilla from "@/app/assets/watervilla.svg";

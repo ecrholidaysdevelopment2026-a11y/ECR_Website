@@ -1,5 +1,6 @@
 import { GiCampfire, GiMusicalScore } from "react-icons/gi";
 import { FaUserTie } from "react-icons/fa";
+import { FiHome, FiFeather  , FiStar, FiUsers } from "react-icons/fi";
 export const services = [
   {
     icon: <GiCampfire size={26} />,
@@ -61,5 +62,28 @@ export const faqs = [
     question: "Which platforms will my villa be listed on?",
     answer:
       "Your villa will be listed on major OTAs like Airbnb, Booking.com, and our own website.",
+  },
+];
+
+export const features = [
+  {
+    icon: <FiHome size={26} />,
+    title: "Exceptional Luxury",
+    desc: "Luxury curated with warmth, design, and care. Every villa feels personal, intentional, and deeply comforting.",
+  },
+  {
+    icon: <FiFeather  size={26} />,
+    title: "Sustainable Approach",
+    desc: "From glass bottles to bamboo and natural fabrics, thoughtful details ensure an eco-conscious way to stay.",
+  },
+  {
+    icon: <FiStar size={26} />,
+    title: "Signature Touches",
+    desc: "Thoughtful experiences, personalized amenities, and curated moments leave a lasting impression.",
+  },
+  {
+    icon: <FiUsers size={26} />,
+    title: "Exclusive Perks",
+    desc: "Early check-ins, local experiences, and thoughtful extras designed to elevate every part of your stay.",
   },
 ];

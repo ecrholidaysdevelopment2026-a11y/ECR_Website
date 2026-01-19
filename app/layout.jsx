@@ -7,7 +7,7 @@ import ToastProvider from "./common/ToastProvider";
 import PopupManager from "./common/PopupManager";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
-import AuthBootstrap from "./AuthBootstrap";
+import AuthBootstrap from "./middleware/AuthBootstrap";
 import { Montserrat } from "next/font/google";
 
 export const metadata = {

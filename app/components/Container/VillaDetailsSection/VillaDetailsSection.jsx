@@ -440,7 +440,7 @@ const VillaDetailsSection = ({ slug }) => {
                         </button>
                     </div>
                 </div>
-                <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
+                <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-2 mb-6">
                     {allImages?.length > 0 ? (
                         <>
                             <div className="md:col-span-2 md:row-span-2">
@@ -468,7 +468,7 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                     )}
                 </div>
-                <div className="md:hidden mb-6">
+                <div className="md:hidden mb-4">
                     {allImages?.length > 0 ? (
                         <>
                             <div className="h-[250px] w-full mb-2">
@@ -488,9 +488,15 @@ const VillaDetailsSection = ({ slug }) => {
                         </div>
                     )}
                 </div>
+                <div>
+                    <span className="flex items-center gap-2 text-xl capitalize  font-medium  text-gray-700">
+                        <FaMapMarkerAlt className="text-gray-500" />
+                        {locationId?.locationName || "Location"}
+                    </span>
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
                     <div className="lg:col-span-2">
-                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize 2xl:text-2xl font-medium py-1 text-gray-600">
+                        <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize  font-medium  text-gray-700">
                             <span className="flex items-center gap-2">
                                 <FaUserFriends className="text-gray-500" />
                                 {selectedVilla?.maxGuests} guests
@@ -503,12 +509,9 @@ const VillaDetailsSection = ({ slug }) => {
                                 <FaBath className="text-gray-500" />
                                 {selectedVilla?.bathrooms} Bathroom
                             </span>
-                            <span className="flex items-center gap-2">
-                                <FaMapMarkerAlt className="text-gray-500" />
-                                {locationId?.locationName || "Location"}
-                            </span>
+
                         </div>
-                        <div className="mb-7 flex items-center gap-2 text-md text-gray-700">
+                        <div className="mb-6 mt-1 flex items-center gap-2 text-md text-gray-700">
                             <FaStar className="text-yellow-400" />
                             <span>
                                 {selectedVilla.reviews?.length || 5} reviews

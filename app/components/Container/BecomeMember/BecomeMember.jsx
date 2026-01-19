@@ -195,7 +195,7 @@ const BecomeMember = () => {
                                         { name: "firstName", placeholder: "First Name" },
                                         { name: "lastName", placeholder: "Last Name" },
                                         { name: "email", placeholder: "Email Id" },
-                                        { name: "phone", placeholder: "+91" },
+                                        { name: "phone", placeholder: "Phone" },
                                     ]?.map((field, i) => (
                                         <motion.input
                                             key={i}

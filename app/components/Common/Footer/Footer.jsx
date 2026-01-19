@@ -1,5 +1,6 @@
+import Link from 'next/link';
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaPhone, FaEnvelope, FaMapMarkerAlt, FaYoutube } from 'react-icons/fa';
 
 const Footer = () => {
     return (
@@ -39,13 +40,13 @@ const Footer = () => {
                         <h3 className="text-xl font-bold mb-6 text-[#C69C6D]">Company</h3>
                         <ul className="space-y-2">
                             <li>
-                                <a href="#" className="text-gray-300 hover:text-white transition-colors">About us</a>
+                                <Link href="#" className="text-gray-300 hover:text-white transition-colors">About us</Link>
                             </li>
                             <li>
-                                <a href="/careers" className="text-gray-300 hover:text-white transition-colors">Careers</a>
+                                <Link href="/careers" className="text-gray-300 hover:text-white transition-colors">Careers</Link>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-300 hover:text-white transition-colors">Blog</a>
+                                <Link href="#" className="text-gray-300 hover:text-white transition-colors">Blog</Link>
                             </li>
                         </ul>
                     </div>
@@ -56,7 +57,7 @@ const Footer = () => {
                                 <a href="#" className="text-gray-300 hover:text-white transition-colors">Contact Us</a>
                             </li>
                             <li>
-                                <a href="#" className="text-gray-300 hover:text-white transition-colors">Terms and Conditions</a>
+                                <a href="/terms-conditions" className="text-gray-300 hover:text-white transition-colors">Terms and Conditions</a>
                             </li>
                         </ul>
                     </div>

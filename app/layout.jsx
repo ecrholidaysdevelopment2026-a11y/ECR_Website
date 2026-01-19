@@ -14,6 +14,10 @@ export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
   title: "ESR Holiday 2025",
   description: "Discover the best ESR Holiday",
+  alternates: {
+    canonical: "/",
+  },
+
   openGraph: {
     title: "ESR Holiday 2025",
     description: "Discover the best ESR Holiday",

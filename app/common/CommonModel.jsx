@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children }) => {
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    className="fixed inset-0 bg-black/40 flex items-center justify-center z-9999 model"
+                    className="fixed inset-0 bg-black/30 flex items-center justify-center z-9999 model"
                     variants={backdropVariants}
                     initial="hidden"
                     animate="visible"
@@ -36,7 +36,7 @@ const Modal = ({ isOpen, onClose, children }) => {
                 >
                     <motion.div
                         onClick={(e) => e.stopPropagation()}
-                        className="w-full mx-5 md:mx-0 md:max-w-3xl relative overflow-hidden backdrop-blur-xl bg-white/20 border border-white/10 shadow-2xl"
+                        className="w-full mx-5 rounded-xl md:mx-0 md:max-w-3xl relative overflow-hidden backdrop-blur-xl bg-white/20 border border-white/10 shadow-2xl"
                         variants={modalVariants}
                         initial="hidden"
                         animate="visible"

@@ -58,9 +58,6 @@ const Footer = () => {
                             <li>
                                 <a href="#" className="text-gray-300 hover:text-white transition-colors">Terms and Conditions</a>
                             </li>
-                            <li>
-                                <a href="#" className="text-gray-300 hover:text-white transition-colors">Sitemap</a>
-                            </li>
                         </ul>
                     </div>
                     <div>

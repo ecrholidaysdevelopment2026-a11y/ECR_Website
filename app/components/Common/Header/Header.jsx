@@ -145,13 +145,29 @@ export default function Header() {
                             >
                                 <HiX className="text-3xl" />
                             </button>
-                            <div className="mt-10 space-y-4">
+                            <div className="flex flex-col mt-20 space-y-2">
+                                <a
+                                    href="tel:+919498656273"
+                                    className="flex items-center gap-2 text-[14px] font-semibold"
+                                >
+                                    <FiPhoneCall />
+                                    Call to Book +91 94986 56273
+                                </a>
+
+                                <Link
+                                    href="/partner"
+                                    className="hover:text-[#AE7F42] text-[14px] font-semibold"
+                                >
+                                    Partner with Us
+                                </Link>
+                            </div>
+                            <div className="space-y-1 mt-1 text-[14px] font-semibold">
                                 {accessToken ? (
                                     <>
                                         <Link
                                             href="/profile"
                                             onClick={toggleMenu}
-                                            className="block text-lg"
+                                            className="block"
                                         >
                                             Profile
                                         </Link>

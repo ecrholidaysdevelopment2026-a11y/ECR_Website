@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import bgImg from "@/app/assets/loginbg-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
-import { FiLoader } from "react-icons/fi";
+import { FiLoader, FiX } from "react-icons/fi";
 import {
     clearAuthError,
     clearAuthMessage,
     registerUser,
 } from "@/app/store/slice/authSlice";
 import { errorAlert } from "@/app/utils/alertService";
-import { openPopup } from "@/app/store/slice/popupSlice";
+import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
 
 const RegisterSection = () => {
     const dispatch = useDispatch();
@@ -34,70 +34,79 @@ const RegisterSection = () => {
     };
 
     return (
-        <div className="relative w-full  flex items-center justify-center">
-            <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row shadow-xl">
-                <div className="relative w-full h-48 md:h-auto md:w-1/2">
+        <div className="p-10 bg-white relative">
+            <button
+                onClick={() => dispatch(closePopup())}
+                className="absolute  top-4 right-4 text-gray-500 hover:text-black transition"
+                aria-label="Close"
+            >
+                <FiX size={30} />
+            </button>
+            <div className="relative w-full  flex items-center justify-center">
+                <div className="w-full max-w-7xl overflow-hidden flex flex-col md:flex-row ">
+                    <div className="relative w-full h-48 md:h-auto md:w-1/2">
 
-                    <Image
-                        src={bgImg}
-                        alt="StayVista"
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                </div>
-                <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
-                    <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
-                    <p className=" text-sm mb-6">
-                        <span
-                            onClick={() => dispatch(openPopup("login"))}
-                            className="cursor-pointer hover:text-black font-medium"
-                        >
-                            Login
-                        </span>
-                        {" / "}
-                        <span
-                            className="cursor-pointer hover:text-black font-medium"
-                        >
-                            Register
-                        </span>
-                    </p>
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">
-                                Email Id <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="email"
-                                value={value}
-                                onChange={(e) => setValue(e.target.value)}
-                                placeholder="Enter your email"
-                                required
-                                className="w-full border   rounded-md px-4 py-2 focus:outline-none focus:border-black"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition disabled:opacity-50"
-                        >
-                            {loading ? (
-                                <FiLoader className="animate-spin mx-auto" />
-                            ) : (
-                                "Continue"
-                            )}
-                        </button>
-                    </form>
-                    <p className="text-xs t mt-6">
-                        By signing up, you agree to our{" "}
-                        <span className="text-blue-600 cursor-pointer">
-                            Terms & Conditions
-                        </span>{" "}
-                        and{" "}
-                        <span className="text-blue-600 cursor-pointer">
-                            Privacy Policy
-                        </span>
-                    </p>
+                        <Image
+                            src={bgImg}
+                            alt="StayVista"
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    </div>
+                    <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
+                        <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
+                        <p className=" text-sm mb-6">
+                            <span
+                                onClick={() => dispatch(openPopup("login"))}
+                                className="cursor-pointer hover:text-black font-medium"
+                            >
+                                Login
+                            </span>
+                            {" / "}
+                            <span
+                                className=" text-gray-600 font-medium"
+                            >
+                                Register
+                            </span>
+                        </p>
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Email Id <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    value={value}
+                                    onChange={(e) => setValue(e.target.value)}
+                                    placeholder="Enter your email"
+                                    required
+                                    className="w-full border   rounded-md px-4 py-2 focus:outline-none focus:border-black"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 transition disabled:opacity-50"
+                            >
+                                {loading ? (
+                                    <FiLoader className="animate-spin mx-auto" />
+                                ) : (
+                                    "Continue"
+                                )}
+                            </button>
+                        </form>
+                        <p className="text-xs t mt-6">
+                            By signing up, you agree to our{" "}
+                            <span className="text-blue-600 cursor-pointer">
+                                Terms & Conditions
+                            </span>{" "}
+                            and{" "}
+                            <span className="text-blue-600 cursor-pointer">
+                                Privacy Policy
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

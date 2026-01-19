@@ -245,7 +245,6 @@ const VillaDetailsSection = ({ slug }) => {
     useEffect(() => {
         if (bookingMsg) {
             router.push("/confirmation")
-            successAlert(bookingMsg)
             dispatch(clearBookingError())
         }
         if (bookingerror) {

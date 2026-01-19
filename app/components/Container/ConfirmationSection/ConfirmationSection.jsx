@@ -20,7 +20,6 @@ const ConfirmationSection = () => {
     const { bookingData, bookingDetails, PaymentConfirData, PaymentConfirmerror, PaymentConfirmmessage, verifyMessage } = useSelector(
         (state) => state.booking
     );
-    console.log(bookingData);
 
     const paymentRef = useRef(null);
     const razorpay = PaymentConfirData?.razorpay;
@@ -96,6 +95,7 @@ const ConfirmationSection = () => {
 
     }, [PaymentConfirData]);
 
+    console.log(verifyMessage);
 
     useEffect(() => {
         if (verifyMessage) {

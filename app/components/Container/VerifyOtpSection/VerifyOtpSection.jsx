@@ -1,21 +1,28 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import bgImg from "@/app/assets/loginbg-2.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { FiLoader } from "react-icons/fi";
+
 import {
     clearAuthError,
     clearAuthMessage,
     verifyOtp,
 } from "@/app/store/slice/authSlice";
+
 import { errorAlert, successAlert } from "@/app/utils/alertService";
 import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
 
 const VerifyOtpSection = () => {
     const dispatch = useDispatch();
-    const { loading, error, message, email } = useSelector((state) => state.auth);
-    const [value, setValue] = useState("");
+    const { loading, error, message, email } = useSelector(
+        (state) => state.auth
+    );
+
+    const [otp, setOtp] = useState(["", "", "", ""]);
+    const inputsRef = useRef([]);
 
     useEffect(() => {
         if (error) {
@@ -29,10 +36,55 @@ const VerifyOtpSection = () => {
         }
     }, [error, message, dispatch]);
 
+    const handleChange = (value, index) => {
+        if (!/^\d?$/.test(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+
+        if (value && index < 3) {
+            inputsRef.current[index + 1]?.focus();
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            inputsRef.current[index - 1]?.focus();
+        }
+    };
+
+    const handlePaste = (e) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "")
+            .slice(0, 4);
+
+        if (!pastedData) return;
+
+        const newOtp = pastedData.split("");
+        setOtp(newOtp);
+
+        newOtp.forEach((digit, i) => {
+            if (inputsRef.current[i]) {
+                inputsRef.current[i].value = digit;
+            }
+        });
+
+        inputsRef.current[newOtp.length - 1]?.focus();
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!value) return;
-        dispatch(verifyOtp({ email, otp: value }));
+        const finalOtp = otp.join("");
+
+        if (finalOtp.length !== 4) {
+            errorAlert("Please enter valid OTP");
+            return;
+        }
+
+        dispatch(verifyOtp({ email, otp: finalOtp }));
     };
 
     return (
@@ -41,15 +93,18 @@ const VerifyOtpSection = () => {
                 <div className="relative w-full h-48 md:h-auto md:w-1/2">
                     <Image
                         src={bgImg}
-                        alt="StayVista"
+                        alt="Ecr Holidays"
                         fill
                         className="object-cover"
                         priority
                     />
                 </div>
                 <div className="w-full md:w-1/2 p-10 flex flex-col justify-center">
-                    <h2 className="text-2xl font-bold mb-1">Welcome to Ecr Hoildays</h2>
-                    <p className="text-gray-600 text-sm mb-6">
+                    <h2 className="text-2xl font-bold mb-1">
+                        Welcome to Ecr Holidays
+                    </h2>
+
+                    <p className=" text-sm mb-6">
                         <span
                             onClick={() => dispatch(openPopup("login"))}
                             className="cursor-pointer hover:text-black font-medium"
@@ -64,21 +119,37 @@ const VerifyOtpSection = () => {
                             Register
                         </span>
                     </p>
-                    <form onSubmit={handleSubmit} className="space-y-5">
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="block text-sm font-medium mb-2">
                                 OTP <span className="text-red-500">*</span>
                             </label>
-                            <input
-                                type="text"
-                                value={value}
-                                onChange={(e) => setValue(e.target.value)}
-                                placeholder="Enter your OTP"
-                                required
-                                className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-black"
-                            />
+                            <div className="flex gap-4 justify-center">
+                                {otp.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        type="text"
+                                        maxLength={1}
+                                        ref={(el) =>
+                                            (inputsRef.current[index] = el)
+                                        }
+                                        value={digit}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                e.target.value,
+                                                index
+                                            )
+                                        }
+                                        onKeyDown={(e) =>
+                                            handleKeyDown(e, index)
+                                        }
+                                        onPaste={handlePaste}
+                                        className="w-12 h-12 text-center text-lg font-semibold border hover:border-gray-300 rounded-md focus:outline-none border-black"
+                                    />
+                                ))}
+                            </div>
                         </div>
-
                         <button
                             type="submit"
                             disabled={loading}
@@ -91,7 +162,7 @@ const VerifyOtpSection = () => {
                             )}
                         </button>
                     </form>
-                    <p className="text-xs text-gray-500 mt-6">
+                    <p className="text-xs mt-6">
                         By signing up, you agree to our{" "}
                         <span className="text-blue-600 cursor-pointer">
                             Terms & Conditions

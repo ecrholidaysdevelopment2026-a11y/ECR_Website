@@ -34,10 +34,10 @@ const RegisterSection = () => {
     };
 
     return (
-        <div className="p-10 bg-white">
+        <div className="p-8 md:p-10 bg-white">
             <button
                 onClick={() => dispatch(closePopup())}
-                className="absolute  top-4 right-4 text-gray-500 hover:text-black transition"
+                className="absolute  top-2 right-2 md:top-4 md:right-4 text-gray-500 hover:text-black transition"
                 aria-label="Close"
             >
                 <FiX size={30} />

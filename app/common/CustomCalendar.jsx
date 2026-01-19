@@ -4,13 +4,32 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobile = false, blockedDates }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [nextMonth, setNextMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1));
+    const [nextMonth, setNextMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth() + 1,));
     const [selectedRange, setSelectedRange] = useState({
         start: dateRange[0].startDate,
         end: dateRange[0].endDate
     });
     const [isSingleMonth, setIsSingleMonth] = useState(false);
     const blockedDatesSafe = Array.isArray(blockedDates) ? blockedDates : [];
+    const [hoveredDate, setHoveredDate] = useState(null);
+
+
+    const normalizeDate = (date) => {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    };
+
+    const isSameDay = (a, b) => {
+        if (!a || !b) return false;
+        return (
+            a.getFullYear() === b.getFullYear() &&
+            a.getMonth() === b.getMonth() &&
+            a.getDate() === b.getDate()
+        );
+    };
+
+
 
     const getRangeInfo = (date) => {
         if (!date) return null;
@@ -70,31 +89,7 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
         return days;
     };
 
-    const handleDateClick = (date) => {
-        if (!date) return;
 
-        const blocked = getBlockedInfo(date);
-        if (blocked) return;
-
-        if (!selectedRange.start || selectedRange.end) {
-            setSelectedRange({ start: date, end: null });
-        } else {
-            let start = selectedRange.start;
-            let end = date;
-
-            if (start > date) [start, end] = [date, start];
-
-            setSelectedRange({ start, end });
-
-            setDateRange([
-                {
-                    startDate: start,
-                    endDate: end,
-                    key: "selection",
-                },
-            ]);
-        }
-    };
 
 
     const isDateInRange = (date) => {
@@ -107,12 +102,15 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
         return date >= start && date <= end;
     };
 
-    const isDateStart = (date) => {
-        return date && selectedRange.start && date.getTime() === selectedRange.start.getTime();
-    };
+    const isDateStart = (date) => isSameDay(date, selectedRange.start);
+    const isDateEnd = (date) => isSameDay(date, selectedRange.end);
 
-    const isDateEnd = (date) => {
-        return date && selectedRange.end && date.getTime() === selectedRange.end.getTime();
+
+    const today = normalizeDate(new Date());
+
+    const isPastDate = (date) => {
+        if (!date) return false;
+        return normalizeDate(date) < today;
     };
 
     const handlePrevMonth = () => {
@@ -139,6 +137,39 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 
+
+    const isHoverRange = (date) => {
+        if (!selectedRange.start || selectedRange.end || !hoveredDate) return false;
+        const start = selectedRange.start;
+        const end = hoveredDate;
+        const min = start < end ? start : end;
+        const max = start < end ? end : start;
+        return date > min && date < max;
+    };
+
+    const handleDateClick = (date) => {
+        if (!date) return;
+        if (getBlockedInfo(date)) return;
+        const clickedDate = normalizeDate(date);
+        if (!selectedRange.start || selectedRange.end) {
+            setSelectedRange({ start: clickedDate, end: null });
+        } else {
+            let start = normalizeDate(selectedRange.start);
+            let end = clickedDate;
+
+            if (start > end) [start, end] = [end, start];
+
+            setSelectedRange({ start, end });
+
+            setDateRange([
+                {
+                    startDate: start,
+                    endDate: end,
+                    key: "selection",
+                },
+            ]);
+        }
+    };
 
     return (
         <div className="custom-calendar w-full">
@@ -191,21 +222,27 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
                     </div>
 
                     <div className="grid grid-cols-7 gap-0.5 md:gap-1">
-                        {currentMonthDays.map((date, index) => {
+                        {currentMonthDays?.map((date, index) => {
                             const blockedInfo = getBlockedInfo(date);
                             const rangeInfo = getRangeInfo(date);
                             return (
                                 <button
                                     key={index}
+                                    onMouseEnter={() => {
+                                        if (!isPastDate(date)) setHoveredDate(normalizeDate(date));
+                                    }}
+                                    onMouseLeave={() => setHoveredDate(null)}
                                     onClick={() => handleDateClick(date)}
-                                    disabled={!date || blockedInfo}
+                                    disabled={!date || blockedInfo || isPastDate(date)}
                                     className={`
           h-8 md:h-10 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm transition
           ${!date ? "invisible" : ""}
+          + ${isPastDate(date) ? "cursor-not-allowed opacity-40 text-gray-400" : ""}
           ${blockedInfo ? "cursor-not-allowed text-white" : ""}
           ${isDateStart(date) ? "bg-blue-600 text-white" : ""}
           ${isDateEnd(date) ? "bg-blue-600 text-white" : ""}
-          ${isDateInRange(date) && !blockedInfo ? "bg-blue-100" : ""}
+          ${isDateInRange(date) && !blockedInfo ? "bg-black text-white" : ""}
+          ${isHoverRange(date) && !blockedInfo ? "bg-gray-800 text-white" : ""}
         `}
                                     style={{
                                         backgroundColor: rangeInfo ? rangeInfo.color : undefined
@@ -216,7 +253,6 @@ const CustomCalendar = ({ dateRange, setDateRange, showFlexible = false, isMobil
                             );
                         })}
                     </div>
-
                 </div>
                 {!isSingleMonth && (
                     <div className="md:flex-1">

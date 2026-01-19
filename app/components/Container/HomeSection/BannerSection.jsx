@@ -20,9 +20,20 @@ export default function BannerSection({ initialData = null }) {
     const guestRef = useRef(null);
     const calendarRef = useRef(null);
     const pathname = usePathname();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(today);
+    endDate.setDate(endDate.getDate() + 1);
+
     const [dateRange, setDateRange] = useState([
-        { startDate: new Date(), endDate: new Date(new Date().setDate(new Date().getDate() + 2)), key: "selection" }
+        {
+            startDate: today,
+            endDate,
+            key: "selection",
+        },
     ]);
+
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const [rooms, setRooms] = useState(1);
@@ -60,8 +71,8 @@ export default function BannerSection({ initialData = null }) {
     const handleSearch = () => {
         const searchData = {
             destination,
-            checkIn: dateRange[0].startDate.toISOString().split('T')[0],
-            checkOut: dateRange[0].endDate.toISOString().split('T')[0],
+            checkIn: formatLocalDate(dateRange[0].startDate),
+            checkOut: formatLocalDate(dateRange[0].endDate),
             guests: totalGuests,
             adults,
             children,

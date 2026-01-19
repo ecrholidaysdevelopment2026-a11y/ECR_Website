@@ -11,6 +11,7 @@ import {
 } from "@/app/store/slice/authSlice";
 import { errorAlert } from "@/app/utils/alertService";
 import { closePopup, openPopup } from "@/app/store/slice/popupSlice";
+import Link from "next/link";
 
 const RegisterSection = () => {
     const dispatch = useDispatch();
@@ -97,13 +98,13 @@ const RegisterSection = () => {
                         </form>
                         <p className="text-xs  mt-6">
                             By signing up, you agree to our{" "}
-                            <span className="text-blue-600 cursor-pointer">
+                            <Link href={"/terms-conditions"} className="text-blue-600 cursor-pointer">
                                 Terms & Conditions
-                            </span>{" "}
+                            </Link>{" "}
                             and{" "}
-                            <span className="text-blue-600 cursor-pointer">
+                            <Link href={"/privacy-policy"} className="text-blue-600 cursor-pointer">
                                 Privacy Policy
-                            </span>
+                            </Link>
                         </p>
                     </div>
                 </div>

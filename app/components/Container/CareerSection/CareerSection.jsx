@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { TypewriterText } from "@/app/common/Animation";
 
 const text =
-    "At ECR Holidays, we believe our people are the key to creating exceptional travel experiences. We are always looking for talented, driven, and customer-focused professionals who are passionate about hospitality and innovation. Join our team and be part of a growing brand that values excellence, creativity, and dedication in everything we do. To apply, please share your resume with us at admin@ecrholidays.com.";
+    "At ECR Holidays, we believe our people are the key to creating exceptional travel experiences. We are always looking for talented, driven, and customer-focused professionals who are passionate about hospitality and innovation. Join our team and be part of a growing brand that values excellence, creativity, and dedication in everything we do. To apply, please share your resume with us at (admin@ecrholidays.com)";
 
 const CareerSection = () => {
     const [displayedText, setDisplayedText] = useState("");

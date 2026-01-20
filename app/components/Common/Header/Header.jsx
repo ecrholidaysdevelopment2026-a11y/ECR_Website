@@ -155,6 +155,7 @@ export default function Header() {
                                 </a>
 
                                 <Link
+                                    onClick={toggleMenu}
                                     href="/partner"
                                     className="hover:text-[#AE7F42] text-[14px] font-semibold"
                                 >

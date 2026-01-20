@@ -83,7 +83,6 @@ const VillasSection = () => {
                 <div className="absolute top-0 left-0 w-full z-20">
                     <Header />
                 </div>
-
                 <div className="relative z-10 text-center px-4 max-w-3xl">
                     <div className="relative h-[65px] md:h-[81px] mb-6">
                         <AnimatePresence mode="wait">

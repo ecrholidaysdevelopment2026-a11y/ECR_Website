@@ -154,15 +154,15 @@ const SearchSection = () => {
             <MainLayout className="px-3 md:px-30">
                 <div className="py-10">
                     {
-                        searchResults?.length > 0 &&
-                        <motion.h3
+                        searchResults?.length > 0 && !loading &&
+                        <motion.h2
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4 }}
-                            className="text-lg md:text-3xl font-semibold mb-5"
+                            className="text-lg md:text-2xl font-semibold mb-2"
                         >
                             {searchResults?.length}+ Villas Found
-                        </motion.h3>
+                        </motion.h2>
                     }
                     <AnimatePresence mode="wait">
                         {loading ? (

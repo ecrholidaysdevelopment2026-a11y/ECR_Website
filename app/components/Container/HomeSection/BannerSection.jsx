@@ -23,10 +23,8 @@ export default function BannerSection({ initialData = null }) {
     const pathname = usePathname();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const endDate = new Date(today);
     endDate.setDate(endDate.getDate() + 1);
-
     const [dateRange, setDateRange] = useState([
         {
             startDate: today,
@@ -40,7 +38,6 @@ export default function BannerSection({ initialData = null }) {
     const [rooms, setRooms] = useState(1);
     const totalGuests = adults + children;
     const destinationRef = useRef(null);
-
     const { locations, loading } = useSelector((state) => state.location);
     const { globaldDates } = useSelector((state) => state.blockedDates);
 
@@ -108,7 +105,7 @@ export default function BannerSection({ initialData = null }) {
         setTimeout(() => {
             setShowCalendar(false);
             setShowGuestDropdown(true);
-        }, 200);
+        }, 400);
     };
 
     const selectedLocation = locations?.find(
@@ -133,7 +130,6 @@ export default function BannerSection({ initialData = null }) {
                         {destination || "Where are you going?"}
                     </p>
                 </div>
-
                 {mobilePopup && (
                     <div className="fixed inset-0 mt-20 z-50 flex justify-center p-4">
                         <div
@@ -277,12 +273,12 @@ export default function BannerSection({ initialData = null }) {
                         onClick={() => setShowDestination(!showDestination)}
                     >
                         <p className="text-xs text-gray-500">Where</p>
-                        <p className={`text-sm ${destination ? "text-black font-medium" : "text-gray-400"}`}>
+                        <p className={`text-sm ${destination ? "text-black " : "text-gray-400"}`}>
                             {selectedLocation ? selectedLocation.locationName : "Select destination"}
                         </p>
                     </div>
                     {showDestination && (
-                        <div className="absolute top-14 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-hidden">
+                        <div className="absolute top-15 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-y-scroll h-50 scrollbar-hide">
                             {locations?.map((item) => (
                                 <button
                                     key={item._id}
@@ -291,14 +287,14 @@ export default function BannerSection({ initialData = null }) {
                                         setShowDestination(false);
                                         setTimeout(() => {
                                             setShowCalendar(true);
-                                        }, 150);
+                                        }, 400);
                                     }}
                                     className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-100 transition"
                                 >
                                     <div className="w-10 h-10 rounded-full border flex items-center justify-center text-gray-600">
                                         <FiMapPin size={18} />
                                     </div>
-                                    <span className="text-base font-medium text-gray-900">
+                                    <span className="text-base  text-gray-900">
                                         {item.locationName}
                                     </span>
                                 </button>

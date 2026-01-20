@@ -83,7 +83,7 @@ const BookingCard = memo(({
                 {bookingData.showCalendar && (
                     <div
                         ref={calendarRef}
-                        className="absolute top-0  right-6 md:right-10 md:top-full z-999 bg-white shadow-xl rounded-xl "
+                        className="absolute top-0  right-4 md:right-0  md:top-full z-999 bg-white shadow-xl rounded-xl "
                     >
                         <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300 md:hidden  ">
                             <p className="text-sm font-medium md:hidden text-gray-600">Select Dates</p>

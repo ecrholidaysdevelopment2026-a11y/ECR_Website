@@ -154,6 +154,7 @@ const VillaDetailsSection = ({ slug }) => {
             ...prev,
             checkInDate: startDate,
             checkOutDate: endDate,
+            
         }));
     };
 

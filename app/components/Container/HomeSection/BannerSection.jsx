@@ -116,7 +116,7 @@ export default function BannerSection({ initialData = null }) {
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
             {pathname === "/" && (
-                <h1 className="text-3xl md:text-4xl font-semibold text-black  mb-8">
+                <h1 className="text-3xl md:text-5xl  font-semibold text-black  mb-8">
                     Entire place, just for you
                 </h1>
             )}

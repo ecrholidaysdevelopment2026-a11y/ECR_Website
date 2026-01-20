@@ -38,7 +38,7 @@ export default function Page() {
     <>
       <MainLayout>
         <div
-          className="relative w-full h-[420px]  flex items-center justify-center"
+          className="relative w-full h-[450px]  flex items-center justify-center"
           style={{
             backgroundImage: `url(${bannerimg.src})`,
             backgroundSize: "cover",

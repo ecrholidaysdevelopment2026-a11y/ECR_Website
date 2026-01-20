@@ -423,14 +423,14 @@ const VillaDetailsSection = ({ slug }) => {
                     </h1>
                     <div className="flex items-center gap-3">
                         <button
-                            className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  w-25  justify-center py-2 hover:bg-gray-100 transition"
+                            className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  px-3  justify-center py-2 hover:bg-gray-100 transition"
                         >
                             <FiShare2 size={16} />
                             Share
                         </button>
                         <button
                             onClick={handleFavouriteToggle}
-                            className="flex items-center cursor-pointer gap-2 text-sm font-medium border border-gray-300 rounded-sm w-25  justify-center py-2 hover:bg-gray-100 transition"
+                            className="flex items-center cursor-pointer gap-2 text-sm font-medium border border-gray-300 rounded-sm px-3  justify-center py-2 hover:bg-gray-100 transition"
                         >
                             <FaHeart
                                 size={14}

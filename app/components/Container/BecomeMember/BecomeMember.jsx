@@ -436,10 +436,7 @@ const BecomeMember = () => {
                                 variants={fadeUp}
                                 className="text-gray-600 text-sm md:text-base max-w-md"
                             >
-                                <TypewriterText
-                                    text={"We empower property owners with transparent pricing,hassle-free operations, and unparalleled support, ensuring you maximize returns with complete peace of mind."}
-                                    speed={40}
-                                />
+                                We empower property owners with transparent pricing,hassle-free operations, and unparalleled support, ensuring you maximize returns with complete peace of mind.
                             </motion.p>
                             <motion.div
                                 variants={fadeUp}

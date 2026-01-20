@@ -38,9 +38,9 @@ const TrendingSeason = () => {
     return (
         <div className="pb-5 md:pb-10">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg md:text-3xl font-semibold">
+                <h2 className="text-lg md:text-2xl font-semibold">
                     Trending this season
-                </h3>
+                </h2>
                 {featured.length > ITEMS_PER_PAGE && (
                     <div className="hidden md:flex gap-2">
                         <button
@@ -82,7 +82,7 @@ const TrendingSeason = () => {
                     </div>
                 ))}
             </div>
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
                 {visibleVillas.map((villa) => (
                     <VillaCard
                         key={villa._id}

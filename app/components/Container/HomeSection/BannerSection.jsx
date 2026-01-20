@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CustomCalendar from "@/app/common/CustomCalendar";
 import GuestDropdown from "@/app/common/GuestDropdown";
 import { globalCalendar } from "@/app/store/slice/blockedDatesSlice";
+import { formatLocalDate } from "@/app/utils/formateDate";
 
 export default function BannerSection({ initialData = null }) {
     const router = useRouter();
@@ -118,7 +119,7 @@ export default function BannerSection({ initialData = null }) {
     return (
         <div className="flex flex-col items-center text-center w-full px-4">
             {pathname === "/" && (
-                <h1 className="text-3xl md:text-4xl font-semibold text-black mb-3 mt-10">
+                <h1 className="text-3xl md:text-4xl font-semibold text-black  mb-8">
                     Entire place, just for you
                 </h1>
             )}

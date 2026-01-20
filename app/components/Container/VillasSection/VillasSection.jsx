@@ -15,7 +15,6 @@ const ITEMS_PER_PAGE = 8;
 const headings = [
     "Explore Our Luxury Villas",
     "Premium Villas for Perfect Getaways",
-    "Luxury Stays, Unforgettable Memories",
 ];
 
 const VillasSection = () => {

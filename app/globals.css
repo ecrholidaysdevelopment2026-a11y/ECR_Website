@@ -1,6 +1,5 @@
 @import "tailwindcss";
 :root {
-  --font-montserrat: "Montserrat", sans-serif;
   --primary-red: #fa0400;
 }
 
@@ -12,6 +11,14 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--font-playfair);
+} */
 
 .text_primary {
   color: var(--primary-red);
@@ -112,7 +119,10 @@ body {
 }
 
 .custom-calendar {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .custom-calendar button {

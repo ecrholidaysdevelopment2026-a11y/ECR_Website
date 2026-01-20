@@ -8,7 +8,7 @@ import PopupManager from "./common/PopupManager";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import AuthBootstrap from "./middleware/AuthBootstrap";
-import { Montserrat } from "next/font/google";
+import FontProvider from "./common/FontProvider";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
@@ -44,16 +44,11 @@ const schemaData = {
   ],
 };
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-montserrat",
-  display: "swap",
-});
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" >
+    <html lang="en"
+    >
       <head>
         <Script
           id="schema-org"
@@ -67,13 +62,15 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning={true}>
         <ReduxProvider>
           <AuthBootstrap />
-          <SmoothScrollProvider>
-            <ConditionalHeader />
-            <PopupManager />
-            <main  >{children}</main>
-            <ConditionalFooter />
-            <ToastProvider />
-          </SmoothScrollProvider>
+          <FontProvider>
+            <SmoothScrollProvider>
+              <ConditionalHeader />
+              <PopupManager />
+              <main  >{children}</main>
+              <ConditionalFooter />
+              <ToastProvider />
+            </SmoothScrollProvider>
+          </FontProvider>
         </ReduxProvider>
       </body>
     </html>

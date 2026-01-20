@@ -36,9 +36,9 @@ export const LocationSection = ({ location }) => {
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
                     <Link href={`/destination/${location.slug}`}>
-                        <h3 className="text-lg md:text-3xl font-semibold">
+                        <h2 className="text-lg md:text-2xl font-semibold">
                             Popular Destinations in {location.locationName}
-                        </h3>
+                        </h2>
                     </Link>
                     <MdKeyboardArrowRight size={24} className="ml-1 hidden lg:block" />
                 </div>
@@ -69,7 +69,7 @@ export const LocationSection = ({ location }) => {
             </div>
             <div
                 className="
-                  flex gap-4 overflow-x-auto mt-4
+                  flex gap-4 overflow-x-auto mt-2
                   md:grid md:grid-cols-2 lg:grid-cols-4
                   md:overflow-visible scrollbar-hide
               "

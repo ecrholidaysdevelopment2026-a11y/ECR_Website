@@ -278,7 +278,7 @@ export default function BannerSection({ initialData = null }) {
                         </p>
                     </div>
                     {showDestination && (
-                        <div className="absolute top-15 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-y-scroll h-50 scrollbar-hide">
+                        <div className="absolute top-15 left-0 w-72 bg-white rounded-xl shadow-xl border border-gray-300 z-50 overflow-y-scroll  h-auto max-h-[65px] scrollbar-hide">
                             {locations?.map((item) => (
                                 <button
                                     key={item._id}

@@ -57,19 +57,20 @@ export default function UnforgettableEvents() {
             >
                 {events?.map((item) => (
                     <SwiperSlide key={item.id}>
-                        <div className="relative h-60 rounded-xl overflow-hidden cursor-pointer">
+                        <div className="relative h-60 rounded-xl overflow-hidden">
                             <CustomImage
                                 src={item?.eventImages[0]}
                                 alt={item?.title}
                                 fill
                                 className="object-cover"
                             />
-                            <div className="absolute inset-0"></div>
-                            <div className="absolute top-4 left-4 text-white text-[15px] font-medium">
+                            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
+                            <div className="absolute bottom-4 left-4 right-4 text-center line-clamp-2 text-white text-[14px] font-semibold leading-snug">
                                 {item?.title}
                             </div>
                         </div>
                     </SwiperSlide>
+
                 ))}
             </Swiper>
         </div>

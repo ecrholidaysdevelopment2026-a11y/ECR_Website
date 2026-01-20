@@ -269,7 +269,7 @@ export default function BannerSection({ initialData = null }) {
                         <FiMapPin />
                     </div>
                     <div
-                        className="text-left cursor-pointer min-w-[140px]"
+                        className="text-left cursor-pointer min-w-[110px] lg:min-w-[140px]"
                         onClick={() => setShowDestination(!showDestination)}
                     >
                         <p className="text-xs text-gray-500">Where</p>
@@ -310,7 +310,7 @@ export default function BannerSection({ initialData = null }) {
                         <FiCalendar />
                     </div>
                     <div
-                        className="text-left cursor-pointer min-w-[140px]"
+                        className="text-left cursor-pointer min-w-[110px] lg:min-w-[140px]"
                         onClick={() => setShowCalendar(!showCalendar)}
                     >
                         <p className="text-xs text-gray-500">When</p>
@@ -347,7 +347,7 @@ export default function BannerSection({ initialData = null }) {
                         <FiUser />
                     </div>
                     <div
-                        className="cursor-pointer text-left min-w-[140px]"
+                        className="cursor-pointer text-left min-w-[110px] lg:min-w-[140px]"
                         onClick={() => setShowGuestDropdown(!showGuestDropdown)}
                     >
                         <p className="text-xs text-gray-500">Who</p>

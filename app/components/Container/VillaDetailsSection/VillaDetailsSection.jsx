@@ -397,12 +397,14 @@ const VillaDetailsSection = ({ slug }) => {
     return null;
   }, [selectedVilla]);
 
-  const handleReview = () => setIsPopupOpen(!isPopupOpen);
-  const handleSubmitReview = ({ rating, comment }) => {
+  const handleReview = () => {
     if (!accessToken) {
       dispatch(openPopup("login"));
       return;
     }
+    setIsPopupOpen(!isPopupOpen);
+  };
+  const handleSubmitReview = ({ rating, comment }) => {
     const payload = {
       rating,
       comment,

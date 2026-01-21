@@ -3,7 +3,6 @@ import MainLayout from "@/app/common/MainLayout";
 import React, { useEffect, useState, useRef, memo, useMemo } from "react";
 import {
   FaStar,
-  FaMapMarkerAlt,
   FaShoppingCart,
   FaArrowDown,
   FaUserFriends,
@@ -50,12 +49,10 @@ import {
   removeFromFavourites,
 } from "@/app/store/slice/userFavouriteSlice";
 import RatingCommentPopup from "@/app/common/RatingCommentPopup";
-import {
-  clearReviewState,
-  createReview,
-  fetchVillaReviews,
-} from "@/app/store/slice/reviewSlice";
+import { clearReviewState, createReview } from "@/app/store/slice/reviewSlice";
 import { formatDate } from "@/app/utils/formateDate";
+import Guestreviewimg from "@/app/assets/guestreviewimg.svg";
+import Image from "next/image";
 
 const VillaDetailsSection = ({ slug }) => {
   const dispatch = useDispatch();
@@ -66,12 +63,9 @@ const VillaDetailsSection = ({ slug }) => {
   const { bookingerror, bookingMsg, message, error } = useSelector(
     (state) => state.booking,
   );
-  const {
-    review,
-    createReviewLoading,
-    createReviewMessage,
-    createReviewError,
-  } = useSelector((state) => state.review);
+  const { createReviewMessage, createReviewError } = useSelector(
+    (state) => state.review,
+  );
   const { accessToken } = useSelector((state) => state.auth);
   const [showAllImages, setShowAllImages] = useState(false);
   const { blockedDates } = useSelector((state) => state.blockedDates);
@@ -464,22 +458,21 @@ const VillaDetailsSection = ({ slug }) => {
   return (
     <>
       <MainLayout className="px-4 py-6 md:px-8 lg:px-30 2xl:px-70">
-        <p className="text-sm text-gray-500">
-          <Link href="/" className="text-black transiton">
-            Home
-          </Link>
-          {" / "}
-          <Link href="/villas" className="text-black transition">
-            Villas
-          </Link>
-          {" / "}
-          {locationId?.locationName || "Location"}
-          {" / "}
-          {villaName}
-        </p>
         <div className="flex items-center justify-between my-2 mb-4">
-          <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
-          <div className="flex items-center gap-3">
+          <p className="text-sm text-gray-500">
+            <Link href="/" className="text-black transiton">
+              Home
+            </Link>
+            {" / "}
+            <Link href="/villas" className="text-black transition">
+              Villas
+            </Link>
+            {" / "}
+            {locationId?.locationName || "Location"}
+            {" / "}
+            {villaName}
+          </p>
+          <div className="flex  gap-3">
             <button
               onClick={handleShare}
               className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  px-3  justify-center py-2 hover:bg-gray-100 transition"
@@ -565,14 +558,11 @@ const VillaDetailsSection = ({ slug }) => {
           )}
         </div>
         <div>
-          <span className="flex items-center gap-2 text-xl capitalize  font-semibold">
-            <FaMapMarkerAlt />
-            {locationId?.locationName || "Location"}
-          </span>
+          <h1 className="text-xl md:text-2xl font-semibold ">{villaName}</h1>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
           <div className="lg:col-span-2">
-            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize  font-semibold ">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-md capitalize  font-semibold ">
               <span className="flex items-center gap-2">
                 <FaUserFriends />
                 {selectedVilla?.maxGuests} guests
@@ -590,8 +580,10 @@ const VillaDetailsSection = ({ slug }) => {
               <FaStar className="text-yellow-400" />
               <span>{selectedVilla.reviews?.length || 5} reviews</span>
             </div>
-            <h2 className="text-xl font-semibold mb-2">About this property</h2>
-            <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300 mb-10 ">
+            <h2 className="text-xl font-semibold mb-2 border-t pt-10 border-gray-300">
+              About this property
+            </h2>
+            <p className="text-gray-600 leading-relaxed pb-10 border-b border-gray-300  mb-8">
               {stripHtml(overview) || "No description available."}
             </p>
             <div className="mb-10 md:mb-12">
@@ -643,48 +635,69 @@ const VillaDetailsSection = ({ slug }) => {
             <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
               <h2 className="text-xl font-semibold mb-4 md:mb-6">Reviews</h2>
               {selectedVilla?.reviews?.length > 0 ? (
-                <div>
-                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                    {selectedVilla?.reviews?.map((r, i) => (
-                      <div
-                        key={i}
-                        className="min-w-[280px] shrink-0 border border-gray-300 rounded-xl p-4"
-                      >
-                        <div className="flex text-gray-700 mb-2">
-                          {Array.from({
-                            length: Math.floor(r.rating || 5),
-                          }).map((_, i) => (
-                            <FaStar key={i} size={14} />
-                          ))}
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {r.comment || "No comment provided."}
-                        </p>
-                        <p className="text-sm font-semibold">
-                          {r.userName || "Anonymous"}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          Stay on{" "}
-                          {formatDate(r.createdAt || "Date not available")}
-                        </p>
-                      </div>
-                    ))}
+                <div className="flex flex-col md:flex-row gap-3">
+                  <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white  max-w-xs mx-auto md:mx-0 shrink-0">
+                    <div className="relative w-[161px] h-[60px] mb-4">
+                      <Image
+                        src={Guestreviewimg}
+                        alt="Guest favourite rating badge"
+                        fill
+                        className="object-contain"
+                        priority
+                      />
+                    </div>
+                    <h5 className="text-base font-semibold text-gray-900">
+                      Guest favourite
+                    </h5>
+                    <p className="text-sm text-gray-600 leading-relaxed mt-1">
+                      This home is a guest favourite based on ratings, reviews,
+                      and reliability.
+                    </p>
                   </div>
-                  <button
-                    onClick={handleReview}
-                    className=" bg-[#F2F2F2] text-black rounded-lg  px-3 py-2 text-sm font-medium cursor-pointer"
-                  >
-                    Show all {selectedVilla?.reviews?.length} reviews
-                  </button>
+                  <div className="flex-1 w-full">
+                    <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
+                      <div className="flex gap-4 min-w-max">
+                        {selectedVilla?.reviews?.map((r, i) => (
+                          <div
+                            key={i}
+                            className="min-w-[280px] shrink-0 border border-gray-300 rounded p-4 bg-white"
+                          >
+                            <div className="flex text-gray-700 mb-2">
+                              {Array.from({
+                                length: Math.floor(r.rating || 5),
+                              }).map((_, idx) => (
+                                <FaStar key={idx} size={14} />
+                              ))}
+                            </div>
+                            <p className="text-sm text-gray-600 mb-2 line-clamp-4">
+                              {r.comment || "No comment provided."}
+                            </p>
+                            <p className="text-sm font-semibold text-gray-900">
+                              {r.userName || "Anonymous"}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              Stay on {formatDate(r.createdAt)}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleReview}
+                      className="mt-2 bg-[#F2F2F2] text-black rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-200 transition"
+                    >
+                      Show all {selectedVilla.reviews.length} reviews
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-8 border border-gray-300 rounded-xl">
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 mb-3">
                     No reviews yet. Be the first to review!
                   </p>
                   <button
                     onClick={handleReview}
-                    className=" bg-black text-white rounded-sm my-2 px-3 py-2 text-sm font-medium cursor-pointer"
+                    className="bg-black text-white rounded-sm px-4 py-2 text-sm font-medium"
                   >
                     Write a Review
                   </button>

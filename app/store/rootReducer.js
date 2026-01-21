@@ -11,6 +11,7 @@ import partnerLeadReducer from "./slice/partnerLeadSlice";
 import eventReducer from "./slice/eventSlice";
 import userFavouriteReducer from "./slice/userFavouriteSlice";
 import contactReducer from "./slice/contactSlice";
+import reviewReducer from "./slice/reviewSlice";
 const reducer = combineReducers({
   auth: authReducer,
   user: userReducer,
@@ -24,5 +25,6 @@ const reducer = combineReducers({
   event: eventReducer,
   userFavourite: userFavouriteReducer,
   contact: contactReducer,
+  review: reviewReducer,
 });
 export default reducer;

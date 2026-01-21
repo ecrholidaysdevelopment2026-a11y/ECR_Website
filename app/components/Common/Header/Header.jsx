@@ -11,7 +11,7 @@ import EcrLogo from "@/app/assets/ecr-logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { openPopup } from "@/app/store/slice/popupSlice";
 import { logout } from "@/app/store/slice/authSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname,  } from "next/navigation";
 import { successAlert } from "@/app/utils/alertService";
 
 export default function Header() {
@@ -28,7 +28,6 @@ export default function Header() {
         pathname === "/register" ||
         pathname === "/search" ||
         pathname.startsWith("/destination");
-    pathname.startsWith("/villas");
 
     const handleLogout = () => {
         dispatch(logout());

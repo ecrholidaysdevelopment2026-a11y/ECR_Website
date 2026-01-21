@@ -49,6 +49,13 @@ import {
   getUserFavourites,
   removeFromFavourites,
 } from "@/app/store/slice/userFavouriteSlice";
+import RatingCommentPopup from "@/app/common/RatingCommentPopup";
+import {
+  clearReviewState,
+  createReview,
+  fetchVillaReviews,
+} from "@/app/store/slice/reviewSlice";
+import { formatDate } from "@/app/utils/formateDate";
 
 const VillaDetailsSection = ({ slug }) => {
   const dispatch = useDispatch();
@@ -59,13 +66,18 @@ const VillaDetailsSection = ({ slug }) => {
   const { bookingerror, bookingMsg, message, error } = useSelector(
     (state) => state.booking,
   );
+  const {
+    review,
+    createReviewLoading,
+    createReviewMessage,
+    createReviewError,
+  } = useSelector((state) => state.review);
   const { accessToken } = useSelector((state) => state.auth);
   const [showAllImages, setShowAllImages] = useState(false);
   const { blockedDates } = useSelector((state) => state.blockedDates);
   const { favourites, favSuccess, favError } = useSelector(
     (state) => state.userFavourite,
   );
-
   const [bookingData, setBookingData] = useState({
     checkInDate: new Date(),
     checkOutDate: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -80,6 +92,7 @@ const VillaDetailsSection = ({ slug }) => {
   const [showBuyNowButton, setShowBuyNowButton] = useState(false);
   const calendarRef = useRef(null);
   const guestDropdownRef = useRef(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getVillaBySlug(slug));
@@ -242,7 +255,6 @@ const VillaDetailsSection = ({ slug }) => {
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/villa/${slug}`;
-
     if (navigator.share) {
       try {
         await navigator.share({
@@ -263,15 +275,6 @@ const VillaDetailsSection = ({ slug }) => {
     }
   };
 
-  if (!selectedVilla) {
-    return (
-      <MainLayout className="px-4 py-6 md:px-8 lg:px-30">
-        <div className="flex items-center justify-center h-96">
-          <p className="text-gray-500">Loading villa details...</p>
-        </div>
-      </MainLayout>
-    );
-  }
   const {
     villaName,
     images,
@@ -303,56 +306,39 @@ const VillaDetailsSection = ({ slug }) => {
         )
       : 0;
 
-  useEffect(() => {
-    if (bookingMsg) {
-      router.push("/confirmation");
-      dispatch(clearBookingError());
-    }
-    if (bookingerror) {
-      errorAlert(bookingerror);
-      dispatch(clearBookingError());
-    }
-  }, [bookingerror, bookingMsg, dispatch]);
-
   const applicableBlockedDates = useMemo(() => {
     if (!blockedDates?.length || !selectedVilla?._id) return [];
-
     return blockedDates.filter((item) => {
       if (item.scope === 1) return true;
-
       if (item.scope === 2) {
         if (!item.locationId) return true;
         return item.locationId._id === selectedVilla.locationId?._id;
       }
-
       if (item.scope === 3) {
         return item.villaId?._id === selectedVilla._id;
       }
-
       return false;
     });
   }, [blockedDates, selectedVilla]);
 
   const hardBlockedRanges = useMemo(
-    () => applicableBlockedDates.filter((d) => d.isBlocked === true),
+    () => applicableBlockedDates?.filter((d) => d.isBlocked === true),
     [applicableBlockedDates],
   );
 
   const softBlockedRanges = useMemo(
-    () => applicableBlockedDates.filter((d) => d.isBlocked === false),
+    () => applicableBlockedDates?.filter((d) => d.isBlocked === false),
     [applicableBlockedDates],
   );
 
   const dynamicRangeColor = useMemo(() => {
     const { checkInDate, checkOutDate } = bookingData;
     if (!checkInDate || !checkOutDate) return "#2b1a08";
-
-    const match = softBlockedRanges.find((item) => {
+    const match = softBlockedRanges?.find((item) => {
       const start = new Date(item.startDate);
       const end = new Date(item.endDate);
       return checkInDate <= end && checkOutDate >= start;
     });
-
     return match?.color || "#2b1a08";
   }, [bookingData, softBlockedRanges]);
 
@@ -373,45 +359,85 @@ const VillaDetailsSection = ({ slug }) => {
     if (!selectedVilla) return null;
     if (selectedVilla.map?.latitude && selectedVilla.map?.longitude) {
       return {
-        id: selectedVilla._id,
-        lat: selectedVilla.map.latitude,
-        lng: selectedVilla.map.longitude,
-        image: selectedVilla.images?.villaImage,
-        title: selectedVilla.villaName,
-        price: selectedVilla.isOffer
-          ? selectedVilla.offerPrice
-          : selectedVilla.price,
-        slug: `/villa/${selectedVilla.slug}`,
+        id: selectedVilla?._id,
+        lat: selectedVilla?.map.latitude,
+        lng: selectedVilla?.map.longitude,
+        image: selectedVilla?.images?.villaImage,
+        title: selectedVilla?.villaName,
+        price: selectedVilla?.isOffer
+          ? selectedVilla?.offerPrice
+          : selectedVilla?.price,
+        slug: `/villa/${selectedVilla?.slug}`,
         rating:
-          selectedVilla.reviews?.length > 0
+          selectedVilla?.reviews?.length > 0
             ? (
-                selectedVilla.reviews.reduce((a, b) => a + (b.rating || 5), 0) /
-                selectedVilla.reviews.length
+                selectedVilla?.reviews.reduce(
+                  (a, b) => a + (b.rating || 5),
+                  0,
+                ) / selectedVilla?.reviews.length
               ).toFixed(1)
             : 4.8,
       };
     }
-    if (selectedVilla.locationId?.mapLink) {
+    if (selectedVilla?.locationId?.mapLink) {
       return {
-        id: selectedVilla._id,
-        mapLink: selectedVilla.locationId.mapLink,
-        image: selectedVilla.images?.villaImage,
-        title: selectedVilla.villaName,
-        price: selectedVilla.isOffer
-          ? selectedVilla.offerPrice
-          : selectedVilla.price,
-        slug: `/villa/${selectedVilla.slug}`,
+        id: selectedVilla?._id,
+        mapLink: selectedVilla?.locationId.mapLink,
+        image: selectedVilla?.images?.villaImage,
+        title: selectedVilla?.villaName,
+        price: selectedVilla?.isOffer
+          ? selectedVilla?.offerPrice
+          : selectedVilla?.price,
+        slug: `/villa/${selectedVilla?.slug}`,
         rating:
-          selectedVilla.reviews?.length > 0
+          selectedVilla?.reviews?.length > 0
             ? (
-                selectedVilla.reviews.reduce((a, b) => a + (b.rating || 5), 0) /
-                selectedVilla.reviews.length
+                selectedVilla?.reviews.reduce(
+                  (a, b) => a + (b.rating || 5),
+                  0,
+                ) / selectedVilla?.reviews.length
               ).toFixed(1)
             : 4.8,
       };
     }
     return null;
   }, [selectedVilla]);
+
+  const handleReview = () => setIsPopupOpen(!isPopupOpen);
+  const handleSubmitReview = ({ rating, comment }) => {
+    if (!accessToken) {
+      dispatch(openPopup("login"));
+      return;
+    }
+    const payload = {
+      rating,
+      comment,
+    };
+    dispatch(createReview({ villaId: selectedVilla._id, payload }));
+    setIsPopupOpen(false);
+  };
+
+  useEffect(() => {
+    if (createReviewMessage) {
+      dispatch(getVillaBySlug(slug));
+      dispatch(clearReviewState());
+    }
+    if (createReviewError) {
+      errorAlert(createReviewError);
+      dispatch(clearReviewState());
+    }
+  }, [createReviewError, createReviewMessage, dispatch]);
+
+  useEffect(() => {
+    if (bookingMsg) {
+      router.push("/confirmation");
+      dispatch(clearBookingError());
+    }
+    if (bookingerror) {
+      errorAlert(bookingerror);
+      dispatch(clearBookingError());
+    }
+  }, [bookingerror, bookingMsg, dispatch]);
 
   useEffect(() => {
     if (favSuccess) {
@@ -617,39 +643,55 @@ const VillaDetailsSection = ({ slug }) => {
             <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
               <h2 className="text-xl font-semibold mb-4 md:mb-6">Reviews</h2>
               {selectedVilla?.reviews?.length > 0 ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {selectedVilla?.reviews?.map((r, i) => (
-                    <div
-                      key={i}
-                      className="min-w-[280px] shrink-0 border border-gray-300 rounded-xl p-4"
-                    >
-                      <div className="flex text-yellow-500 mb-2">
-                        {Array.from({ length: Math.floor(r.rating || 5) }).map(
-                          (_, i) => (
+                <div>
+                  <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                    {selectedVilla?.reviews?.map((r, i) => (
+                      <div
+                        key={i}
+                        className="min-w-[280px] shrink-0 border border-gray-300 rounded-xl p-4"
+                      >
+                        <div className="flex text-gray-700 mb-2">
+                          {Array.from({
+                            length: Math.floor(r.rating || 5),
+                          }).map((_, i) => (
                             <FaStar key={i} size={14} />
-                          ),
-                        )}
+                          ))}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {r.comment || "No comment provided."}
+                        </p>
+                        <p className="text-sm font-semibold">
+                          {r.userName || "Anonymous"}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          Stay on{" "}
+                          {formatDate(r.createdAt || "Date not available")}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-600 mb-4">
-                        {r.comment || "No comment provided."}
-                      </p>
-                      <p className="text-sm font-semibold">
-                        {r.userName || "Anonymous"}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {r.date || "Date not available"}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleReview}
+                    className=" bg-[#F2F2F2] text-black rounded-lg  px-3 py-2 text-sm font-medium cursor-pointer"
+                  >
+                    Show all {selectedVilla?.reviews?.length} reviews
+                  </button>
                 </div>
               ) : (
                 <div className="text-center py-8 border border-gray-300 rounded-xl">
                   <p className="text-gray-500">
                     No reviews yet. Be the first to review!
                   </p>
+                  <button
+                    onClick={handleReview}
+                    className=" bg-black text-white rounded-sm my-2 px-3 py-2 text-sm font-medium cursor-pointer"
+                  >
+                    Write a Review
+                  </button>
                 </div>
               )}
             </div>
+
             <div className="lg:hidden mt-10">
               <BookingCard
                 weeklyPrice={weeklyPrice}
@@ -770,6 +812,12 @@ const VillaDetailsSection = ({ slug }) => {
           </div>
         </Modal>
       )}
+      <RatingCommentPopup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+        onSubmit={handleSubmitReview}
+        productName={villaName}
+      />
     </>
   );
 };

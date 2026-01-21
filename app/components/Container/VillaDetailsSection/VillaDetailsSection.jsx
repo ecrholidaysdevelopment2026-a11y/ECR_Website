@@ -240,6 +240,29 @@ const VillaDetailsSection = ({ slug }) => {
     setBookingData((prev) => ({ ...prev, isGuestDropdownOpen: false })),
   );
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/villa/${slug}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: selectedVilla?.villaName || "Villa Details",
+          text: "Check out this amazing villa!",
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error("Share cancelled or failed", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        successAlert("Link copied to clipboard");
+      } catch (err) {
+        errorAlert("Failed to copy link");
+      }
+    }
+  };
+
   if (!selectedVilla) {
     return (
       <MainLayout className="px-4 py-6 md:px-8 lg:px-30">
@@ -431,7 +454,10 @@ const VillaDetailsSection = ({ slug }) => {
         <div className="flex items-center justify-between my-2 mb-4">
           <h1 className="text-xl md:text-2xl font-semibold">{villaName}</h1>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  px-3  justify-center py-2 hover:bg-gray-100 transition">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 text-sm font-medium border border-gray-300 rounded-sm  px-3  justify-center py-2 hover:bg-gray-100 transition"
+            >
               <FiShare2 size={16} />
               Share
             </button>
@@ -513,14 +539,14 @@ const VillaDetailsSection = ({ slug }) => {
           )}
         </div>
         <div>
-          <span className="flex items-center gap-2 text-xl capitalize  font-medium  text-gray-700">
-            <FaMapMarkerAlt c />
+          <span className="flex items-center gap-2 text-xl capitalize  font-semibold">
+            <FaMapMarkerAlt />
             {locationId?.locationName || "Location"}
           </span>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
           <div className="lg:col-span-2">
-            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize  font-medium  text-gray-700">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xl capitalize  font-semibold ">
               <span className="flex items-center gap-2">
                 <FaUserFriends />
                 {selectedVilla?.maxGuests} guests

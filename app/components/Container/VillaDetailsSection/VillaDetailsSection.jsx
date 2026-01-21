@@ -21,11 +21,7 @@ import { getAmenityIcon } from "@/app/utils/amenityIcons";
 import Link from "next/link";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import {
-  errorAlert,
-  successAlert,
-  warningAlert,
-} from "@/app/utils/alertService";
+import { errorAlert, infoAlert, successAlert } from "@/app/utils/alertService";
 import useClickOutside from "@/app/utils/useClickOutside";
 import Modal from "@/app/common/CommonModel";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -53,6 +49,7 @@ import { clearReviewState, createReview } from "@/app/store/slice/reviewSlice";
 import { formatDate } from "@/app/utils/formateDate";
 import Guestreviewimg from "@/app/assets/guestreviewimg.svg";
 import Image from "next/image";
+import { fetchUserProfile } from "@/app/store/slice/userSlice";
 
 const VillaDetailsSection = ({ slug }) => {
   const dispatch = useDispatch();
@@ -87,6 +84,7 @@ const VillaDetailsSection = ({ slug }) => {
   const calendarRef = useRef(null);
   const guestDropdownRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { profile } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getVillaBySlug(slug));
@@ -99,6 +97,7 @@ const VillaDetailsSection = ({ slug }) => {
   useEffect(() => {
     if (accessToken) {
       dispatch(getUserFavourites());
+      dispatch(fetchUserProfile());
     }
   }, [accessToken, dispatch]);
 
@@ -161,7 +160,7 @@ const VillaDetailsSection = ({ slug }) => {
     let current = new Date(startDate);
     while (current <= endDate) {
       if (isDateBlocked(current)) {
-        warningAlert("Selected dates include blocked dates");
+        infoAlert("Selected dates include blocked dates");
         return;
       }
       current.setDate(current.getDate() + 1);
@@ -208,11 +207,11 @@ const VillaDetailsSection = ({ slug }) => {
     const totalGuests =
       bookingData.guestDetails.adults + bookingData.guestDetails.children;
     if (totalGuests > selectedVilla.maxGuests) {
-      warningAlert(`Maximum ${selectedVilla.maxGuests} guests allowed`);
+      infoAlert(`Maximum ${selectedVilla.maxGuests} guests allowed`);
       return;
     }
     if (!bookingData.checkInDate || !bookingData.checkOutDate) {
-      warningAlert("Please select check-in and check-out dates");
+      infoAlert("Please select check-in and check-out dates");
       return;
     }
     const bookingPayload = {
@@ -402,6 +401,11 @@ const VillaDetailsSection = ({ slug }) => {
       dispatch(openPopup("login"));
       return;
     }
+    if (!profile?.firstName || !profile?.email || !profile?.mobile) {
+      infoAlert("Almost there! Please complete your profile details first.");
+      return;
+    }
+
     setIsPopupOpen(!isPopupOpen);
   };
   const handleSubmitReview = ({ rating, comment }) => {
@@ -637,61 +641,70 @@ const VillaDetailsSection = ({ slug }) => {
             <div className="mt-10 md:mt-12 border-t border-gray-300 pt-8 md:pt-10">
               <h2 className="text-xl font-semibold mb-4 md:mb-6">Reviews</h2>
               {selectedVilla?.reviews?.length > 0 ? (
-                <div className="flex flex-col md:flex-row gap-3">
-                  <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white  max-w-xs mx-auto md:mx-0 shrink-0">
-                    <div className="relative w-[161px] h-[60px] mb-4">
-                      <Image
-                        src={Guestreviewimg}
-                        alt="Guest favourite rating badge"
-                        fill
-                        className="object-contain"
-                        priority
-                      />
+                <>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white max-w-xs mx-auto md:mx-0 shrink-0">
+                      <div className="relative w-[161px] h-[60px] mb-4">
+                        <Image
+                          src={Guestreviewimg}
+                          alt="Guest favourite rating badge"
+                          fill
+                          className="object-contain"
+                          priority
+                        />
+                      </div>
+
+                      <h5 className="text-base font-semibold text-gray-900">
+                        Guest favourite
+                      </h5>
+
+                      <p className="text-sm text-gray-600 leading-relaxed mt-1">
+                        This home is a guest favourite based on ratings,
+                        reviews, and reliability.
+                      </p>
                     </div>
-                    <h5 className="text-base font-semibold text-gray-900">
-                      Guest favourite
-                    </h5>
-                    <p className="text-sm text-gray-600 leading-relaxed mt-1">
-                      This home is a guest favourite based on ratings, reviews,
-                      and reliability.
-                    </p>
-                  </div>
-                  <div className="flex-1 w-full">
-                    <div className="w-full overflow-x-auto pb-4 scrollbar-hide">
-                      <div className="flex gap-4 min-w-max">
-                        {selectedVilla?.reviews?.map((r, i) => (
-                          <div
-                            key={i}
-                            className="min-w-[280px] shrink-0 border border-gray-300 rounded p-4 bg-white"
-                          >
-                            <div className="flex text-gray-700 mb-2">
-                              {Array.from({
-                                length: Math.floor(r.rating || 5),
-                              }).map((_, idx) => (
-                                <FaStar key={idx} size={14} />
-                              ))}
+                    <div className="flex-1 w-full overflow-hidden">
+                      <div className="w-full max-w-full overflow-x-auto pb-4 scrollbar-hide">
+                        <div className="flex gap-4 min-w-max">
+                          {selectedVilla?.reviews?.map((r, i) => (
+                            <div
+                              key={i}
+                              className="min-w-[280px] shrink-0 border border-gray-300 rounded-lg p-4 bg-white"
+                            >
+                              <div className="flex text-gray-700 mb-2">
+                                {Array.from({
+                                  length: Math.floor(r.rating || 5),
+                                }).map((_, idx) => (
+                                  <FaStar key={idx} size={14} />
+                                ))}
+                              </div>
+
+                              <p className="text-sm text-gray-600 mb-2 line-clamp-4">
+                                {r.comment || "No comment provided."}
+                              </p>
+
+                              <p className="text-sm font-semibold text-gray-900">
+                                {r.userName || "Anonymous"}
+                              </p>
+
+                              <p className="text-xs text-gray-400">
+                                Stay on {formatDate(r.createdAt)}
+                              </p>
                             </div>
-                            <p className="text-sm text-gray-600 mb-2 line-clamp-4">
-                              {r.comment || "No comment provided."}
-                            </p>
-                            <p className="text-sm font-semibold text-gray-900">
-                              {r.userName || "Anonymous"}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Stay on {formatDate(r.createdAt)}
-                            </p>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <button
+                          onClick={handleReview}
+                          className="inline-flex items-center justify-center bg-[#F2F2F2] text-black rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-200 transition"
+                        >
+                          Show all {selectedVilla.reviews.length} reviews
+                        </button>
                       </div>
                     </div>
-                    <button
-                      onClick={handleReview}
-                      className="mt-2 bg-[#F2F2F2] text-black rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-200 transition"
-                    >
-                      Show all {selectedVilla.reviews.length} reviews
-                    </button>
                   </div>
-                </div>
+                </>
               ) : (
                 <div className="text-center py-8 border border-gray-300 rounded-xl">
                   <p className="text-gray-500 mb-3">
